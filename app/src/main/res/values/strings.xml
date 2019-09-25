@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">KimiNoJisho</string>
+    <string name="action_settings">Settings</string>
+    <string name="Add_New_Word">Add New Word</string>
+    <string name="Word">Word*:</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Add">Add</string>
+    <string name="Kana">Kana*:</string>
+    <string name="Meaning">Meaning*:</string>
+    <string name="Example">Example:</string>
+    <string name="title_activity_main">Kimi No Jisho</string>
+    <string name="Word_Contents">word_contents</string>
+    <string name="Delete_Entry">DELETE</string>
+    <string name="Update_Entry">Update</string>
+    <string name="View_Edit">View/Edit</string>
+    <string name="ActionAdd">Add</string>
+    <string name="ActionExport">Export</string>
+    <string name="ActionAlarm">Notifications</string>
+    <string name="ActionImport">Import</string>
+    <string name="ActionAbout">About</string>
+    <string name="About">About</string>
+    <string name="Search">Search 🔍</string>
+</resources>
