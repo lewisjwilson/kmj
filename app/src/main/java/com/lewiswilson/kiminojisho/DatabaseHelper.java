@@ -3,9 +3,16 @@ package com.lewiswilson.kiminojisho;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL0 = "ID";
@@ -16,21 +23,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "kiminojisho.db";
     private static final String TABLE_NAME = "jisho_data";
     private static final String TAG = "DatabaseHelper";
+    private final Context myContext;
+    private SQLiteDatabase db;
+
+    String DATABASE_PATH = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 3);
+        this.myContext = context;
+        this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
+        Log.e("Path 1", DATABASE_PATH);
     }
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, WORD TEXT, KANA TEXT, MEANING TEXT, EXAMPLE TEXT, UNIQUE(WORD))");
     }
 
+
+	//Changes made for Importing
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS jisho_data");
-    }
+		if(newVersion > oldVersion)
+			try{
+				copyDatabase();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 
-    public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
-        SQLiteDatabase db = getWritableDatabase();
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void createDatabase() throws IOException {
+        //boolean dbExist = checkDatabase();
+        //if (dbExist) {
+        //} else {
+            this.getReadableDatabase();
+            try {
+                copyDatabase();
+            } catch (IOException e) {
+                throw new Error("Error Importing Database");
+            }
+        //}
+    }
+	
+	//Import DB from Assets folder
+	public void copyDatabase() throws IOException {
+		InputStream myInput = myContext.getAssets().open("kiminojisho.db");
+		String outFileName = DATABASE_PATH + DATABASE_NAME;
+		OutputStream myOutput = new FileOutputStream(outFileName);
+		byte[] buffer = new byte[10];
+		int length;
+		while ((length = myInput.read(buffer)) > 0) {
+			myOutput.write(buffer, 0 , length);
+		}
+		myOutput.flush();
+		myOutput.close();
+		myInput.close();
+	}
+
+	@Override
+	public synchronized void close() {
+		SQLiteDatabase db = getWritableDatabase();
+		if(db != null)
+			db.close();
+		super.close();
+	}	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
+        db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
         contentValues.put(COL3, new_meaning);
@@ -43,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteData(String list_selection) {
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         StringBuilder sb = new StringBuilder();
         sb.append("WORD='");
         sb.append(list_selection);
@@ -52,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String readData(String list_selection) {
-        SQLiteDatabase db = getReadableDatabase();
+        db = getReadableDatabase();
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM jisho_data WHERE WORD='");
         sb.append(list_selection);
@@ -83,7 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addData(String word, String kana, String meaning, String example) {
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);
         contentValues.put(COL2, kana);

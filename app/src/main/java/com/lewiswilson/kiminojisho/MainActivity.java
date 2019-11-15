@@ -5,9 +5,11 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -26,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -101,16 +104,54 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_alarm:
                 return true;
+            case R.id.action_import:
+                AlertDialog diaBox = importWarning();
+                diaBox.show();
+                return true;
             case R.id.action_export:
-                Export();
+                exportDatabase();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private AlertDialog importWarning()
+    {
+        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
+                // set message, title, and icon
+                .setTitle("Import")
+                .setMessage("Make sure your database is named 'kiminojisho.db' and is copied to the assets folder. " +
+                        "All data will be completely overwritten. Are you SURE you want to overwrite everything?")
+                .setPositiveButton("Import", new DialogInterface.OnClickListener() {
 
-    public void Export(){
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        importDatabase();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+
+        return myQuittingDialogBox;
+    }
+
+    public void importDatabase() {
+        try {
+            myDB.createDatabase();
+            Toast.makeText(this, "Import Successful", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(getIntent());
+        } catch (IOException e) {
+            throw new Error("Unable to create Database");
+        }
+    }
+
+    public void exportDatabase(){
         try {
             String fileToWrite = this.getDatabasePath("kiminojisho.db").toString();
 
