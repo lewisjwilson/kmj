@@ -3,9 +3,16 @@ package com.lewiswilson.kiminojisho;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL0 = "ID";
@@ -16,9 +23,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "kiminojisho.db";
     private static final String TABLE_NAME = "jisho_data";
     private static final String TAG = "DatabaseHelper";
+    private final Context myContext;
+    private SQLiteDatabase db;
+
+    String DATABASE_PATH = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 3);
+        this.myContext = context;
+        this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
+        Log.e("Path 1", DATABASE_PATH);
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -43,11 +57,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void createDatabase() throws IOException {
+        //boolean dbExist = checkDatabase();
+        //if (dbExist) {
+        //} else {
+            this.getReadableDatabase();
+            try {
+                Import();
+            } catch (IOException e) {
+                throw new Error("Error Importing Database");
+            }
+        //}
+    }
+
+    private boolean checkDatabase() {
+        SQLiteDatabase checkDB = null;
+        try {
+            String myPath = DATABASE_PATH + DATABASE_NAME;
+            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+        } catch (SQLException e) {
+        }
+        if (checkDB != null) {
+            checkDB.close();
+        }
+        return checkDB != null ? true : false;
+    }
 	
 	//Import DB from Assets folder
-	public void Import() {
-		InputStream myInput = this.getAssets().open("kiminojisho.db");
-		String outFileName = "/data/data/com.lewiswilson.kiminojisho/databases/" + DATABASE_NAME;
+	public void Import() throws IOException {
+		InputStream myInput = myContext.getAssets().open("kiminojisho.db");
+        Toast.makeText(myContext, "BOI", Toast.LENGTH_SHORT).show();
+		String outFileName = DATABASE_PATH + DATABASE_NAME;
 		OutputStream myOutput = new FileOutputStream(outFileName);
 		byte[] buffer = new byte[10];
 		int length;
@@ -58,10 +99,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		myOutput.close();
 		myInput.close();
 	}
-	
+
 	public void openDatabase() throws SQLException {
 		SQLiteDatabase db;
-		String myPath = "/data/data/com.lewiswilson.kiminojisho/databases/" + DATABASE_NAME;
+		String myPath = DATABASE_PATH + DATABASE_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 	}
 		
@@ -77,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
         contentValues.put(COL3, new_meaning);
@@ -90,7 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteData(String list_selection) {
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         StringBuilder sb = new StringBuilder();
         sb.append("WORD='");
         sb.append(list_selection);
@@ -99,7 +140,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String readData(String list_selection) {
-        SQLiteDatabase db = getReadableDatabase();
+        db = getReadableDatabase();
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM jisho_data WHERE WORD='");
         sb.append(list_selection);
@@ -130,7 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean addData(String word, String kana, String meaning, String example) {
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);
         contentValues.put(COL2, kana);

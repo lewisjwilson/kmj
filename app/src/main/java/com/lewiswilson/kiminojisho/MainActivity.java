@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -26,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -100,6 +102,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddWord.class));
                 return true;
             case R.id.action_alarm:
+                return true;
+            case R.id.action_import:
+                try {
+                    myDB.createDatabase();
+                } catch (IOException e) {
+                    throw new Error("Unable to create Database");
+                }
+                try{
+                    myDB.openDatabase();
+                } catch (SQLException sqle) {
+                    throw sqle;
+                }
                 return true;
             case R.id.action_export:
                 Export();
