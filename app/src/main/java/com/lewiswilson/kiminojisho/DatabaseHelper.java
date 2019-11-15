@@ -45,17 +45,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS jisho_data");
 		if(newVersion > oldVersion)
 			try{
-				Import();
+				copyDatabase();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 	}
-	
-	public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy){
-		return db.query(TABLE_NAME, null, null, null, null, null, null);
-    }
-	
-	
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void createDatabase() throws IOException {
@@ -64,28 +59,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //} else {
             this.getReadableDatabase();
             try {
-                Import();
+                copyDatabase();
             } catch (IOException e) {
                 throw new Error("Error Importing Database");
             }
         //}
     }
-
-    private boolean checkDatabase() {
-        SQLiteDatabase checkDB = null;
-        try {
-            String myPath = DATABASE_PATH + DATABASE_NAME;
-            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-        } catch (SQLException e) {
-        }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-        return checkDB != null ? true : false;
-    }
 	
 	//Import DB from Assets folder
-	public void Import() throws IOException {
+	public void copyDatabase() throws IOException {
 		InputStream myInput = myContext.getAssets().open("kiminojisho.db");
         Toast.makeText(myContext, "BOI", Toast.LENGTH_SHORT).show();
 		String outFileName = DATABASE_PATH + DATABASE_NAME;
@@ -100,13 +82,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		myInput.close();
 	}
 
-	public void openDatabase() throws SQLException {
-		SQLiteDatabase db;
-		String myPath = DATABASE_PATH + DATABASE_NAME;
-		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-	}
-		
-	
 	@Override
 	public synchronized void close() {
 		SQLiteDatabase db = getWritableDatabase();

@@ -104,27 +104,25 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_alarm:
                 return true;
             case R.id.action_import:
-                try {
-                    myDB.createDatabase();
-                } catch (IOException e) {
-                    throw new Error("Unable to create Database");
-                }
-                try{
-                    myDB.openDatabase();
-                } catch (SQLException sqle) {
-                    throw sqle;
-                }
+                importDatabase();
                 return true;
             case R.id.action_export:
-                Export();
+                exportDatabase();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    public void importDatabase() {
+        try {
+            myDB.createDatabase();
+        } catch (IOException e) {
+            throw new Error("Unable to create Database");
+        }
+    }
 
-    public void Export(){
+    public void exportDatabase(){
         try {
             String fileToWrite = this.getDatabasePath("kiminojisho.db").toString();
 
