@@ -25,11 +25,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, WORD TEXT, KANA TEXT, MEANING TEXT, EXAMPLE TEXT, UNIQUE(WORD))");
     }
 
+
+	//Changes made for Importing
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS jisho_data");
+		if(newVersion > oldVersion)
+			try{
+				Import();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+	
+	public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy){
+		return db.query(TABLE_NAME, null, null, null, null, null, null);
     }
-
-    public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//Import DB from Assets folder
+	public void Import() {
+		InputStream myInput = this.getAssets().open("kiminojisho.db");
+		String outFileName = "/data/data/com.lewiswilson.kiminojisho/databases/" + DATABASE_NAME;
+		OutputStream myOutput = new FileOutputStream(outFileName);
+		byte[] buffer = new byte[10];
+		int length;
+		while ((length = myInput.read(buffer)) > 0) {
+			myOutput.write(buffer, 0 , length);
+		}
+		myOutput.flush();
+		myOutput.close();
+		myInput.close();
+	}
+	
+	public void openDatabase() throws SQLException {
+		SQLiteDatabase db;
+		String myPath = "/data/data/com.lewiswilson.kiminojisho/databases/" + DATABASE_NAME;
+		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+	}
+		
+	
+	@Override
+	public synchronized void close() {
+		SQLiteDatabase db = getWritableDatabase();
+		if(db != null)
+			db.close();
+		super.close();
+	}	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
