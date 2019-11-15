@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_alarm:
                 return true;
             case R.id.action_import:
-                importDatabase();
+                AlertDialog diaBox = importWarning();
+                diaBox.show();
                 return true;
             case R.id.action_export:
                 exportDatabase();
@@ -114,9 +116,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private AlertDialog importWarning()
+    {
+        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
+                // set message, title, and icon
+                .setTitle("Import")
+                .setMessage("Make sure your database is named 'kiminojisho.db' and is copied to the assets folder. " +
+                        "All data will be completely overwritten. Are you SURE you want to overwrite everything?")
+                .setPositiveButton("Import", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        importDatabase();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+
+        return myQuittingDialogBox;
+    }
+
     public void importDatabase() {
         try {
             myDB.createDatabase();
+            Toast.makeText(this, "Import Successful", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(getIntent());
         } catch (IOException e) {
             throw new Error("Unable to create Database");
         }

@@ -69,7 +69,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	//Import DB from Assets folder
 	public void copyDatabase() throws IOException {
 		InputStream myInput = myContext.getAssets().open("kiminojisho.db");
-        Toast.makeText(myContext, "BOI", Toast.LENGTH_SHORT).show();
 		String outFileName = DATABASE_PATH + DATABASE_NAME;
 		OutputStream myOutput = new FileOutputStream(outFileName);
 		byte[] buffer = new byte[10];
