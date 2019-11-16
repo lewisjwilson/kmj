@@ -51,6 +51,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 	}
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.setVersion(oldVersion);
+    }
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void createDatabase() throws IOException {
@@ -64,11 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 throw new Error("Error Importing Database");
             }
         //}
+
     }
 	
 	//Import DB from Assets folder
 	public void copyDatabase() throws IOException {
-		InputStream myInput = myContext.getAssets().open("kiminojisho.db");
+		InputStream myInput = myContext.getContentResolver().openInputStream(MainActivity.fileUri);//myContext.getAssets().open("kiminojisho.db");
 		String outFileName = DATABASE_PATH + DATABASE_NAME;
 		OutputStream myOutput = new FileOutputStream(outFileName);
 		byte[] buffer = new byte[10];
