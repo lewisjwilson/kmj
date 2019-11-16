@@ -14,7 +14,7 @@ Additional features include:
     Random word selection; [COMPLETE]
     Daily random word notifications; [IN PROGRESS]
     Duplicate prevention (if a word already exists in the dictionary, it cannot be duplicated!); [COMPLETE]
-    Importing Database from backup; [IN PROGRESS]
+    Importing Database from backup; [COMPLETE]
     Database Exporting for backup; [COMPLETE]
     No ads;
     No in-app purchases;
