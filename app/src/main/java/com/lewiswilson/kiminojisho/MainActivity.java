@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_export:
                 exportDatabase();
                 return true;
+            case R.id.action_about:
+                startActivity(new Intent(MainActivity.this, About.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

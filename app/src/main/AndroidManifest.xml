@@ -26,6 +26,10 @@
             android:label="@string/View_Edit">
         </activity>
         <activity
+            android:name=".About"
+            android:label="@string/About">
+        </activity>
+        <activity
             android:name=".AddWord"
             android:label="@string/Add_New_Word"
             android:theme="@style/AppTheme.Transparency">
