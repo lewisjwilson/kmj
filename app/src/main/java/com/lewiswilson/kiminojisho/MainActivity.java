@@ -110,12 +110,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_alarm:
                 return true;
             case R.id.action_import:
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("*/*");
-                startActivityForResult(intent, REQUEST_CODE);
-
-                //AlertDialog diaBox = importWarning();
-                //diaBox.show();
+                AlertDialog diaBox = importWarning();
+                diaBox.show();
                 return true;
             case R.id.action_export:
                 exportDatabase();
@@ -130,35 +126,15 @@ public class MainActivity extends AppCompatActivity {
         return new AlertDialog.Builder(this)
                 // set message, title, and icon
                 .setTitle("Import")
-                .setMessage("Make sure your database is named 'kiminojisho.db' and is copied to the assets folder. " +
-                        "All data will be completely overwritten. Are you SURE you want to overwrite everything?")
+                .setMessage("Select your previously exported 'kiminojisho.db' file. " +
+                        "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
                 .setPositiveButton("Import", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        AlertDialog diaBox = importWarning2();
-                        diaBox.show();
                         dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-    }
-
-    private AlertDialog importWarning2()
-    {
-        return new AlertDialog.Builder(this)
-                // set message, title, and icon
-                .setTitle("ARE YOU SURE?")
-                .setMessage("All of your current data WILL BE WIPED")
-                .setPositiveButton("Import", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        importDatabase();
-                        dialog.dismiss();
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.setType("*/*");
+                        startActivityForResult(intent, REQUEST_CODE);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -231,11 +207,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
             if(data!=null){
-                Uri uri = data.getData();
-                fileUri = uri;
+                fileUri = data.getData();
 
-                //Toast.makeText(this, "Uri: " + fileUri, Toast.LENGTH_SHORT).show();
-                //Toast.makeText(this, "Path: " + uri.getPath(), Toast.LENGTH_SHORT).show();
                 importDatabase();
             }
         }
