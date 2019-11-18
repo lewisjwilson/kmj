@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog importWarning()
     {
         return new AlertDialog.Builder(this)
-                // set message, title, and icon
                 .setTitle("Import")
                 .setMessage("Select your previously exported 'kiminojisho.db' file. " +
                         "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
