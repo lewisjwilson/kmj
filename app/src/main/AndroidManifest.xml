@@ -3,6 +3,7 @@
     package="com.lewiswilson.kiminojisho">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -23,6 +24,10 @@
         <activity
             android:name=".ViewWord"
             android:label="@string/View_Edit">
+        </activity>
+        <activity
+            android:name=".About"
+            android:label="@string/About">
         </activity>
         <activity
             android:name=".AddWord"

@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.FileProvider;
@@ -34,7 +35,11 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 10;
+    //public static Uri fileUri;
+
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
+    public static Uri fileUri;
     DatabaseHelper myDB;
     public static Activity ma;
 
@@ -111,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_export:
                 exportDatabase();
                 return true;
+            case R.id.action_about:
+                startActivity(new Intent(MainActivity.this, About.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -118,16 +126,18 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog importWarning()
     {
-        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
+        return new AlertDialog.Builder(this)
                 // set message, title, and icon
                 .setTitle("Import")
-                .setMessage("Make sure your database is named 'kiminojisho.db' and is copied to the assets folder. " +
-                        "All data will be completely overwritten. Are you SURE you want to overwrite everything?")
+                .setMessage("Select your previously exported 'kiminojisho.db' file. " +
+                        "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
                 .setPositiveButton("Import", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        importDatabase();
                         dialog.dismiss();
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.setType("*/*");
+                        startActivityForResult(intent, REQUEST_CODE);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -136,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .create();
-
-        return myQuittingDialogBox;
     }
 
     public void importDatabase() {
@@ -192,6 +200,19 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read External storage", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            if(data!=null){
+                fileUri = data.getData();
+
+                importDatabase();
             }
         }
     }
