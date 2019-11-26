@@ -3,6 +3,7 @@ package com.lewiswilson.kiminojisho;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,11 +35,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.lewiswilson.kiminojisho.Notifications.CHANNEL_1_ID;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 10;
-    //public static Uri fileUri;
-
+    private NotificationManagerCompat notificationManager;
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
     public static Uri fileUri;
     DatabaseHelper myDB;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
         ma=this;
+        notificationManager = NotificationManagerCompat.from(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddWord.class));
                 return true;
             case R.id.action_alarm:
+                reminderNotification();
                 return true;
             case R.id.action_import:
                 AlertDialog diaBox = importWarning();
@@ -187,6 +192,18 @@ public class MainActivity extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void reminderNotification(){
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
+                .setContentText("Kimi No Jisho")
+                .setContentText(myDB.random(1))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+
+        notificationManager.notify(1, notification);
     }
 
     //Request Permissions
