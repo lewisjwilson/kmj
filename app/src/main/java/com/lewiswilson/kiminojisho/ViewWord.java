@@ -3,6 +3,7 @@ package com.lewiswilson.kiminojisho;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -120,6 +121,16 @@ public class ViewWord extends AppCompatActivity {
 
       }
     });
+
+      FloatingActionButton flbtn_rand = (FloatingActionButton) findViewById(R.id.flbtn_rand);
+      flbtn_rand.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              MainActivity.list_selection = myDB.random(0);
+              finish();
+              startActivity(getIntent());
+          }
+      });
 
   }
 }
