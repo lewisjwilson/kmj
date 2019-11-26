@@ -21,4 +21,6 @@
     <string name="About">About</string>
     <string name="Search">Search 🔍</string>
     <string name="AboutDescription">\"Kimi No Jisho\" (Literally \"Your Dictionary\") is a custom Japanese dictionary app. Thought of and developed by Lewis Wilson.</string>
+    <string name="HideShow">Hide/Show</string>
+    <string name="Hidden">Hidden</string>
 </resources>
