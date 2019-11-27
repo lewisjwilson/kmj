@@ -128,7 +128,8 @@ public class ViewWord extends AppCompatActivity {
           public void onClick(View v) {
               MainActivity.list_selection = myDB.random(0);
               finish();
-              startActivity(getIntent());
+              startActivityForResult(getIntent().addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION),0);
+              overridePendingTransition(0,0);
           }
       });
 

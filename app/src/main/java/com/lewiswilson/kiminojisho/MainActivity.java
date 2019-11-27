@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ListView listView = (ListView) findViewById(R.id.list_jisho);
+        listView.setEmptyView(findViewById(R.id.txt_listempty));
+        FloatingActionButton flbtn_add = (FloatingActionButton) findViewById(R.id.flbtn_add);
         FloatingActionButton flbtn_rand = (FloatingActionButton) findViewById(R.id.flbtn_rand);
         myDB = new DatabaseHelper(this);
 
@@ -65,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Checks if database is empty and lists entries if not
         if(data.getCount() == 0){
+            flbtn_rand.setEnabled(false);
             Toast.makeText(MainActivity.this, "The Database is Empty", Toast.LENGTH_SHORT).show();
         }else{
+            flbtn_rand.setEnabled(true);
             while(data.moveToNext()){
                 //ListView Data Layout
                 jishoList.add(data.getString(1) + " ; " + data.getString(2) + " ; " +
@@ -86,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
             }
     });
 
+        flbtn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AddWord.class));
+            }
+        });
         flbtn_rand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,9 +118,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_add:
-                startActivity(new Intent(MainActivity.this, AddWord.class));
-                return true;
             case R.id.action_alarm:
                 reminderNotification();
                 return true;

@@ -21,6 +21,7 @@
         </activity>
         <activity
             android:name=".ViewWord"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/View_Edit">
         </activity>
         <activity
@@ -30,6 +31,7 @@
         <activity
             android:name=".AddWord"
             android:label="@string/Add_New_Word"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.Transparency">
         </activity>
 

@@ -19,9 +19,7 @@ public class AddWord extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView((int) R.layout.add_word);
         this.myDB = new DatabaseHelper(this);
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        getWindow().setLayout((int) (((double) dm.widthPixels) * 0.8d), (int) (((double) dm.heightPixels) * 0.8d));
+
         Button btn_add = (Button) findViewById(R.id.btn_add);
         final EditText editText = (EditText) findViewById(R.id.edit_word);
         final EditText editText2 = (EditText) findViewById(R.id.edit_kana);

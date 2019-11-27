@@ -20,7 +20,8 @@
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
     <string name="Search">Search 🔍</string>
-    <string name="AboutDescription">\"Kimi No Jisho\" (Literally \"Your Dictionary\") is a custom Japanese dictionary app. Thought of and developed by Lewis Wilson.</string>
+    <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier. This app has been designed by Lewis Wilson.</string>
     <string name="HideShow">Hide/Show</string>
     <string name="Hidden">Hidden</string>
+    <string name="nothing_in_the_database">It looks like the database is empty. To get started, click the green \"+\" button to create a new dictionary entry!</string>
 </resources>
