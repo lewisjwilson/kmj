@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -50,10 +51,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+
         ma=this;
         notificationManager = NotificationManagerCompat.from(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final ListView listView = (ListView) findViewById(R.id.list_jisho);

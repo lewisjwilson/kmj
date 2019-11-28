@@ -15,34 +15,31 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ViewWord"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/View_Edit">
-        </activity>
+            android:label="@string/View_Edit"></activity>
         <activity
             android:name=".About"
-            android:label="@string/About">
-        </activity>
+            android:label="@string/About"></activity>
         <activity
             android:name=".AddWord"
             android:label="@string/Add_New_Word"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.Transparency">
-        </activity>
+            android:theme="@style/AppTheme.Transparency"
+            android:windowSoftInputMode="adjustResize"></activity>
 
         <provider
-            android:authorities="com.lewiswilson.kiminojisho.fileprovider"
             android:name="android.support.v4.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:authorities="com.lewiswilson.kiminojisho.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
     </application>
 
