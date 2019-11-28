@@ -48,19 +48,6 @@
         app:layout_constraintBottom_toTopOf="@+id/flbtn_rand"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/img_watermark"
-        android:layout_width="225dp"
-        android:layout_height="225dp"
-        android:clickable="false"
-        android:contextClickable="false"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:srcCompat="@drawable/kmj_logo_trans" />
-
     <ListView
         android:id="@+id/list_jisho"
         android:layout_width="0dp"
@@ -86,7 +73,6 @@
         android:textAlignment="center"
         android:textColor="?attr/colorPrimaryDark"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/img_watermark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
