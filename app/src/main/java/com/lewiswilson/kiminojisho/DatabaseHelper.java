@@ -56,20 +56,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.setVersion(oldVersion);
     }
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public void createDatabase() throws IOException {
-        //boolean dbExist = checkDatabase();
-        //if (dbExist) {
-        //} else {
             this.getReadableDatabase();
             try {
                 copyDatabase();
             } catch (IOException e) {
                 throw new Error("Error Importing Database");
             }
-        //}
-
     }
 	
 	//Import DB from Assets folder
@@ -93,9 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if(db != null)
 			db.close();
 		super.close();
-	}	
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
 	
 	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
         db = getWritableDatabase();
@@ -121,11 +112,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String readData(String list_selection) {
         db = getReadableDatabase();
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM jisho_data WHERE WORD='");
-        sb.append(list_selection);
-        sb.append("'");
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        //PreparedStatement (Avoiding SQL Injection)
+        Cursor cursor = db.rawQuery("SELECT * FROM jisho_data WHERE WORD=?", new String[]{list_selection});
         String getWord = "";
         String getKana = "";
         String getMeaning = "";
@@ -137,7 +125,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             getExample = cursor.getString(cursor.getColumnIndex(COL4));
         }
         cursor.close();
-        String str = getWord;
         StringBuilder sb2 = new StringBuilder();
         sb2.append(getWord);
         String str2 = ";";
