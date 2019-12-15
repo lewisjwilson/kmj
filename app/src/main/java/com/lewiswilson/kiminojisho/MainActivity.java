@@ -75,8 +75,14 @@ public class MainActivity extends AppCompatActivity {
             flbtn_rand.setEnabled(true);
             while(data.moveToNext()){
                 //ListView Data Layout
-                jishoList.add(data.getString(1) + " ; " + data.getString(2) + " ; " +
-                        data.getString(3));
+                if (data.getString(1).equals(data.getString(2))){
+                    jishoList.add(data.getString(1) + " ; " +
+                            data.getString(3));
+                } else {
+                    jishoList.add(data.getString(1) + " ; " +
+                            data.getString(2) + " ; " +
+                            data.getString(3));
+                }
                 ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, jishoList);
                 listView.setAdapter(listAdapter);
             }
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     public void reminderNotification(){
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentText("Kimi No Jisho")
+                .setContentText("KimiNoJisho")
                 .setContentText(myDB.random(1))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)

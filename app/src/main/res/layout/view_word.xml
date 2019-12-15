@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/Word" />
+                android:text="@string/Kanji" />
 
             <TextView
                 android:id="@+id/txt_word_val"

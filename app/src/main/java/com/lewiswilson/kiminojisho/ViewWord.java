@@ -36,7 +36,7 @@ public class ViewWord extends AppCompatActivity {
     final String parsed_meaning = unparsed_data.split(";")[2];
 
     //try/catch in case example column is empty...(no array index of 3 after split...)
-    String parsed_example = "";
+    String parsed_example;
     try {
       parsed_example = unparsed_data.split(";")[3];
     }catch (Exception e){
@@ -48,9 +48,9 @@ public class ViewWord extends AppCompatActivity {
     edit_kana = (EditText) findViewById(R.id.edit_kana);
     edit_meaning = (EditText) findViewById(R.id.edit_meaning);
     edit_example = (EditText) findViewById(R.id.edit_example);
-    edit_kana.setText("Hidden");
-    edit_meaning.setText("Hidden");
-    edit_example.setText("Hidden");
+    edit_kana.setText(getString(R.string.Hidden));
+    edit_meaning.setText(getString(R.string.Hidden));
+    edit_example.setText(getString(R.string.Hidden));
     edit_kana.setEnabled(false);
     edit_meaning.setEnabled(false);
     edit_example.setEnabled(false);
@@ -61,7 +61,7 @@ public class ViewWord extends AppCompatActivity {
       btn_hideshow.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(button_status[0] == false){
+            if(!button_status[0]){
                 btn_update.setEnabled(true);
                 edit_kana.setText(parsed_kana);
                 edit_meaning.setText(parsed_meaning);
@@ -72,9 +72,9 @@ public class ViewWord extends AppCompatActivity {
                 button_status[0] = true;
             } else {
                 btn_update.setEnabled(false);
-                edit_kana.setText("Hidden");
-                edit_meaning.setText("Hidden");
-                edit_example.setText("Hidden");
+                edit_kana.setText(getString(R.string.Hidden));
+                edit_meaning.setText(getString(R.string.Hidden));
+                edit_example.setText(getString(R.string.Hidden));
                 edit_kana.setEnabled(false);
                 edit_meaning.setEnabled(false);
                 edit_example.setEnabled(false);
