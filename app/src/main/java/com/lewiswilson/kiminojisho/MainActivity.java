@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -50,13 +51,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
+
         ma=this;
         notificationManager = NotificationManagerCompat.from(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final ListView listView = (ListView) findViewById(R.id.list_jisho);
+        listView.setEmptyView(findViewById(R.id.txt_listempty));
+        FloatingActionButton flbtn_add = (FloatingActionButton) findViewById(R.id.flbtn_add);
         FloatingActionButton flbtn_rand = (FloatingActionButton) findViewById(R.id.flbtn_rand);
         myDB = new DatabaseHelper(this);
 
@@ -65,12 +69,20 @@ public class MainActivity extends AppCompatActivity {
 
         //Checks if database is empty and lists entries if not
         if(data.getCount() == 0){
+            flbtn_rand.setEnabled(false);
             Toast.makeText(MainActivity.this, "The Database is Empty", Toast.LENGTH_SHORT).show();
         }else{
+            flbtn_rand.setEnabled(true);
             while(data.moveToNext()){
                 //ListView Data Layout
-                jishoList.add(data.getString(1) + " ; " + data.getString(2) + " ; " +
-                        data.getString(3));
+                if (data.getString(1).equals(data.getString(2))){
+                    jishoList.add(data.getString(1) + " ; " +
+                            data.getString(3));
+                } else {
+                    jishoList.add(data.getString(1) + " ; " +
+                            data.getString(2) + " ; " +
+                            data.getString(3));
+                }
                 ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, jishoList);
                 listView.setAdapter(listAdapter);
             }
@@ -86,6 +98,12 @@ public class MainActivity extends AppCompatActivity {
             }
     });
 
+        flbtn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AddWord.class));
+            }
+        });
         flbtn_rand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,9 +126,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_add:
-                startActivity(new Intent(MainActivity.this, AddWord.class));
-                return true;
             case R.id.action_alarm:
                 reminderNotification();
                 return true;
@@ -197,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     public void reminderNotification(){
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentText("Kimi No Jisho")
+                .setContentText("KimiNoJisho")
                 .setContentText(myDB.random(1))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)

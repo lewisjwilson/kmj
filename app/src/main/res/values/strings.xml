@@ -2,13 +2,13 @@
     <string name="app_name">KimiNoJisho</string>
     <string name="action_settings">Settings</string>
     <string name="Add_New_Word">Add New Word</string>
-    <string name="Word">Word*:</string>
+    <string name="Kanji">Kanji*:</string>
     <string name="Cancel">Cancel</string>
     <string name="Add">Add</string>
-    <string name="Kana">Kana*:</string>
+    <string name="Kana">Kana/Romaji*:</string>
     <string name="Meaning">Meaning*:</string>
     <string name="Example">Example:</string>
-    <string name="title_activity_main">Kimi No Jisho</string>
+    <string name="title_activity_main">KimiNoJisho</string>
     <string name="Word_Contents">word_contents</string>
     <string name="Delete_Entry">DELETE</string>
     <string name="Update_Entry">Update</string>
@@ -20,7 +20,9 @@
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
     <string name="Search">Search 🔍</string>
-    <string name="AboutDescription">\"Kimi No Jisho\" (Literally \"Your Dictionary\") is a custom Japanese dictionary app. Thought of and developed by Lewis Wilson.</string>
+    <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier. This app has been designed by Lewis Wilson.</string>
     <string name="HideShow">Hide/Show</string>
+    <string name="nothing_in_the_database">It looks like the database is empty. To get started, click the green \"+\" button to create a new dictionary entry!</string>
+    <string name="Toggle_Kanji">Kanji On/Off</string>
     <string name="Hidden">Hidden</string>
 </resources>

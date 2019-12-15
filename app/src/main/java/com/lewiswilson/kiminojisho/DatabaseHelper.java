@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -56,20 +57,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.setVersion(oldVersion);
     }
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
     public void createDatabase() throws IOException {
-        //boolean dbExist = checkDatabase();
-        //if (dbExist) {
-        //} else {
             this.getReadableDatabase();
             try {
                 copyDatabase();
             } catch (IOException e) {
                 throw new Error("Error Importing Database");
             }
-        //}
-
     }
 	
 	//Import DB from Assets folder
@@ -93,9 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if(db != null)
 			db.close();
 		super.close();
-	}	
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
 	
 	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
         db = getWritableDatabase();
@@ -111,21 +103,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteData(String list_selection) {
-        db = getWritableDatabase();
-        StringBuilder sb = new StringBuilder();
-        sb.append("WORD='");
-        sb.append(list_selection);
-        sb.append("'");
-        db.delete(TABLE_NAME, sb.toString(), null);
+        //PreparedStatement (Avoiding SQL Injection & Crash)
+        try {
+            db = getWritableDatabase();
+            db.beginTransaction();
+            String sql = "DELETE FROM jisho_data WHERE WORD = ?";
+            SQLiteStatement statement = db.compileStatement(sql);
+            statement.bindString(1, list_selection);
+            statement.executeUpdateDelete();
+            db.setTransactionSuccessful();
+        } catch (SQLException e) {
+            Log.w("Exception:", e);
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public String readData(String list_selection) {
         db = getReadableDatabase();
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM jisho_data WHERE WORD='");
-        sb.append(list_selection);
-        sb.append("'");
-        Cursor cursor = db.rawQuery(sb.toString(), null);
+        //PreparedStatement (Avoiding SQL Injection)
+        Cursor cursor = db.rawQuery("SELECT * FROM jisho_data WHERE WORD=?", new String[]{list_selection});
         String getWord = "";
         String getKana = "";
         String getMeaning = "";
@@ -137,7 +134,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             getExample = cursor.getString(cursor.getColumnIndex(COL4));
         }
         cursor.close();
-        String str = getWord;
         StringBuilder sb2 = new StringBuilder();
         sb2.append(getWord);
         String str2 = ";";
@@ -187,8 +183,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sb.append(cursor.getString(cursor.getColumnIndex(str)));
             String str2 = " ; ";
             sb.append(str2);
-            sb.append(cursor.getString(cursor.getColumnIndex(COL2)));
-            sb.append(str2);
+
+            //check case where WORD == KANA (in case of 'no kanji' mode)
+            if(!cursor.getString(cursor.getColumnIndex(str)).equals(cursor.getString(cursor.getColumnIndex(COL2)))) {
+                sb.append(cursor.getString(cursor.getColumnIndex(COL2)));
+                sb.append(str2);
+            }
+
             sb.append(cursor.getString(cursor.getColumnIndex(COL3)));
             rand_word = sb.toString();
         }
