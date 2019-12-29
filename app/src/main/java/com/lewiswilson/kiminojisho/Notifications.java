@@ -1,31 +1,52 @@
 package com.lewiswilson.kiminojisho;
 
-import android.app.Application;
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
-public class Notifications extends Application {
 
-    public static final String CHANNEL_1_ID = "daily_reminder";
+public class Notifications extends ContextWrapper {
+    public static final String channelID = "channelID";
+    public static final String channelName = "Channel Name";
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        createNotificationChannels();
-    }
+    private NotificationManager mManager;
 
-    private void createNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel1 = new NotificationChannel(
-                    CHANNEL_1_ID,
-                    "Daily Reminder",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel1.setDescription("Daily Reminder");
-
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel1);
+    public Notifications(Context base) {
+        super(base);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel();
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createChannel() {
+        NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+
+        getManager().createNotificationChannel(channel);
+    }
+
+    public NotificationManager getManager() {
+        if (mManager == null) {
+            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        return mManager;
+    }
+
+    public NotificationCompat.Builder getChannelNotification() {
+        DatabaseHelper myDB;
+        myDB = new DatabaseHelper(this);
+        return new NotificationCompat.Builder(getApplicationContext(), channelID)
+                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
+                .setContentTitle("KimiNoJisho")
+                //.setContentText("Random Word Here")
+                .setContentText(myDB.random(1))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
+    }
+
 }

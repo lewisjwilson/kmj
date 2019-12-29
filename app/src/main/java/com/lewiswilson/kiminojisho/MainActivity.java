@@ -5,16 +5,16 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import java.io.File;
@@ -36,9 +37,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.lewiswilson.kiminojisho.Notifications.CHANNEL_1_ID;
+import static com.lewiswilson.kiminojisho.Notifications.channelID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final int REQUEST_CODE = 10;
     private NotificationManagerCompat notificationManager;
@@ -127,7 +128,9 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_alarm:
-                reminderNotification();
+                //notificationDisplay();
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "time picker");
                 return true;
             case R.id.action_import:
                 AlertDialog diaBox = importWarning();
@@ -209,10 +212,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void reminderNotification(){
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+    public void notificationDisplay(){
+        Notification notification = new NotificationCompat.Builder(this, channelID)
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentText("KimiNoJisho")
+                .setContentTitle("KimiNoJisho")
                 .setContentText(myDB.random(1))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
@@ -246,5 +249,23 @@ public class MainActivity extends AppCompatActivity {
                 importDatabase();
             }
         }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+
+        startAlarm(c);
+    }
+
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
     }
 }
