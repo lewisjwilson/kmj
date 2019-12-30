@@ -3,19 +3,18 @@ package com.lewiswilson.kiminojisho;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.net.Uri;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import java.io.File;
@@ -36,12 +36,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.lewiswilson.kiminojisho.Notifications.CHANNEL_1_ID;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final int REQUEST_CODE = 10;
-    private NotificationManagerCompat notificationManager;
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
     public static Uri fileUri;
     DatabaseHelper myDB;
@@ -53,15 +50,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.content_main);
 
         ma=this;
-        notificationManager = NotificationManagerCompat.from(this);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ListView listView = (ListView) findViewById(R.id.list_jisho);
+        final ListView listView = findViewById(R.id.list_jisho);
         listView.setEmptyView(findViewById(R.id.txt_listempty));
-        FloatingActionButton flbtn_add = (FloatingActionButton) findViewById(R.id.flbtn_add);
-        FloatingActionButton flbtn_rand = (FloatingActionButton) findViewById(R.id.flbtn_rand);
+        FloatingActionButton flbtn_add = findViewById(R.id.flbtn_add);
+        FloatingActionButton flbtn_rand = findViewById(R.id.flbtn_rand);
         myDB = new DatabaseHelper(this);
 
         ArrayList<String> jishoList = new ArrayList<>();
@@ -124,10 +121,9 @@ public class MainActivity extends AppCompatActivity {
     //Toolbar Menu Option Activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_alarm:
-                reminderNotification();
+                notificationSetter();
                 return true;
             case R.id.action_import:
                 AlertDialog diaBox = importWarning();
@@ -209,28 +205,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void reminderNotification(){
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentText("KimiNoJisho")
-                .setContentText(myDB.random(1))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .build();
+    public void notificationSetter(){
+        Toast.makeText(MainActivity.this, "Select a time for daily notifications to appear", Toast.LENGTH_LONG).show();
+        DialogFragment timePicker = new TimePickerFragment();
+        timePicker.show(getSupportFragmentManager(), "time picker");
+    }
 
-        notificationManager.notify(1, notification);
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+        startAlarm(c);
+    }
+
+    private void startAlarm(Calendar c) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Toast.makeText(MainActivity.this, "Daily notifications set", Toast.LENGTH_LONG).show();
+    }
+
+    private void cancelAlarm(Calendar c){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(MainActivity.this, "Daily notifications stopped", Toast.LENGTH_LONG).show();
     }
 
     //Request Permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    Toast.makeText(MainActivity.this, "Permission denied to read External storage", Toast.LENGTH_SHORT).show();
-                }
+        if (requestCode == 1) {
+            if(!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(MainActivity.this, "Permission denied to read External storage", Toast.LENGTH_SHORT).show();
             }
         }
     }
