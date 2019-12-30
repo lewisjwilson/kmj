@@ -43,7 +43,6 @@ public class Notifications extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
                 .setContentTitle("KimiNoJisho")
-                //.setContentText("Random Word Here")
                 .setContentText(myDB.random(1))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE);
