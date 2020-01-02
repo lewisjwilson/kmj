@@ -42,7 +42,7 @@ public class Notifications extends ContextWrapper {
         myDB = new DatabaseHelper(this);
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentTitle("KimiNoJisho")
+                .setContentTitle("Word of the Day")
                 .setContentText(myDB.random(1))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE);

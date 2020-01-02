@@ -14,6 +14,10 @@
         android:title="@string/ActionExport"
         app:showAsAction="never"></item>
     <item
+        android:id="@+id/action_help"
+        android:title="@string/ActionHelp"
+        app:showAsAction="never"></item>
+    <item
         android:id="@+id/action_about"
         android:title="@string/ActionAbout"
         app:showAsAction="never"></item>

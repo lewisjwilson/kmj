@@ -15,7 +15,7 @@
     <string name="View_Edit">View/Edit</string>
     <string name="ActionAdd">Add</string>
     <string name="ActionExport">Export</string>
-    <string name="ActionAlarm">Notifications</string>
+    <string name="ActionAlarm">Notifications On/Off</string>
     <string name="ActionImport">Import</string>
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
@@ -25,4 +25,5 @@
     <string name="nothing_in_the_database">It looks like the database is empty. To get started, click the green \"+\" button to create a new dictionary entry!</string>
     <string name="Toggle_Kanji">Kanji On/Off</string>
     <string name="Hidden">Hidden</string>
+    <string name="ActionHelp">Help</string>
 </resources>

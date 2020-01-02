@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +38,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import me.toptas.fancyshowcase.FancyShowCaseQueue;
+import me.toptas.fancyshowcase.FancyShowCaseView;
+
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final int REQUEST_CODE = 10;
@@ -43,14 +48,21 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public static Uri fileUri;
     DatabaseHelper myDB;
     public static Activity ma;
+    final String PREFS_NAME = "MyPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-
         ma=this;
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        //Check if it is a first time launch
+        if (prefs.getBoolean("first_launch", true)) {
+            firstLaunch();
+            prefs.edit().putBoolean("first_launch", false).apply();
+            prefs.edit().putBoolean("notifications_on", false).apply();
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -110,6 +122,41 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         });
     }
 
+    private void firstLaunch() {
+        final FancyShowCaseView fscv1 = new FancyShowCaseView.Builder(this)
+                .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build();
+
+        final FancyShowCaseView fscv2 = new FancyShowCaseView.Builder(this)
+                .title("This is the main screen. This shows you dictionary entries.")
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build();
+
+        final FancyShowCaseView fscv3= new FancyShowCaseView.Builder(this)
+                .title("To create your first dictionary entry, use this button.")
+                .focusOn(findViewById(R.id.flbtn_add))
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build();
+
+        final FancyShowCaseView fscv4= new FancyShowCaseView.Builder(this)
+                .title("To test yourself, let the app choose a random word from your dictionary!")
+                .focusOn(findViewById(R.id.flbtn_rand))
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build();
+
+        FancyShowCaseQueue fscvQueue = new FancyShowCaseQueue()
+                .add(fscv1)
+                .add(fscv2)
+                .add(fscv3)
+                .add(fscv4);
+
+        fscvQueue.show();
+    }
     // Menu icons are inflated just as they were with actionbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 return true;
             case R.id.action_export:
                 exportDatabase();
+                return true;
+            case R.id.action_help:
+                firstLaunch();
                 return true;
             case R.id.action_about:
                 startActivity(new Intent(MainActivity.this, About.class));
@@ -206,9 +256,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
     public void notificationSetter(){
-        Toast.makeText(MainActivity.this, "Select a time for daily notifications to appear", Toast.LENGTH_LONG).show();
-        DialogFragment timePicker = new TimePickerFragment();
-        timePicker.show(getSupportFragmentManager(), "time picker");
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        if (prefs.getBoolean("notifications_on", true)) {
+            cancelAlarm();
+        } else {
+            Toast.makeText(MainActivity.this, "Select a time for daily notifications to appear", Toast.LENGTH_LONG).show();
+            DialogFragment timePicker = new TimePickerFragment();
+            timePicker.show(getSupportFragmentManager(), "time picker");
+        }
     }
 
     @Override
@@ -225,14 +280,19 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().putBoolean("notifications_on", true).apply();
         Toast.makeText(MainActivity.this, "Daily notifications set", Toast.LENGTH_LONG).show();
+
     }
 
-    private void cancelAlarm(Calendar c){
+    private void cancelAlarm(){
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.cancel(pendingIntent);
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().putBoolean("notifications_on", false).apply();
         Toast.makeText(MainActivity.this, "Daily notifications stopped", Toast.LENGTH_LONG).show();
     }
 
