@@ -15,7 +15,7 @@
     <string name="View_Edit">View/Edit</string>
     <string name="ActionAdd">Add</string>
     <string name="ActionExport">Export</string>
-    <string name="ActionAlarm">Notifications</string>
+    <string name="ActionAlarm">Notifications On/Off</string>
     <string name="ActionImport">Import</string>
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
