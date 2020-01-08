@@ -8,12 +8,14 @@ KimiNoJisho provides a slick and simple interface for adding new words to the di
 Features include:
 
 - A simple UI
+- Working with Kanji and Hiragana/Katakana or just romaji, for your studying needs
 - Never losing your data: import and export your data as and when you need to
 - A 'Random Word' button for aiding word memorisation
 - The Hide/Show button for testing your memory
+- Daily Notifications
+- An in-app tutorial to get you started!
 
 
 Upcoming Features:
 
-- Daily Notifications
 - Search Function
