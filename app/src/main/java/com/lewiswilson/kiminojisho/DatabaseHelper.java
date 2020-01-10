@@ -31,8 +31,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 3);
         this.myContext = context;
-        this.DATABASE_PATH = context.getFilesDir().getPath();
-        Log.e("Path 1", DATABASE_PATH);
+        this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
+        Log.e("Database Path:", DATABASE_PATH);
     }
 
     public void onCreate(SQLiteDatabase db) {
