@@ -8,15 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String COL0 = "ID";
+class DatabaseHelper extends SQLiteOpenHelper {
+    //COL0 = "ID";
     private static final String COL1 = "WORD";
     private static final String COL2 = "KANA";
     private static final String COL3 = "MEANING";
@@ -27,12 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final Context myContext;
     private SQLiteDatabase db;
 
-    String DATABASE_PATH = null;
+    private final String DATABASE_PATH;
 
-    public DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 3);
         this.myContext = context;
-        this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
+        this.DATABASE_PATH = context.getFilesDir().getPath();
         Log.e("Path 1", DATABASE_PATH);
     }
 
@@ -57,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.setVersion(oldVersion);
     }
 
-    public void createDatabase() throws IOException {
+    void createDatabase() {
             this.getReadableDatabase();
             try {
                 copyDatabase();
@@ -67,13 +66,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 	
 	//Import DB from Assets folder
-	public void copyDatabase() throws IOException {
+    private void copyDatabase() throws IOException {
 		InputStream myInput = myContext.getContentResolver().openInputStream(MainActivity.fileUri);//myContext.getAssets().open("kiminojisho.db");
 		String outFileName = DATABASE_PATH + DATABASE_NAME;
 		OutputStream myOutput = new FileOutputStream(outFileName);
 		byte[] buffer = new byte[10];
 		int length;
-		while ((length = myInput.read(buffer)) > 0) {
+        assert myInput != null;
+        while ((length = myInput.read(buffer)) > 0) {
 			myOutput.write(buffer, 0 , length);
 		}
 		myOutput.flush();
@@ -88,21 +88,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.close();
 		super.close();
 	}
-	
-	public void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
+
+    void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
         contentValues.put(COL3, new_meaning);
         contentValues.put(COL4, new_example);
-        StringBuilder sb = new StringBuilder();
-        sb.append("WORD='");
-        sb.append(list_selection);
-        sb.append("'");
-        db.update(TABLE_NAME, contentValues, sb.toString(), null);
+        String sb = "WORD='" +
+                list_selection +
+                "'";
+        db.update(TABLE_NAME, contentValues, sb, null);
     }
 
-    public void deleteData(String list_selection) {
+    void deleteData(String list_selection) {
         //PreparedStatement (Avoiding SQL Injection & Crash)
         try {
             db = getWritableDatabase();
@@ -119,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String readData(String list_selection) {
+    String readData(String list_selection) {
         db = getReadableDatabase();
         //PreparedStatement (Avoiding SQL Injection)
         Cursor cursor = db.rawQuery("SELECT * FROM jisho_data WHERE WORD=?", new String[]{list_selection});
@@ -134,43 +133,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             getExample = cursor.getString(cursor.getColumnIndex(COL4));
         }
         cursor.close();
-        StringBuilder sb2 = new StringBuilder();
-        sb2.append(getWord);
         String str2 = ";";
-        sb2.append(str2);
-        sb2.append(getKana);
-        sb2.append(str2);
-        sb2.append(getMeaning);
-        sb2.append(str2);
-        sb2.append(getExample);
-        return sb2.toString();
+        return getWord +
+                str2 +
+                getKana +
+                str2 +
+                getMeaning +
+                str2 +
+                getExample;
     }
 
-    public boolean addData(String word, String kana, String meaning, String example) {
+    boolean addData(String word, String kana, String meaning, String example) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);
         contentValues.put(COL2, kana);
         contentValues.put(COL3, meaning);
         contentValues.put(COL4, example);
-        StringBuilder sb = new StringBuilder();
-        sb.append("addData: Adding ");
-        sb.append(word);
-        sb.append(" to ");
         String str = TABLE_NAME;
-        sb.append(str);
-        Log.d(TAG, sb.toString());
-        if (db.insert(str, null, contentValues) == -1) {
-            return false;
-        }
-        return true;
+        String sb = "addData: Adding " +
+                word +
+                " to " +
+                str;
+        Log.d(TAG, sb);
+        return db.insert(str, null, contentValues) != -1;
     }
 
-    public Cursor getListContents() {
+    Cursor getListContents() {
         return getWritableDatabase().rawQuery("SELECT * FROM jisho_data ORDER BY MEANING ASC", null);
     }
 
-    public String random(int flag) {
+    String random(int flag) {
         String rand_word = "";
         Cursor cursor = getReadableDatabase().rawQuery("SELECT WORD, KANA, MEANING FROM jisho_data WHERE ID IN (SELECT ID FROM jisho_data ORDER BY RANDOM() LIMIT 1)", null);
         String str = COL1;
