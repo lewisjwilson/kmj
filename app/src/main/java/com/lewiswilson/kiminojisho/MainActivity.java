@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-        ma=this;
+        ma = this;
 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         //Check if it is a first time launch
@@ -77,14 +77,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         Cursor data = myDB.getListContents();
 
         //Checks if database is empty and lists entries if not
-        if(data.getCount() == 0){
+        if (data.getCount() == 0) {
             flbtn_rand.setEnabled(false);
-            Toast.makeText(MainActivity.this, "The Database is Empty", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             flbtn_rand.setEnabled(true);
-            while(data.moveToNext()){
+            while (data.moveToNext()) {
                 //ListView Data Layout
-                if (data.getString(1).equals(data.getString(2))){
+                if (data.getString(1).equals(data.getString(2))) {
                     jishoList.add(data.getString(1) + " ; " +
                             data.getString(3));
                 } else {
@@ -124,14 +123,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
                 .build();
 
-        final FancyShowCaseView fscv3= new FancyShowCaseView.Builder(this)
+        final FancyShowCaseView fscv3 = new FancyShowCaseView.Builder(this)
                 .title("To create your first dictionary entry, use this button.")
                 .focusOn(findViewById(R.id.flbtn_add))
                 .backgroundColor(Color.parseColor("#DD008577"))
                 .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
                 .build();
 
-        final FancyShowCaseView fscv4= new FancyShowCaseView.Builder(this)
+        final FancyShowCaseView fscv4 = new FancyShowCaseView.Builder(this)
                 .title("To test yourself, let the app choose a random word from your dictionary!")
                 .focusOn(findViewById(R.id.flbtn_rand))
                 .backgroundColor(Color.parseColor("#DD008577"))
@@ -146,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         fscvQueue.show();
     }
+
     // Menu icons are inflated just as they were with actionbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
     }
 
-    private AlertDialog importWarning()
-    {
+    private AlertDialog importWarning() {
         return new AlertDialog.Builder(this)
                 .setTitle("Import")
                 .setMessage("Select your previously exported 'kiminojisho.db' file. " +
@@ -198,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     private void importDatabase() {
         try {
             myDB.createDatabase();
-            Toast.makeText(this, "Import Successful", Toast.LENGTH_SHORT).show();
             finish();
             startActivity(getIntent());
         } catch (Exception e) {
@@ -232,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             fileIntent.putExtra(Intent.EXTRA_STREAM, path);
             startActivity(Intent.createChooser(fileIntent, "Export Database"));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -268,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     }
 
-    private void cancelAlarm(){
+    private void cancelAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
@@ -282,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == 1) {
-            if(!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(MainActivity.this, "Permission denied to read External storage", Toast.LENGTH_SHORT).show();
             }
         }
@@ -292,8 +290,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            if(data!=null){
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
                 fileUri = data.getData();
 
                 importDatabase();
