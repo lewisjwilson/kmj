@@ -6,12 +6,13 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 
-public class Notifications extends ContextWrapper {
-    public static final String channelID = "channelID";
-    public static final String channelName = "Channel Name";
+class Notifications extends ContextWrapper {
+    private static final String channelID = "channelID";
+    private static final String channelName = "Channel Name";
 
     private NotificationManager mManager;
 

@@ -2,39 +2,39 @@ package com.lewiswilson.kiminojisho;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     private static final int REQUEST_CODE = 10;
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
     public static Uri fileUri;
-    DatabaseHelper myDB;
-    public static Activity ma;
-    final String PREFS_NAME = "MyPrefs";
+    public static AppCompatActivity ma;
+    private final String PREFS_NAME = "MyPrefs";
+    private DatabaseHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,28 +97,17 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             }
         }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Get "Word" value from listview for using to select db record
-                list_selection = (String) listView.getItemAtPosition(position);
-                list_selection = list_selection.split(" ;")[0];
-                startActivity(new Intent(MainActivity.this, ViewWord.class));
-            }
-    });
-
-        flbtn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddWord.class));
-            }
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            //Get "Word" value from listview for using to select db record
+            list_selection = (String) listView.getItemAtPosition(position);
+            list_selection = list_selection.split(" ;")[0];
+            startActivity(new Intent(MainActivity.this, ViewWord.class));
         });
-        flbtn_rand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list_selection = myDB.random(0);
-                startActivity(new Intent(MainActivity.this, ViewWord.class));
-            }
+
+        flbtn_add.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AddWord.class)));
+        flbtn_rand.setOnClickListener(v -> {
+            list_selection = myDB.random(0);
+            startActivity(new Intent(MainActivity.this, ViewWord.class));
         });
     }
 
@@ -126,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         final FancyShowCaseView fscv1 = new FancyShowCaseView.Builder(this)
                 .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
                 .backgroundColor(Color.parseColor("#DD008577"))
-                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .titleStyle(R.style.HelpScreenTitle, Gravity.TOP | Gravity.CENTER)
                 .build();
 
         final FancyShowCaseView fscv2 = new FancyShowCaseView.Builder(this)
@@ -196,35 +185,28 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 .setTitle("Import")
                 .setMessage("Select your previously exported 'kiminojisho.db' file. " +
                         "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
-                .setPositiveButton("Import", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.setType("*/*");
-                        startActivityForResult(intent, REQUEST_CODE);
-                    }
+                .setPositiveButton("Import", (dialog, whichButton) -> {
+                    dialog.dismiss();
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, REQUEST_CODE);
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .create();
     }
 
-    public void importDatabase() {
+    private void importDatabase() {
         try {
             myDB.createDatabase();
             Toast.makeText(this, "Import Successful", Toast.LENGTH_SHORT).show();
             finish();
             startActivity(getIntent());
-        } catch (IOException e) {
-            throw new Error("Unable to create Database");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void exportDatabase(){
+    private void exportDatabase() {
         try {
             String fileToWrite = this.getDatabasePath("kiminojisho.db").toString();
 
@@ -255,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
     }
 
-    public void notificationSetter(){
+    private void notificationSetter() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.getBoolean("notifications_on", true)) {
             cancelAlarm();
@@ -298,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     //Request Permissions
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == 1) {
             if(!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(MainActivity.this, "Permission denied to read External storage", Toast.LENGTH_SHORT).show();

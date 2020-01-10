@@ -4,21 +4,21 @@
     <item
         android:id="@+id/action_alarm"
         android:title="@string/ActionAlarm"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
     <item
-    android:id="@+id/action_import"
-    android:title="@string/ActionImport"
-    app:showAsAction="never"></item>
+        android:id="@+id/action_import"
+        android:title="@string/ActionImport"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_export"
         android:title="@string/ActionExport"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_help"
         android:title="@string/ActionHelp"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_about"
         android:title="@string/ActionAbout"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
 </menu>
