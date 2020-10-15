@@ -13,10 +13,10 @@
         android:layout_width="98dp"
         android:layout_height="101dp"
         android:background="#009688"
+        android:contentDescription="@string/app_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/app_icon"
-        app:srcCompat="@drawable/splash_screen_logo" />
+        app:srcCompat="@mipmap/ic_launcher" />
 </androidx.constraintlayout.widget.ConstraintLayout>
