@@ -2,6 +2,8 @@ package com.lewiswilson.kiminojisho.JSON;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface JishoAPI {
 
@@ -16,7 +18,7 @@ public interface JishoAPI {
      * you change the return type appropriately
      **/
 
-    @GET("words?keyword=\"japan\"")
-    Call<JishoData> getData();
+    @GET("words")
+    Call<JishoData> getData(@Query("keyword") String searchword);
 
 }
