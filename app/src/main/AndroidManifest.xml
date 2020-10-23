@@ -38,7 +38,11 @@
             android:label="@string/Add_New_Word"
             android:theme="@style/AppTheme.Transparency"
             android:windowSoftInputMode="adjustResize" />
-
+        <activity
+            android:name=".SearchPage"
+            android:label="Search"
+            android:theme="@style/AppTheme.Transparency"
+            android:windowSoftInputMode="adjustResize" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.lewiswilson.kiminojisho.fileprovider"

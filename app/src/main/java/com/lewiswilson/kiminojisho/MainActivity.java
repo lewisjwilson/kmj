@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
         ma = this;
+
 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         //Check if it is a first time launch
@@ -158,6 +160,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_search:
+                startActivity(new Intent(MainActivity.this, SearchPage.class));
+                return true;
             case R.id.action_alarm:
                 notificationSetter();
                 return true;

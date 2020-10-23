@@ -15,7 +15,7 @@
     <string name="ActionImport">Import</string>
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
-    <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier. This app has been designed by Lewis Wilson.</string>
+    <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier.</string>
     <string name="HideShow">Hide/Show</string>
     <string name="nothing_in_the_database">It looks like the database is empty. To get started, click the green \"+\" button to create a new dictionary entry!</string>
     <string name="Toggle_Kanji">Kanji On/Off</string>
