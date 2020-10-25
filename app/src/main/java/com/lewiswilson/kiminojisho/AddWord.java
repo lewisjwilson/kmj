@@ -26,12 +26,6 @@ public class AddWord extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_word);
 
-        MobileAds.initialize(this, "ca-app-pub-4081680103127041~6469492620");
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-
         this.myDB = new DatabaseHelper(this);
 
         final Button btn_toggleKanji = findViewById(R.id.btn_togglekanji);

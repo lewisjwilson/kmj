@@ -12,6 +12,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+
     <style name="HelpScreenTitle" parent="@android:style/Widget.TextView">
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">#FFFFFF</item>

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
     //COL0 = "ID";
     private static final String COL1 = "WORD";
     private static final String COL2 = "KANA";
@@ -143,7 +143,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
                 getExample;
     }
 
-    boolean addData(String word, String kana, String meaning, String example) {
+    public boolean addData(String word, String kana, String meaning, String example) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);

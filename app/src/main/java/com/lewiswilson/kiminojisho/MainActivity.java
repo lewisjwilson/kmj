@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             startActivity(new Intent(MainActivity.this, ViewWord.class));
         });
 
-        flbtn_add.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AddWord.class)));
+        flbtn_add.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchPage.class)));
         flbtn_rand.setOnClickListener(v -> {
             list_selection = myDB.random(0);
             startActivity(new Intent(MainActivity.this, ViewWord.class));

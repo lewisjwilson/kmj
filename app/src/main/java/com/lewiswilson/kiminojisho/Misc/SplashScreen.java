@@ -1,10 +1,13 @@
-package com.lewiswilson.kiminojisho;
+package com.lewiswilson.kiminojisho.Misc;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.lewiswilson.kiminojisho.MainActivity;
+import com.lewiswilson.kiminojisho.R;
 
 public class SplashScreen extends AppCompatActivity {
 

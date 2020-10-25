@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lewiswilson.kiminojisho.JSON.Datum;
 import com.lewiswilson.kiminojisho.JSON.Japanese;
 import com.lewiswilson.kiminojisho.JSON.JishoAPI;
 import com.lewiswilson.kiminojisho.JSON.JishoData;
 import com.lewiswilson.kiminojisho.JSON.RetrofitClient;
 import com.lewiswilson.kiminojisho.JSON.Sense;
+import com.lewiswilson.kiminojisho.Misc.TextDrawable;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem;
 
@@ -32,11 +35,16 @@ public class SearchPage extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private SearchDataAdapter mSearchDataAdapter;
     private ArrayList<SearchDataItem> mSearchList;
+    private DatabaseHelper myDB;
+    public static AppCompatActivity sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_page);
+        sp = this;
+
+        myDB = new DatabaseHelper(this);
 
         //initiate recyclerview and set parameters
         mRecyclerView = findViewById(R.id.rv_searchdata);
@@ -47,10 +55,16 @@ public class SearchPage extends AppCompatActivity{
 
         final EditText et_searchfield = findViewById(R.id.et_searchfield);
         final Button search_button = findViewById(R.id.search_button);
+        final FloatingActionButton fab_manual = findViewById(R.id.fab_manualentry);
 
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //if the search adapter has data in it already, clear the recyclerview
+                if(mSearchDataAdapter!=null){
+                    clearData();
+                }
 
                 String searchtext = et_searchfield.getText().toString();
 
@@ -64,18 +78,13 @@ public class SearchPage extends AppCompatActivity{
                         //At this point we got our word list
                         List<Datum> data = response.body().getData();
 
+                        //try to retrieve data from jishoAPI
                         try {
-                            //get first japanese word in list and first word and reading
-                            List<Japanese> japanese = data.get(0).getJapanese();
-                            String kanji = japanese.get(0).getWord();
-                            String kana = japanese.get(0).getReading();
 
-                            //get first english definition
-                            //List<Sense> sense = data.get(0).getSenses();
-                            //String english = sense.get(0).getEnglishDefinitions().get(0);
+                            List<Japanese> japanese;
+                            String kanji, kana;
 
                             for(int i=0; i<data.size(); i++){
-
                                 japanese = data.get(i).getJapanese();
 
                                 for(int j=0; j<japanese.size(); j++){
@@ -84,10 +93,11 @@ public class SearchPage extends AppCompatActivity{
 
                                     //get english definitions
                                     List<Sense> sense = data.get(j).getSenses();
-
+                                    int noOfDefinitions = sense.get(0).getEnglishDefinitions().size();
                                     String english = sense.get(0).getEnglishDefinitions().get(0);
 
-                                    if(sense.get(0).getEnglishDefinitions().size()>1){
+                                    //If there is more than one definition, also display the second definition
+                                    if(noOfDefinitions>1){
                                         english = english + " ; " + sense.get(0).getEnglishDefinitions().get(1);
                                     }
 
@@ -100,13 +110,12 @@ public class SearchPage extends AppCompatActivity{
                                 }
                             }
 
-
-                            mSearchDataAdapter = new SearchDataAdapter(SearchPage.this, mSearchList);
+                            mSearchDataAdapter = new SearchDataAdapter(SearchPage.this, mSearchList, myDB);
                             mRecyclerView.setAdapter(mSearchDataAdapter);
 
                         } catch(Exception e){
                             Log.d("", "Data Retrieval Error: " + e.getMessage());
-                            Toast.makeText(getApplicationContext(), "Data could not be retrieved: " + e.getMessage() , Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Check your Internet connection" , Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -122,5 +131,17 @@ public class SearchPage extends AppCompatActivity{
             }
         });
 
+        fab_manual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SearchPage.this, AddWord.class));
+            }
+        });
+
+    }
+
+    public void clearData() {
+        mSearchList.clear(); // clear list
+        mSearchDataAdapter.notifyDataSetChanged(); // let your adapter know about the changes and reload view.
     }
 }
