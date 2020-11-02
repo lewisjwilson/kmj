@@ -98,7 +98,7 @@ public class SearchPage extends AppCompatActivity{
 
                                     //If there is more than one definition, also display the second definition
                                     if(noOfDefinitions>1){
-                                        english = english + " ; " + sense.get(0).getEnglishDefinitions().get(1);
+                                        english = english + ", " + sense.get(0).getEnglishDefinitions().get(1);
                                     }
 
                                     //if the result has no associated kanji

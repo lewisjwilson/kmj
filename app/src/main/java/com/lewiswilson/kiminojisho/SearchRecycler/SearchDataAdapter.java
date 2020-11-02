@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lewiswilson.kiminojisho.DatabaseHelper;
 import com.lewiswilson.kiminojisho.MainActivity;
 import com.lewiswilson.kiminojisho.R;
-import com.lewiswilson.kiminojisho.SearchPage;
 
 import java.util.ArrayList;
 

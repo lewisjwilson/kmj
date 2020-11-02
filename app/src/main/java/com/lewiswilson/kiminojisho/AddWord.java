@@ -54,10 +54,10 @@ public class AddWord extends AppCompatActivity {
         btn_toggleKanji.setOnClickListener(toggle);
 
         OnClickListener add = v -> {
-            String newEntryWord = wordEdit.getText().toString().trim();
-            String newEntryKana = kanaEdit.getText().toString().trim();
-            String newEntryMeaning = meaningEdit.getText().toString().trim();
-            String newEntryExample = exampleEdit.getText().toString().trim();
+            String newEntryWord = RemoveSemicolon(wordEdit.getText().toString().trim());
+            String newEntryKana = RemoveSemicolon(kanaEdit.getText().toString().trim());
+            String newEntryMeaning = RemoveSemicolon(meaningEdit.getText().toString().trim());
+            String newEntryExample = RemoveSemicolon(exampleEdit.getText().toString().trim());
 
             if (ToggleKanji) {
                 if (newEntryWord.length() == 0 || newEntryKana.length() == 0 || newEntryMeaning.length() == 0) {
@@ -86,6 +86,14 @@ public class AddWord extends AppCompatActivity {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String RemoveSemicolon(String input){
+        if(input.contains(";")){
+            return input.replace(";", ",");
+        } else {
+            return input;
         }
     }
 }
