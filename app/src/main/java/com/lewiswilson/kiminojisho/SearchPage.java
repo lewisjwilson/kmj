@@ -88,7 +88,7 @@ public class SearchPage extends AppCompatActivity{
                         try {
 
                             List<Japanese> japanese;
-                            String kanji, kana;
+                            String kanji = null, kana = null, english;
 
                             for(int i=0; i<data.size(); i++){
                                 japanese = data.get(i).getJapanese();
@@ -96,24 +96,25 @@ public class SearchPage extends AppCompatActivity{
                                 for(int j=0; j<japanese.size(); j++){
                                     kanji = japanese.get(j).getWord();
                                     kana = japanese.get(j).getReading();
-
-                                    //get english definitions
-                                    List<Sense> sense = data.get(j).getSenses();
-                                    int noOfDefinitions = sense.get(0).getEnglishDefinitions().size();
-                                    String english = sense.get(0).getEnglishDefinitions().get(0);
-
-                                    //If there is more than one definition, also display the second definition
-                                    if(noOfDefinitions>1){
-                                        english = english + ", " + sense.get(0).getEnglishDefinitions().get(1);
-                                    }
-
+                                    
                                     //if the result has no associated kanji
                                     if(kanji == null){
                                         kanji = kana;
                                     }
 
-                                    mSearchList.add(new SearchDataItem(kanji, kana, english));
+
                                 }
+                                
+                                //get english definitions
+                                List<Sense> sense = data.get(i).getSenses();
+                                int noOfDefinitions = sense.get(0).getEnglishDefinitions().size();
+                                english = sense.get(0).getEnglishDefinitions().get(0);
+
+                                //If there is more than one definition, also display the second definition
+                                if(noOfDefinitions>1){
+                                    english = english + ", " + sense.get(0).getEnglishDefinitions().get(1);
+                                }
+                                mSearchList.add(new SearchDataItem(kanji, kana, english));
                             }
 
                             mSearchDataAdapter = new SearchDataAdapter(SearchPage.this, mSearchList, myDB);
