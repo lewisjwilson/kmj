@@ -1,12 +1,12 @@
 package com.lewiswilson.kiminojisho;
 
 import android.content.Intent;
+import android.icu.lang.UCharacter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,16 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lewiswilson.kiminojisho.JSON.Datum;
 import com.lewiswilson.kiminojisho.JSON.Japanese;
-import com.lewiswilson.kiminojisho.JSON.JishoAPI;
 import com.lewiswilson.kiminojisho.JSON.JishoData;
 import com.lewiswilson.kiminojisho.JSON.RetrofitClient;
 import com.lewiswilson.kiminojisho.JSON.Sense;
-import com.lewiswilson.kiminojisho.Misc.TextDrawable;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +55,7 @@ public class SearchPage extends AppCompatActivity{
 
         final EditText et_searchfield = findViewById(R.id.et_searchfield);
         final Button search_button = findViewById(R.id.search_button);
-        final FloatingActionButton fab_manual = findViewById(R.id.fab_manualentry);
+        final Button btn_manual = findViewById(R.id.btn_manual);
 
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,9 +67,15 @@ public class SearchPage extends AppCompatActivity{
                 }
 
                 String searchtext = et_searchfield.getText().toString();
+                Call<JishoData> call;
 
-                //use searchtext to query API (using API interface)
-                Call<JishoData> call = RetrofitClient.getInstance().getMyApi().getData("\"" + searchtext + "\"");
+                //if the seatchtext contains any japanese...
+                if(containsJapanese(searchtext)){
+                    call = RetrofitClient.getInstance().getMyApi().getData(searchtext);
+                } else {
+                    //use searchtext to query API (using API interface)
+                    call = RetrofitClient.getInstance().getMyApi().getData("\"" + searchtext + "\"");
+                }
 
                 call.enqueue(new Callback<JishoData>() {
                     @Override
@@ -115,7 +121,7 @@ public class SearchPage extends AppCompatActivity{
 
                         } catch(Exception e){
                             Log.d("", "Data Retrieval Error: " + e.getMessage());
-                            Toast.makeText(getApplicationContext(), "Check your Internet connection" , Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "No data found" , Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -131,13 +137,29 @@ public class SearchPage extends AppCompatActivity{
             }
         });
 
-        fab_manual.setOnClickListener(new View.OnClickListener() {
+        btn_manual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SearchPage.this, AddWord.class));
             }
         });
 
+    }
+
+    private boolean containsJapanese(String input){
+        Set<UCharacter.UnicodeBlock> japaneseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
+            add(UCharacter.UnicodeBlock.HIRAGANA);
+            add(UCharacter.UnicodeBlock.KATAKANA);
+            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
+        }};
+
+        //for each character in string, if a japanese character occurs at all, return true
+        for (char c: input.toCharArray()){
+            if(japaneseUnicodeBlocks.contains(UCharacter.UnicodeBlock.of(c))){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void clearData() {

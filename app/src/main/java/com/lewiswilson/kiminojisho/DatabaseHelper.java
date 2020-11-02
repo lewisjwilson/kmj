@@ -160,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     Cursor getListContents() {
-        return getWritableDatabase().rawQuery("SELECT * FROM jisho_data ORDER BY MEANING ASC", null);
+        return getWritableDatabase().rawQuery("SELECT * FROM jisho_data ORDER BY MEANING COLLATE NOCASE ASC", null);
     }
 
     String random(int flag) {
