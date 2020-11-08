@@ -78,7 +78,7 @@
             <EditText
                 android:id="@+id/edit_meaning"
                 android:layout_width="350dp"
-                android:layout_height="68dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -98,7 +98,27 @@
             <EditText
                 android:id="@+id/edit_example"
                 android:layout_width="350dp"
-                android:layout_height="68dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="@string/optional"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:id="@+id/txt_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:text="Notes:" />
+
+            <EditText
+                android:id="@+id/edit_notes"
+                android:layout_width="350dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"

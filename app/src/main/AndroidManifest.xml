@@ -29,7 +29,8 @@
         <receiver android:name=".ReminderBroadcast"/>
         <activity
             android:name=".ViewWord"
-            android:label="@string/View_Edit" />
+            android:label="@string/View_Edit"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".About"
             android:label="@string/About" />

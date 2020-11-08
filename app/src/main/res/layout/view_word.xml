@@ -7,6 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".ViewWord">
 
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="125dp"
+        android:layout_height="44dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:text="@string/Delete_Entry"
+        android:textColor="@android:color/white"
+        android:textColorHighlight="@android:color/holo_red_light"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -70,11 +85,11 @@
 
             <EditText
                 android:id="@+id/edit_meaning"
-                android:hint="@string/blank"
                 android:layout_width="349dp"
-                android:layout_height="68dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:ems="10"
+                android:hint="@string/blank"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine" />
 
@@ -88,12 +103,31 @@
 
             <EditText
                 android:id="@+id/edit_example"
-                android:hint="@string/blank"
                 android:layout_width="349dp"
-                android:layout_height="68dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:ems="10"
+                android:hint="@string/blank"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:id="@+id/txt_notes"
+                android:layout_width="349dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Notes:" />
+
+            <EditText
+                android:id="@+id/edit_notes"
+                android:layout_width="349dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="@string/blank"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine" />
 
@@ -102,75 +136,38 @@
                 android:layout_width="211dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/Update_Entry"
-                android:textSize="16sp" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom">
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="12dp"
-                    app:adSize="BANNER"
-                    app:adUnitId="ca-app-pub-4081680103127041/8132181204"
-                    app:layout_constraintBottom_toTopOf="@+id/btn_hideshow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.493"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.994" />
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/flbtn_rand"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:foreground="@drawable/ic_dice_ico"
-                    android:foregroundGravity="fill"
-                    android:foregroundTint="@android:color/background_light"
-                    app:backgroundTint="@color/colorAccent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <Button
-                    android:id="@+id/btn_hideshow"
-                    android:layout_width="211dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/HideShow"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@+id/edit_notes" />
 
         </LinearLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="125dp"
-        android:layout_height="44dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@android:color/holo_red_light"
-        android:text="@string/Delete_Entry"
-        android:textColor="@android:color/white"
-        android:textColorHighlight="@android:color/holo_red_light"
+        android:id="@+id/btn_hideshow"
+        android:layout_width="211dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
+        android:text="@string/HideShow"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flbtn_rand"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:foreground="@drawable/ic_dice_ico"
+        android:foregroundGravity="fill"
+        android:foregroundTint="@android:color/background_light"
+        app:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

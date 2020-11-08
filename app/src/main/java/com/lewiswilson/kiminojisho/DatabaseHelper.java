@@ -91,12 +91,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		super.close();
 	}
 
-    void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
+    void updateData(String list_selection, String new_kana, String new_meaning, String new_example, String new_notes) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
         contentValues.put(COL3, new_meaning);
         contentValues.put(COL4, new_example);
+        contentValues.put(COL5, new_notes);
         String sb = "WORD='" +
                 list_selection +
                 "'";
@@ -128,11 +129,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String getKana = "";
         String getMeaning = "";
         String getExample = "";
+        String getNotes = "";
         if (cursor.moveToFirst()) {
             getWord = cursor.getString(cursor.getColumnIndex(COL1));
             getKana = cursor.getString(cursor.getColumnIndex(COL2));
             getMeaning = cursor.getString(cursor.getColumnIndex(COL3));
             getExample = cursor.getString(cursor.getColumnIndex(COL4));
+            getNotes = cursor.getString(cursor.getColumnIndex(COL5));
         }
         cursor.close();
         String str2 = ";";
@@ -142,7 +145,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 str2 +
                 getMeaning +
                 str2 +
-                getExample;
+                getExample +
+                str2 +
+                getNotes;
     }
 
     public boolean addData(String word, String kana, String meaning, String example, String notes) {

@@ -86,13 +86,7 @@ public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.Se
             String kanji = mKanjiView.getText().toString();
             String kana = mKanaView.getText().toString();
             String english = mEnglishView.getText().toString();
-            String notes = "";
-
-            try{
-                notes = mNotesView.getText().toString();
-            } catch (Exception e){
-                Log.d(TAG, "Notes == null");
-            }
+            String notes = mNotesView.getText().toString();
 
             //no examples currently supported on jisho API
             AddData(kanji, kana, english, "", notes);
