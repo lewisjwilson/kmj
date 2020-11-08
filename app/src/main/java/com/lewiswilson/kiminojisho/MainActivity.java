@@ -47,7 +47,7 @@ import java.util.Calendar;
 import me.toptas.fancyshowcase.FancyShowCaseQueue;
 import me.toptas.fancyshowcase.FancyShowCaseView;
 
-public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 10;
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         switch (item.getItemId()) {
             case R.id.action_alarm:
                 setupNotifications();
-                Toast.makeText(this, "Reminder Set at 12pm daily!", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_import:
                 AlertDialog diaBox = importWarning();
@@ -184,30 +183,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void setupNotifications() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Daily Notifications";
-            String description = "Word of the day";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("wotd", name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 00);
-        calendar.set(Calendar.SECOND, 00);
-
-        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     private AlertDialog importWarning() {
@@ -290,8 +265,55 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
     }
 
-    @Override
-    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+    private void setupNotifications() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Daily Notifications";
+            String description = "Word of the day";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("wotd", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+
+        timePicker();
 
     }
+
+    private void timePicker(){
+
+        //boolean to check if alarm is active currently
+
+        boolean alarmUp = (PendingIntent.getBroadcast(getApplicationContext(), 0,
+                new Intent(getApplicationContext(), ReminderBroadcast.class), PendingIntent.FLAG_NO_CREATE) != null);
+
+        if(alarmUp){
+            //cancel
+            PendingIntent.getBroadcast(getApplicationContext(), 0,
+                    new Intent(getApplicationContext(), ReminderBroadcast.class), PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+            Toast.makeText(getApplicationContext(), "Notifications Stopped", Toast.LENGTH_LONG).show();
+        } else {
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            Intent intent = new Intent(getApplicationContext(), ReminderBroadcast.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                            Toast.makeText(getApplicationContext(), "Daily Notifications Set!", Toast.LENGTH_LONG).show();
+                        }
+                    }, hour, minute, true);
+            timePickerDialog.show();
+        }
+    }
+
 }
