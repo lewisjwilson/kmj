@@ -297,21 +297,25 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Get Current Time
             final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
+            int currenthour = c.get(Calendar.HOUR_OF_DAY);
+            int currentminute = c.get(Calendar.MINUTE);
 
             // Launch Time Picker Dialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                     new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            c.set(Calendar.MINUTE, minute);
+                            c.set(Calendar.SECOND, 0);
                             Intent intent = new Intent(getApplicationContext(), ReminderBroadcast.class);
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-                            Toast.makeText(getApplicationContext(), "Daily Notifications Set!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Daily Notifications Set for " +
+                                    c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE), Toast.LENGTH_LONG).show();
                         }
-                    }, hour, minute, true);
+                    }, currenthour, currentminute, true);
             timePickerDialog.show();
         }
     }
