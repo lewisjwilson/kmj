@@ -164,9 +164,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                startActivity(new Intent(MainActivity.this, SearchPage.class));
-                return true;
             case R.id.action_alarm:
                 setupNotifications();
                 Toast.makeText(this, "Reminder Set at 12pm daily!", Toast.LENGTH_LONG).show();

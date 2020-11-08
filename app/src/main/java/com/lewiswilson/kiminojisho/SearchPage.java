@@ -69,7 +69,7 @@ public class SearchPage extends AppCompatActivity{
                 String searchtext = et_searchfield.getText().toString();
                 Call<JishoData> call;
 
-                //if the seatchtext contains any japanese...
+                //if the searchtext contains any japanese...
                 if(containsJapanese(searchtext)){
                     call = RetrofitClient.getInstance().getMyApi().getData(searchtext);
                 } else {
@@ -84,11 +84,16 @@ public class SearchPage extends AppCompatActivity{
                         //At this point we got our word list
                         List<Datum> data = response.body().getData();
 
+                        //if no data was found, try a call assuming romaji style
+                        if(data.isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "No data found", Toast.LENGTH_LONG).show();
+                        }
+
                         //try to retrieve data from jishoAPI
                         try {
 
                             List<Japanese> japanese;
-                            String kanji = null, kana = null, english;
+                            String kanji = null, kana = null, english, notes = null;
 
                             for(int i=0; i<data.size(); i++){
                                 japanese = data.get(i).getJapanese();
@@ -102,7 +107,6 @@ public class SearchPage extends AppCompatActivity{
                                         kanji = kana;
                                     }
 
-
                                 }
                                 
                                 //get english definitions
@@ -110,11 +114,17 @@ public class SearchPage extends AppCompatActivity{
                                 int noOfDefinitions = sense.get(0).getEnglishDefinitions().size();
                                 english = sense.get(0).getEnglishDefinitions().get(0);
 
+                                //get first tag in entry
+                                int noOfTags = sense.get(0).getTags().size();
+                                if(noOfTags>0){
+                                    notes = "[ " + sense.get(0).getTags().get(0) + " ]";
+                                }
+
                                 //If there is more than one definition, also display the second definition
                                 if(noOfDefinitions>1){
                                     english = english + ", " + sense.get(0).getEnglishDefinitions().get(1);
                                 }
-                                mSearchList.add(new SearchDataItem(kanji, kana, english));
+                                mSearchList.add(new SearchDataItem(kanji, kana, english, notes));
                             }
 
                             mSearchDataAdapter = new SearchDataAdapter(SearchPage.this, mSearchList, myDB);
@@ -146,6 +156,7 @@ public class SearchPage extends AppCompatActivity{
         });
 
     }
+
 
     private boolean containsJapanese(String input){
         Set<UCharacter.UnicodeBlock> japaneseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{

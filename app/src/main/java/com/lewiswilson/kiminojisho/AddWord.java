@@ -63,13 +63,13 @@ public class AddWord extends AppCompatActivity {
                 if (newEntryWord.length() == 0 || newEntryKana.length() == 0 || newEntryMeaning.length() == 0) {
                     Toast.makeText(AddWord.this, "Fill in Required Fields!", Toast.LENGTH_SHORT).show();
                 } else {
-                    AddWord.this.AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample);
+                    AddWord.this.AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, "");
                 }
             } else {
                 if (newEntryWord.length() == 0 || newEntryMeaning.length() == 0) {
                     Toast.makeText(AddWord.this, "Fill in Required Fields!", Toast.LENGTH_SHORT).show();
                 } else {
-                    AddWord.this.AddData(newEntryWord, newEntryWord, newEntryMeaning, newEntryExample);
+                    AddWord.this.AddData(newEntryWord, newEntryWord, newEntryMeaning, newEntryExample, "");
                 }
             }
 
@@ -81,8 +81,8 @@ public class AddWord extends AppCompatActivity {
         btn_add.setOnClickListener(add);
     }
 
-    private void AddData(String word, String kana, String meaning, String example) {
-        if (this.myDB.addData(word, kana, meaning, example)) {
+    private void AddData(String word, String kana, String meaning, String example, String notes) {
+        if (this.myDB.addData(word, kana, meaning, example, notes)) {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();

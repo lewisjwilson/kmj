@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL2 = "KANA";
     private static final String COL3 = "MEANING";
     private static final String COL4 = "EXAMPLE";
+    private static final String COL5 = "NOTES";
     private static final String DATABASE_NAME = "kiminojisho.db";
     private static final String TABLE_NAME = "jisho_data";
     private static final String TAG = "DatabaseHelper";
@@ -29,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final String DATABASE_PATH;
 
     DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 4);
         this.myContext = context;
         this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
         Log.e("Database Path:", DATABASE_PATH);
@@ -42,13 +43,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	//Changes made for Importing
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS jisho_data");
-		if(newVersion > oldVersion)
-			try{
-				copyDatabase();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if(newVersion > oldVersion){
+			//try{
+			//	copyDatabase();
+			//} catch (IOException e) {
+			//	e.printStackTrace();
+			//}
+			db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COL5 + " TEXT");
+		}
 	}
 
     @Override
@@ -143,13 +145,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 getExample;
     }
 
-    public boolean addData(String word, String kana, String meaning, String example) {
+    public boolean addData(String word, String kana, String meaning, String example, String notes) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);
         contentValues.put(COL2, kana);
         contentValues.put(COL3, meaning);
         contentValues.put(COL4, example);
+        contentValues.put(COL5, notes);
         String str = TABLE_NAME;
         String sb = "addData: Adding " +
                 word +
