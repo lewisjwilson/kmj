@@ -39,8 +39,15 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="English Definition"
-            android:textSize="14dp">
-        </TextView>
+            android:textColor="@android:color/black"
+            android:textSize="14dp"></TextView>
+
+        <TextView
+            android:id="@+id/notesview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[ Notes ]"
+            android:textSize="12sp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -2,6 +2,8 @@ package com.lewiswilson.kiminojisho;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +29,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
@@ -42,7 +47,7 @@ import java.util.Calendar;
 import me.toptas.fancyshowcase.FancyShowCaseQueue;
 import me.toptas.fancyshowcase.FancyShowCaseView;
 
-public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 10;
     public static String list_selection;//use to collect the "WORD" value and display data in ViewWord
@@ -56,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
         ma = this;
-
 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         //Check if it is a first time launch
@@ -160,11 +164,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                startActivity(new Intent(MainActivity.this, SearchPage.class));
-                return true;
             case R.id.action_alarm:
-                notificationSetter();
+                setupNotifications();
                 return true;
             case R.id.action_import:
                 AlertDialog diaBox = importWarning();
@@ -239,47 +240,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             e.printStackTrace();
         }
     }
-
-    private void notificationSetter() {
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        if (prefs.getBoolean("notifications_on", true)) {
-            cancelAlarm();
-        } else {
-            Toast.makeText(MainActivity.this, "Select a time for daily notifications to appear", Toast.LENGTH_LONG).show();
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "time picker");
-        }
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
-        startAlarm(c);
-    }
-
-    private void startAlarm(Calendar c) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().putBoolean("notifications_on", true).apply();
-        Toast.makeText(MainActivity.this, "Daily notifications set", Toast.LENGTH_LONG).show();
-
-    }
-
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-        alarmManager.cancel(pendingIntent);
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().putBoolean("notifications_on", false).apply();
-        Toast.makeText(MainActivity.this, "Daily notifications stopped", Toast.LENGTH_LONG).show();
-    }
+    
 
     //Request Permissions
     @Override
@@ -303,4 +264,60 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             }
         }
     }
+
+    private void setupNotifications() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Daily Notifications";
+            String description = "Word of the day";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("wotd", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+
+        timePicker();
+
+    }
+
+    private void timePicker(){
+
+        //boolean to check if alarm is active currently
+
+        boolean alarmUp = (PendingIntent.getBroadcast(getApplicationContext(), 0,
+                new Intent(getApplicationContext(), ReminderBroadcast.class), PendingIntent.FLAG_NO_CREATE) != null);
+
+        if(alarmUp){
+            //cancel
+            PendingIntent.getBroadcast(getApplicationContext(), 0,
+                    new Intent(getApplicationContext(), ReminderBroadcast.class), PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+            Toast.makeText(getApplicationContext(), "Notifications Stopped", Toast.LENGTH_LONG).show();
+        } else {
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            int currenthour = c.get(Calendar.HOUR_OF_DAY);
+            int currentminute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            c.set(Calendar.MINUTE, minute);
+                            c.set(Calendar.SECOND, 0);
+                            Intent intent = new Intent(getApplicationContext(), ReminderBroadcast.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                            Toast.makeText(getApplicationContext(), "Daily Notifications Set for " +
+                                    c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE), Toast.LENGTH_LONG).show();
+                        }
+                    }, currenthour, currentminute, true);
+            timePickerDialog.show();
+        }
+    }
+
 }

@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL2 = "KANA";
     private static final String COL3 = "MEANING";
     private static final String COL4 = "EXAMPLE";
+    private static final String COL5 = "NOTES";
     private static final String DATABASE_NAME = "kiminojisho.db";
     private static final String TABLE_NAME = "jisho_data";
     private static final String TAG = "DatabaseHelper";
@@ -29,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final String DATABASE_PATH;
 
     DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 4);
         this.myContext = context;
         this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
         Log.e("Database Path:", DATABASE_PATH);
@@ -42,13 +43,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	//Changes made for Importing
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS jisho_data");
-		if(newVersion > oldVersion)
-			try{
-				copyDatabase();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if(newVersion > oldVersion){
+			//try{
+			//	copyDatabase();
+			//} catch (IOException e) {
+			//	e.printStackTrace();
+			//}
+			db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COL5 + " TEXT");
+		}
 	}
 
     @Override
@@ -89,12 +91,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		super.close();
 	}
 
-    void updateData(String list_selection, String new_kana, String new_meaning, String new_example) {
+    void updateData(String list_selection, String new_kana, String new_meaning, String new_example, String new_notes) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, new_kana);
         contentValues.put(COL3, new_meaning);
         contentValues.put(COL4, new_example);
+        contentValues.put(COL5, new_notes);
         String sb = "WORD='" +
                 list_selection +
                 "'";
@@ -126,11 +129,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String getKana = "";
         String getMeaning = "";
         String getExample = "";
+        String getNotes = "";
         if (cursor.moveToFirst()) {
             getWord = cursor.getString(cursor.getColumnIndex(COL1));
             getKana = cursor.getString(cursor.getColumnIndex(COL2));
             getMeaning = cursor.getString(cursor.getColumnIndex(COL3));
             getExample = cursor.getString(cursor.getColumnIndex(COL4));
+            getNotes = cursor.getString(cursor.getColumnIndex(COL5));
         }
         cursor.close();
         String str2 = ";";
@@ -140,16 +145,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 str2 +
                 getMeaning +
                 str2 +
-                getExample;
+                getExample +
+                str2 +
+                getNotes;
     }
 
-    public boolean addData(String word, String kana, String meaning, String example) {
+    public boolean addData(String word, String kana, String meaning, String example, String notes) {
         db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, word);
         contentValues.put(COL2, kana);
         contentValues.put(COL3, meaning);
         contentValues.put(COL4, example);
+        contentValues.put(COL5, notes);
         String str = TABLE_NAME;
         String sb = "addData: Adding " +
                 word +

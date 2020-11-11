@@ -36,6 +36,7 @@ public class AddWord extends AppCompatActivity {
         final EditText kanaEdit = findViewById(R.id.edit_kana);
         final EditText meaningEdit = findViewById(R.id.edit_meaning);
         final EditText exampleEdit = findViewById(R.id.edit_example);
+        final EditText notesEdit = findViewById(R.id.edit_notes);
 
 
         OnClickListener toggle = v -> {
@@ -58,18 +59,19 @@ public class AddWord extends AppCompatActivity {
             String newEntryKana = RemoveSemicolon(kanaEdit.getText().toString().trim());
             String newEntryMeaning = RemoveSemicolon(meaningEdit.getText().toString().trim());
             String newEntryExample = RemoveSemicolon(exampleEdit.getText().toString().trim());
+            String newEntryNotes = "[ " + RemoveSemicolon(notesEdit.getText().toString().trim()) + " ]";
 
             if (ToggleKanji) {
                 if (newEntryWord.length() == 0 || newEntryKana.length() == 0 || newEntryMeaning.length() == 0) {
                     Toast.makeText(AddWord.this, "Fill in Required Fields!", Toast.LENGTH_SHORT).show();
                 } else {
-                    AddWord.this.AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample);
+                    AddWord.this.AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, newEntryNotes);
                 }
             } else {
                 if (newEntryWord.length() == 0 || newEntryMeaning.length() == 0) {
                     Toast.makeText(AddWord.this, "Fill in Required Fields!", Toast.LENGTH_SHORT).show();
                 } else {
-                    AddWord.this.AddData(newEntryWord, newEntryWord, newEntryMeaning, newEntryExample);
+                    AddWord.this.AddData(newEntryWord, newEntryWord, newEntryMeaning, newEntryExample, newEntryNotes);
                 }
             }
 
@@ -81,8 +83,8 @@ public class AddWord extends AppCompatActivity {
         btn_add.setOnClickListener(add);
     }
 
-    private void AddData(String word, String kana, String meaning, String example) {
-        if (this.myDB.addData(word, kana, meaning, example)) {
+    private void AddData(String word, String kana, String meaning, String example, String notes) {
+        if (this.myDB.addData(word, kana, meaning, example, notes)) {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
