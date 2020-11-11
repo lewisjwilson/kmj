@@ -2,6 +2,7 @@ package com.lewiswilson.kiminojisho.SearchRecycler;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.lewiswilson.kiminojisho.MainActivity;
 import com.lewiswilson.kiminojisho.R;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.SearchDataViewHolder>{
     private Context mContext;
@@ -42,10 +45,16 @@ public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.Se
         String kanji = currentItem.getKanji();
         String kana = currentItem.getKana();
         String english = currentItem.getEnglish();
+        String notes = currentItem.getNotes();
 
         holder.mKanjiView.setText(kanji);
         holder.mKanaView.setText(kana);
         holder.mEnglishView.setText(english);
+        holder.mNotesView.setText(notes);
+
+        if(notes == null){
+            holder.mNotesView.setVisibility(View.GONE);
+        }
 
     }
 
@@ -58,6 +67,7 @@ public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.Se
         public TextView mKanjiView;
         public TextView mKanaView;
         public TextView mEnglishView;
+        public TextView mNotesView;
 
         public SearchDataViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,6 +76,7 @@ public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.Se
             mKanjiView = itemView.findViewById(R.id.kanjiview);
             mKanaView = itemView.findViewById(R.id.kanaview);
             mEnglishView = itemView.findViewById(R.id.englishview);
+            mNotesView = itemView.findViewById(R.id.notesview);
 
         }
 
@@ -75,14 +86,15 @@ public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.Se
             String kanji = mKanjiView.getText().toString();
             String kana = mKanaView.getText().toString();
             String english = mEnglishView.getText().toString();
+            String notes = mNotesView.getText().toString();
 
             //no examples currently supported on jisho API
-            AddData(kanji, kana, english, "");
+            AddData(kanji, kana, english, "", notes);
             return true;
         }
 
-        private void AddData(String word, String kana, String meaning, String example) {
-            if (myDB.addData(word, kana, meaning, example)) {
+        private void AddData(String word, String kana, String meaning, String example, String notes) {
+            if (myDB.addData(word, kana, meaning, example, notes)) {
                 Toast.makeText(mContext, "Data Inserted", Toast.LENGTH_SHORT).show();
                 //call searchpage context and move to mainactivity
                 mContext.startActivity(new Intent(mContext, MainActivity.class));

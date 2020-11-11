@@ -16,6 +16,7 @@ public class ViewWord extends AppCompatActivity {
     private EditText edit_kana;
     private EditText edit_meaning;
     private EditText edit_example;
+    private EditText edit_notes;
     private Button btn_update;
     private DatabaseHelper myDB;
 
@@ -43,39 +44,54 @@ public class ViewWord extends AppCompatActivity {
       parsed_example = "";
     }
 
-      TextView txt_word_val = findViewById(R.id.txt_word_val);
+    String parsed_notes;
+    try {
+        parsed_notes = unparsed_data.split(";")[4];
+    }catch (Exception e){
+        parsed_notes = "";
+    }
+
+    TextView txt_word_val = findViewById(R.id.txt_word_val);
     txt_word_val.setText(parsed_word);
-      edit_kana = findViewById(R.id.edit_kana);
-      edit_meaning = findViewById(R.id.edit_meaning);
-      edit_example = findViewById(R.id.edit_example);
+    edit_kana = findViewById(R.id.edit_kana);
+    edit_meaning = findViewById(R.id.edit_meaning);
+    edit_example = findViewById(R.id.edit_example);
+    edit_notes = findViewById(R.id.edit_notes);
     edit_kana.setText(getString(R.string.Hidden));
     edit_meaning.setText(getString(R.string.Hidden));
     edit_example.setText(getString(R.string.Hidden));
+    edit_notes.setText(getString(R.string.Hidden));
     edit_kana.setEnabled(false);
     edit_meaning.setEnabled(false);
     edit_example.setEnabled(false);
+    edit_notes.setEnabled(false);
 
       Button btn_hideshow = findViewById(R.id.btn_hideshow);
       final boolean[] button_status = {false};
       final String finalParsed_example = parsed_example;
+      final String finalParsed_notes = parsed_notes;
       btn_hideshow.setOnClickListener(v -> {
           if (!button_status[0]) {
               btn_update.setEnabled(true);
               edit_kana.setText(parsed_kana);
               edit_meaning.setText(parsed_meaning);
               edit_example.setText(finalParsed_example);
+              edit_notes.setText(finalParsed_notes);
               edit_kana.setEnabled(true);
               edit_meaning.setEnabled(true);
               edit_example.setEnabled(true);
+              edit_notes.setEnabled(true);
               button_status[0] = true;
           } else {
               btn_update.setEnabled(false);
               edit_kana.setText(getString(R.string.Hidden));
               edit_meaning.setText(getString(R.string.Hidden));
               edit_example.setText(getString(R.string.Hidden));
+              edit_notes.setText(getString(R.string.Hidden));
               edit_kana.setEnabled(false);
               edit_meaning.setEnabled(false);
               edit_example.setEnabled(false);
+              edit_notes.setEnabled(false);
               button_status[0] = false;
           }
 
@@ -93,16 +109,17 @@ public class ViewWord extends AppCompatActivity {
           MainActivity.ma.finish();
     });
 
-      btn_update = findViewById(R.id.btn_update);
+    btn_update = findViewById(R.id.btn_update);
     btn_update.setEnabled(false);
-      btn_update.setOnClickListener(v -> {
+    btn_update.setOnClickListener(v -> {
           String new_kana = edit_kana.getText().toString().trim();
           String new_meaning = edit_meaning.getText().toString().trim();
           String new_example = edit_example.getText().toString().trim();
+          String new_notes = edit_notes.getText().toString().trim();
 
           if ((new_kana.length() != 0) && (new_meaning.length() != 0)) {
 
-              myDB.updateData(finalList_selection, new_kana, new_meaning, new_example);
+              myDB.updateData(finalList_selection, new_kana, new_meaning, new_example, new_notes);
               Toast.makeText(ViewWord.this, "Entry Updated", Toast.LENGTH_SHORT).show();
               startActivity(new Intent(ViewWord.this, MainActivity.class));
               finish();
