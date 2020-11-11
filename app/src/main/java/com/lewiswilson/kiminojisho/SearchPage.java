@@ -98,15 +98,12 @@ public class SearchPage extends AppCompatActivity{
                             for(int i=0; i<data.size(); i++){
                                 japanese = data.get(i).getJapanese();
 
-                                for(int j=0; j<japanese.size(); j++){
-                                    kanji = japanese.get(j).getWord();
-                                    kana = japanese.get(j).getReading();
+                                kanji = japanese.get(0).getWord();
+                                kana = japanese.get(0).getReading();
                                     
-                                    //if the result has no associated kanji
-                                    if(kanji == null){
+                                //if the result has no associated kanji
+                                if(kanji == null){
                                         kanji = kana;
-                                    }
-
                                 }
                                 
                                 //get english definitions
