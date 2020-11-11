@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public static AppCompatActivity ma;
     private final String PREFS_NAME = "MyPrefs";
     private DatabaseHelper myDB;
+    private ArrayList<String> jishoList;
+    private ArrayAdapter<String> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         FloatingActionButton flbtn_rand = findViewById(R.id.flbtn_rand);
         myDB = new DatabaseHelper(this);
 
-        ArrayList<String> jishoList = new ArrayList<>();
+        jishoList = new ArrayList<>();
         Cursor data = myDB.getListContents();
 
         //Checks if database is empty and lists entries if not
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                             data.getString(2) + " ; " +
                             data.getString(3));
                 }
-                ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, jishoList);
+                listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, jishoList);
                 listView.setAdapter(listAdapter);
             }
         }
@@ -153,6 +157,25 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        //find search menuitem
+        MenuItem menuItem = menu.findItem(R.id.searchView);
+        //Initialize searchview
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String searchtext) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String searchtext) {
+                //filter arraylist
+                listAdapter.getFilter().filter(searchtext);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -160,9 +183,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                startActivity(new Intent(MainActivity.this, SearchPage.class));
-                return true;
             case R.id.action_alarm:
                 notificationSetter();
                 return true;
