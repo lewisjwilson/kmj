@@ -44,12 +44,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	//Changes made for Importing
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if(newVersion > oldVersion){
-			//try{
-			//	copyDatabase();
-			//} catch (IOException e) {
-			//	e.printStackTrace();
-			//}
-			db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COL5 + " TEXT");
+			try{
+				//copyDatabase();
+                db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COL5 + " TEXT");
+			} catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
 	}
 
