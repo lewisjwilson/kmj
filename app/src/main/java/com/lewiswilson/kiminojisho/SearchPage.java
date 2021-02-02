@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lewiswilson.kiminojisho.JSON.Datum;
 import com.lewiswilson.kiminojisho.JSON.Japanese;
 import com.lewiswilson.kiminojisho.JSON.JishoData;
@@ -22,6 +21,9 @@ import com.lewiswilson.kiminojisho.JSON.Sense;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter;
 import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

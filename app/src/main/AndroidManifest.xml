@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.SET_ALARM" />
 
     <application
+        android:name = "com.lewiswilson.MyApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
