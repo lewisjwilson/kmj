@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final String DATABASE_PATH;
 
     DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 4);
+        super(context, DATABASE_NAME, null, 5);
         this.myContext = context;
         this.DATABASE_PATH = "/data/data/com.lewiswilson.kiminojisho/databases/";
         Log.e("Database Path:", DATABASE_PATH);

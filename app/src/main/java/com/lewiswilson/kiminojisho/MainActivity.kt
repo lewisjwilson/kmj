@@ -1,0 +1,301 @@
+package com.lewiswilson.kiminojisho
+
+import android.app.*
+import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.*
+import android.widget.AdapterView.OnItemClickListener
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.FileProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.lewiswilson.kiminojisho.MainActivity
+import me.toptas.fancyshowcase.FancyShowCaseQueue
+import me.toptas.fancyshowcase.FancyShowCaseView
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
+
+class MainActivity : AppCompatActivity() {
+    private val PREFS_NAME = "MyPrefs"
+    private var myDB: DatabaseHelper? = null
+    private var jishoList: ArrayList<String>? = null
+    private var listAdapter: ArrayAdapter<String>? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.content_main)
+        ma = this
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        //Check if it is a first time launch
+        if (prefs.getBoolean("first_launch", true)) {
+            firstLaunch()
+            prefs.edit().putBoolean("first_launch", false).apply()
+            prefs.edit().putBoolean("notifications_on", false).apply()
+        }
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val listView = findViewById<ListView>(R.id.list_jisho)
+        listView.emptyView = findViewById(R.id.txt_listempty)
+        val flbtn_add = findViewById<FloatingActionButton>(R.id.flbtn_add)
+        val flbtn_rand = findViewById<FloatingActionButton>(R.id.flbtn_rand)
+        myDB = DatabaseHelper(this)
+        jishoList = ArrayList()
+        val data = myDB!!.listContents
+
+        //Checks if database is empty and lists entries if not
+        if (data.count == 0) {
+            flbtn_rand.isEnabled = false
+        } else {
+            flbtn_rand.isEnabled = true
+            while (data.moveToNext()) {
+                //ListView Data Layout
+                if (data.getString(1) == data.getString(2)) {
+                    jishoList!!.add(data.getString(1) + " ; " +
+                            data.getString(3))
+                } else {
+                    jishoList!!.add(data.getString(1) + " ; " +
+                            data.getString(2) + " ; " +
+                            data.getString(3))
+                }
+                listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, jishoList!!)
+                listView.adapter = listAdapter
+            }
+        }
+        listView.onItemClickListener = OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            //Get "Word" value from listview for using to select db record
+            list_selection = listView.getItemAtPosition(position) as String
+            list_selection = list_selection!!.split(" ;").toTypedArray()[0]
+            startActivity(Intent(this@MainActivity, ViewWord::class.java))
+        }
+        flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
+        flbtn_rand.setOnClickListener { v: View? ->
+            list_selection = myDB!!.random(0)
+            startActivity(Intent(this@MainActivity, ViewWord::class.java))
+        }
+    }
+
+    private fun firstLaunch() {
+        val fscv1 = FancyShowCaseView.Builder(this)
+                .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
+                .build()
+        val fscv2 = FancyShowCaseView.Builder(this)
+                .title("This is the main screen. This shows you dictionary entries.")
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build()
+        val fscv3 = FancyShowCaseView.Builder(this)
+                .title("To create your first dictionary entry, use this button.")
+                .focusOn(findViewById(R.id.flbtn_add))
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build()
+        val fscv4 = FancyShowCaseView.Builder(this)
+                .title("To test yourself, let the app choose a random word from your dictionary!")
+                .focusOn(findViewById(R.id.flbtn_rand))
+                .backgroundColor(Color.parseColor("#DD008577"))
+                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+                .build()
+        val fscvQueue = FancyShowCaseQueue()
+                .add(fscv1)
+                .add(fscv2)
+                .add(fscv3)
+                .add(fscv4)
+        fscvQueue.show()
+    }
+
+    // Menu icons are inflated just as they were with actionbar
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.main_menu, menu)
+
+        //find search menuitem
+        val menuItem = menu.findItem(R.id.searchView)
+        //Initialize searchview
+        val searchView = menuItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(searchtext: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(searchtext: String): Boolean {
+                //filter arraylist
+                listAdapter!!.filter.filter(searchtext)
+                return false
+            }
+        })
+        return true
+    }
+
+    //Toolbar Menu Option Activities
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_alarm -> {
+                setupNotifications()
+                true
+            }
+            R.id.action_import -> {
+                val diaBox = importWarning()
+                diaBox.show()
+                true
+            }
+            R.id.action_export -> {
+                exportDatabase()
+                true
+            }
+            R.id.action_help -> {
+                firstLaunch()
+                true
+            }
+            R.id.action_about -> {
+                startActivity(Intent(this@MainActivity, About::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun importWarning(): AlertDialog {
+        return AlertDialog.Builder(this)
+                .setTitle("Import")
+                .setMessage("Select your previously exported 'kiminojisho.db' file. " +
+                        "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
+                .setPositiveButton("Import") { dialog: DialogInterface, whichButton: Int ->
+                    dialog.dismiss()
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    intent.type = "*/*"
+                    startActivityForResult(intent, REQUEST_CODE)
+                }
+                .setNegativeButton("Cancel") { dialog: DialogInterface, which: Int -> dialog.dismiss() }
+                .create()
+    }
+
+    private fun importDatabase() {
+        try {
+            myDB!!.createDatabase()
+            finish()
+            startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun exportDatabase() {
+        try {
+            val fileToWrite = getDatabasePath("kiminojisho.db").toString()
+            val output = openFileOutput("kiminojisho.db", Context.MODE_PRIVATE)
+            val input = FileInputStream(fileToWrite)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (input.read(buffer).also { length = it } > 0) {
+                output.write(buffer, 0, length)
+            }
+            output.write(fileToWrite.toByteArray())
+            output.flush()
+            output.close()
+            input.close()
+
+            //exporting
+            val context = applicationContext
+            val filelocation = File(filesDir, "kiminojisho.db")
+            val path = FileProvider.getUriForFile(context, "com.lewiswilson.kiminojisho.fileprovider", filelocation)
+            val fileIntent = Intent(Intent.ACTION_SEND)
+            fileIntent.type = "application/x-sqlite3"
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "kiminojisho.db")
+            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            fileIntent.putExtra(Intent.EXTRA_STREAM, path)
+            startActivity(Intent.createChooser(fileIntent, "Export Database"))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    //Request Permissions
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == 1) {
+            if (!(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(this@MainActivity, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                fileUri = data.data
+                importDatabase()
+            }
+        }
+    }
+
+    private fun setupNotifications() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name: CharSequence = "Daily Notifications"
+            val description = "Word of the day"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("wotd", name, importance)
+            channel.description = description
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+        timePicker()
+    }
+
+    private fun timePicker() {
+
+        //boolean to check if alarm is active currently
+        val alarmUp = PendingIntent.getBroadcast(applicationContext, 0,
+                Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_NO_CREATE) != null
+        if (alarmUp) {
+            //cancel
+            PendingIntent.getBroadcast(applicationContext, 0,
+                    Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+            Toast.makeText(applicationContext, "Notifications Stopped", Toast.LENGTH_LONG).show()
+        } else {
+            // Get Current Time
+            val c = Calendar.getInstance()
+            val currenthour = c[Calendar.HOUR_OF_DAY]
+            val currentminute = c[Calendar.MINUTE]
+
+            // Launch Time Picker Dialog
+            val timePickerDialog = TimePickerDialog(this,
+                    OnTimeSetListener { view, hourOfDay, minute ->
+                        c[Calendar.HOUR_OF_DAY] = hourOfDay
+                        c[Calendar.MINUTE] = minute
+                        c[Calendar.SECOND] = 0
+                        val intent = Intent(applicationContext, ReminderBroadcast::class.java)
+                        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+                        Toast.makeText(applicationContext, "Daily Notifications Set for " +
+                                c[Calendar.HOUR_OF_DAY] + ":" + c[Calendar.MINUTE], Toast.LENGTH_LONG).show()
+                    }, currenthour, currentminute, true)
+            timePickerDialog.show()
+        }
+    }
+
+    companion object {
+        private const val REQUEST_CODE = 10
+        @JvmField
+        var list_selection //use to collect the "WORD" value and display data in ViewWord
+                : String? = null
+        @JvmField
+        var fileUri: Uri? = null
+        @JvmField
+        var ma: AppCompatActivity? = null
+    }
+}
