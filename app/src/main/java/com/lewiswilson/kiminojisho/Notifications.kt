@@ -1,52 +1,48 @@
-package com.lewiswilson.kiminojisho;
+package com.lewiswilson.kiminojisho
 
-import android.annotation.TargetApi;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.os.Build;
+import android.annotation.TargetApi
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
+import androidx.core.app.NotificationCompat
 
-import androidx.core.app.NotificationCompat;
-
-
-class Notifications extends ContextWrapper {
-    private static final String channelID = "channelID";
-    private static final String channelName = "Channel Name";
-
-    private NotificationManager mManager;
-
-    public Notifications(Context base) {
-        super(base);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel();
-        }
-    }
-
+internal class Notifications(base: Context?) : ContextWrapper(base) {
+    private var mManager: NotificationManager? = null
     @TargetApi(Build.VERSION_CODES.O)
-    private void createChannel() {
-        NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
-
-        getManager().createNotificationChannel(channel);
+    private fun createChannel() {
+        val channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH)
+        manager!!.createNotificationChannel(channel)
     }
 
-    public NotificationManager getManager() {
-        if (mManager == null) {
-            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    val manager: NotificationManager?
+        get() {
+            if (mManager == null) {
+                mManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            }
+            return mManager
+        }
+    val channelNotification: NotificationCompat.Builder
+        get() {
+            val myDB: DatabaseHelper
+            myDB = DatabaseHelper(this)
+            return NotificationCompat.Builder(applicationContext, channelID)
+                    .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
+                    .setContentTitle("Word of the Day")
+                    .setContentText(myDB.random(1))
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
         }
 
-        return mManager;
+    companion object {
+        private const val channelID = "channelID"
+        private const val channelName = "Channel Name"
     }
 
-    public NotificationCompat.Builder getChannelNotification() {
-        DatabaseHelper myDB;
-        myDB = new DatabaseHelper(this);
-        return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentTitle("Word of the Day")
-                .setContentText(myDB.random(1))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannel()
+        }
     }
-
 }

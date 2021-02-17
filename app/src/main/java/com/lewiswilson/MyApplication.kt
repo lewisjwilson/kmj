@@ -1,18 +1,16 @@
-package com.lewiswilson;
+package com.lewiswilson
 
-import android.app.Application;
-import android.content.Context;
+import android.app.Application
+import android.content.Context
 
-public class MyApplication extends Application {
-    private static Context context;
-
-    public void onCreate() {
-        super.onCreate();
-        MyApplication.context = getApplicationContext();
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        appContext = applicationContext
     }
 
-    public static Context getAppContext() {
-        return MyApplication.context;
+    companion object {
+        var appContext: Context? = null
+            private set
     }
-
 }

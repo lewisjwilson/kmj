@@ -180,7 +180,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         private const val COL4 = "EXAMPLE"
         private const val COL5 = "NOTES"
         private const val DATABASE_NAME = "kiminojisho.db"
-        private val DATABASE_PATH = MyApplication.getAppContext().getDatabasePath(DATABASE_NAME)//"/data/data/com.lewiswilson.kiminojisho/databases/"
+        private val DATABASE_PATH = MyApplication.appContext?.getDatabasePath(DATABASE_NAME)//"/data/data/com.lewiswilson.kiminojisho/databases/"
         private const val TABLE_NAME = "jisho_data"
         private const val TAG = "DatabaseHelper"
     }
