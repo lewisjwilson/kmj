@@ -1,180 +1,142 @@
-package com.lewiswilson.kiminojisho;
+package com.lewiswilson.kiminojisho
 
-import android.content.Intent;
-import android.icu.lang.UCharacter;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.content.Intent
+import android.icu.lang.UCharacter
+import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.lewiswilson.kiminojisho.JSON.Japanese
+import com.lewiswilson.kiminojisho.JSON.JishoData
+import com.lewiswilson.kiminojisho.JSON.RetrofitClient
+import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter
+import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
+import kotlinx.android.synthetic.main.search_page.*
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class SearchPage : AppCompatActivity() {
 
-import com.lewiswilson.kiminojisho.JSON.Datum;
-import com.lewiswilson.kiminojisho.JSON.Japanese;
-import com.lewiswilson.kiminojisho.JSON.JishoData;
-import com.lewiswilson.kiminojisho.JSON.RetrofitClient;
-import com.lewiswilson.kiminojisho.JSON.Sense;
-import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter;
-import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem;
+    private var mSearchList: ArrayList<SearchDataItem>? = ArrayList()
+    private var mSearchDataAdapter: SearchDataAdapter? = null
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class SearchPage extends AppCompatActivity{
-    private RecyclerView mRecyclerView;
-    private SearchDataAdapter mSearchDataAdapter;
-    private ArrayList<SearchDataItem> mSearchList;
-    private DatabaseHelper myDB;
-    public static AppCompatActivity sp;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_page);
-        sp = this;
-
-        myDB = new DatabaseHelper(this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.search_page)
+        sp = this
+        val myDB = DatabaseHelper(this)
 
         //initiate recyclerview and set parameters
-        mRecyclerView = findViewById(R.id.rv_searchdata);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rv_searchdata.setHasFixedSize(true)
+        rv_searchdata.setLayoutManager(LinearLayoutManager(this))
 
-        mSearchList = new ArrayList<>();
+        search_button.setOnClickListener {
+            //if the search adapter has data in it already, clear the recyclerview
+            if (mSearchDataAdapter != null) {
+                clearData()
+            }
+            val searchtext = et_searchfield.text.toString()
 
-        final EditText et_searchfield = findViewById(R.id.et_searchfield);
-        final Button search_button = findViewById(R.id.search_button);
-        final Button btn_manual = findViewById(R.id.btn_manual);
+            //if the searchtext contains any japanese...
+            val call: Call<JishoData> = if (containsJapanese(searchtext)) {
+                RetrofitClient.getInstance().myApi.getData(searchtext)
+            } else {
+                //use searchtext to query API (using API interface)
+                RetrofitClient.getInstance().myApi.getData("\"" + searchtext + "\"")
+            }
+            call.enqueue(object : Callback<JishoData> {
+                override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
 
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    //At this point we got our word list
+                    val data = response.body()!!.data
 
-                //if the search adapter has data in it already, clear the recyclerview
-                if(mSearchDataAdapter!=null){
-                    clearData();
-                }
+                    //if no data was found, try a call assuming romaji style
+                    if (data.isEmpty()) {
+                        Toast.makeText(applicationContext, "No data found", Toast.LENGTH_LONG).show()
+                    }
 
-                String searchtext = et_searchfield.getText().toString();
-                Call<JishoData> call;
+                    //try to retrieve data from jishoAPI
+                    try {
+                        var japanese: List<Japanese>
+                        var kanji: String? = null
+                        var kana: String? = null
+                        var english: String
+                        var notes: String? = null
+                        for (i in data.indices) {
+                            japanese = data[i].japanese
+                            kanji = japanese[0].word
+                            kana = japanese[0].reading
 
-                //if the searchtext contains any japanese...
-                if(containsJapanese(searchtext)){
-                    call = RetrofitClient.getInstance().getMyApi().getData(searchtext);
-                } else {
-                    //use searchtext to query API (using API interface)
-                    call = RetrofitClient.getInstance().getMyApi().getData("\"" + searchtext + "\"");
-                }
-
-                call.enqueue(new Callback<JishoData>() {
-                    @Override
-                    public void onResponse(Call<JishoData> call, Response<JishoData> response) {
-
-                        //At this point we got our word list
-                        List<Datum> data = response.body().getData();
-
-                        //if no data was found, try a call assuming romaji style
-                        if(data.isEmpty()) {
-                            Toast.makeText(getApplicationContext(), "No data found", Toast.LENGTH_LONG).show();
-                        }
-
-                        //try to retrieve data from jishoAPI
-                        try {
-
-                            List<Japanese> japanese;
-                            String kanji = null, kana = null, english, notes = null;
-
-                            for(int i=0; i<data.size(); i++){
-                                japanese = data.get(i).getJapanese();
-
-                                kanji = japanese.get(0).getWord();
-                                kana = japanese.get(0).getReading();
-                                    
-                                //if the result has no associated kanji
-                                if(kanji == null){
-                                        kanji = kana;
-                                }
-                                
-                                //get english definitions
-                                List<Sense> sense = data.get(i).getSenses();
-                                int noOfDefinitions = sense.get(0).getEnglishDefinitions().size();
-                                english = sense.get(0).getEnglishDefinitions().get(0);
-
-                                //get first tag in entry
-                                int noOfTags = sense.get(0).getTags().size();
-                                if(noOfTags>0){
-                                    notes = "[ " + sense.get(0).getTags().get(0) + " ]";
-                                }
-
-                                //If there is more than one definition, also display the second definition
-                                if(noOfDefinitions>1){
-                                    english = english + ", " + sense.get(0).getEnglishDefinitions().get(1);
-                                }
-                                mSearchList.add(new SearchDataItem(kanji, kana, english, notes));
+                            //if the result has no associated kanji
+                            if (kanji == null) {
+                                kanji = kana
                             }
 
-                            mSearchDataAdapter = new SearchDataAdapter(SearchPage.this, mSearchList, myDB);
-                            mRecyclerView.setAdapter(mSearchDataAdapter);
+                            //get english definitions
+                            val sense = data[i].senses
+                            val noOfDefinitions = sense[0].englishDefinitions.size
+                            english = sense[0].englishDefinitions[0]
 
-                        } catch(Exception e){
-                            Log.d("", "Data Retrieval Error: " + e.getMessage());
-                            Toast.makeText(getApplicationContext(), "No data found" , Toast.LENGTH_LONG).show();
+                            //get first tag in entry
+                            val noOfTags = sense[0].tags.size
+                            if (noOfTags > 0) {
+                                notes = "[ " + sense[0].tags[0] + " ]"
+                            }
+
+                            //If there is more than one definition, also display the second definition
+                            if (noOfDefinitions > 1) {
+                                english = english + ", " + sense[0].englishDefinitions[1]
+                            }
+                            mSearchList!!.add(SearchDataItem(kanji, kana, english, notes))
                         }
-
+                        mSearchDataAdapter = SearchDataAdapter(this@SearchPage, mSearchList, myDB)
+                        rv_searchdata.setAdapter(mSearchDataAdapter)
+                    } catch (e: Exception) {
+                        Log.d("", "Data Retrieval Error: " + e.message)
+                        Toast.makeText(applicationContext, "No data found", Toast.LENGTH_LONG).show()
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<JishoData> call, Throwable t) {
-                        //handle error or failure cases here
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d("", "SearchPage (Error): " + t.getMessage());
-                    }
-                });
-
-            }
-        });
-
-        btn_manual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SearchPage.this, AddWord.class));
-            }
-        });
-
+                override fun onFailure(call: Call<JishoData>, t: Throwable) {
+                    //handle error or failure cases here
+                    Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
+                    Log.d("", "SearchPage (Error): " + t.message)
+                }
+            })
+        }
+        btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
     }
 
-
-    private boolean containsJapanese(String input){
-        Set<UCharacter.UnicodeBlock> japaneseUnicodeBlocks = new HashSet<UCharacter.UnicodeBlock>() {{
-            add(UCharacter.UnicodeBlock.HIRAGANA);
-            add(UCharacter.UnicodeBlock.KATAKANA);
-            add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
-        }};
-
-        //for each character in string, if a japanese character occurs at all, return true
-        for (char c: input.toCharArray()){
-            if(japaneseUnicodeBlocks.contains(UCharacter.UnicodeBlock.of(c))){
-                return true;
+    private fun containsJapanese(input: String): Boolean {
+        val japaneseUnicodeBlocks: HashSet<UCharacter.UnicodeBlock?> = object : HashSet<UCharacter.UnicodeBlock?>() {
+            init {
+                add(UCharacter.UnicodeBlock.HIRAGANA)
+                add(UCharacter.UnicodeBlock.KATAKANA)
+                add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)
             }
         }
-        return false;
+
+        //for each character in string, if a japanese character occurs at all, return true
+        for (c in input.toCharArray()) {
+            if (japaneseUnicodeBlocks.contains(UCharacter.UnicodeBlock.of(c.toInt()))) {
+                return true
+            }
+        }
+        return false
     }
 
-    public void clearData() {
-        mSearchList.clear(); // clear list
-        mSearchDataAdapter.notifyDataSetChanged(); // let your adapter know about the changes and reload view.
+    fun clearData() {
+        mSearchList!!.clear() // clear list
+        mSearchDataAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
+    }
+
+    companion object {
+        var sp: AppCompatActivity? = null
     }
 }
