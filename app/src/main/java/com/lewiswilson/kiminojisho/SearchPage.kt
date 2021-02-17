@@ -4,12 +4,9 @@ import android.content.Intent
 import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.JSON.Japanese
 import com.lewiswilson.kiminojisho.JSON.JishoData
 import com.lewiswilson.kiminojisho.JSON.RetrofitClient
@@ -64,8 +61,8 @@ class SearchPage : AppCompatActivity() {
                     //try to retrieve data from jishoAPI
                     try {
                         var japanese: List<Japanese>
-                        var kanji: String? = null
-                        var kana: String? = null
+                        var kanji: String?
+                        var kana: String?
                         var english: String
                         var notes: String? = null
                         for (i in data.indices) {
@@ -95,7 +92,7 @@ class SearchPage : AppCompatActivity() {
                             }
                             mSearchList!!.add(SearchDataItem(kanji, kana, english, notes))
                         }
-                        mSearchDataAdapter = SearchDataAdapter(this@SearchPage, mSearchList, myDB)
+                        mSearchDataAdapter = mSearchList?.let { it1 -> SearchDataAdapter(this@SearchPage, it1, myDB) }
                         rv_searchdata.setAdapter(mSearchDataAdapter)
                     } catch (e: Exception) {
                         Log.d("", "Data Retrieval Error: " + e.message)

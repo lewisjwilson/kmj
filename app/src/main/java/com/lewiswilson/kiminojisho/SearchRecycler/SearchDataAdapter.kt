@@ -1,107 +1,78 @@
-package com.lewiswilson.kiminojisho.SearchRecycler;
+package com.lewiswilson.kiminojisho.SearchRecycler
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Context
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnLongClickListener
+import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import com.lewiswilson.kiminojisho.DatabaseHelper
+import com.lewiswilson.kiminojisho.MainActivity
+import com.lewiswilson.kiminojisho.R
+import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter.SearchDataViewHolder
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.lewiswilson.kiminojisho.DatabaseHelper;
-import com.lewiswilson.kiminojisho.MainActivity;
-import com.lewiswilson.kiminojisho.R;
-
-import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
-
-public class SearchDataAdapter extends RecyclerView.Adapter<SearchDataAdapter.SearchDataViewHolder>{
-    private Context mContext;
-    private ArrayList<SearchDataItem> mSearchList;
-    private DatabaseHelper myDB;
-
-    public SearchDataAdapter(Context context, ArrayList<SearchDataItem> searchList, DatabaseHelper db){
-        mContext = context;
-        mSearchList = searchList;
-        myDB = db;
+class SearchDataAdapter(private val mContext: Context, private val mSearchList: ArrayList<SearchDataItem>, private val myDB: DatabaseHelper) : RecyclerView.Adapter<SearchDataViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchDataViewHolder {
+        val v = LayoutInflater.from(mContext).inflate(R.layout.search_data_item, parent, false)
+        return SearchDataViewHolder(v)
     }
 
-    @NonNull
-    @Override
-    public SearchDataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.search_data_item, parent, false);
-        return new SearchDataViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull SearchDataViewHolder holder, int position) {
-        SearchDataItem currentItem = mSearchList.get(position);
-
-        String kanji = currentItem.getKanji();
-        String kana = currentItem.getKana();
-        String english = currentItem.getEnglish();
-        String notes = currentItem.getNotes();
-
-        holder.mKanjiView.setText(kanji);
-        holder.mKanaView.setText(kana);
-        holder.mEnglishView.setText(english);
-        holder.mNotesView.setText(notes);
-
-        if(notes == null){
-            holder.mNotesView.setVisibility(View.GONE);
+    override fun onBindViewHolder(holder: SearchDataViewHolder, position: Int) {
+        val currentItem = mSearchList[position]
+        val kanji = currentItem.kanji
+        val kana = currentItem.kana
+        val english = currentItem.english
+        val notes = currentItem.notes
+        holder.mKanjiView.text = kanji
+        holder.mKanaView.text = kana
+        holder.mEnglishView.text = english
+        holder.mNotesView.text = notes
+        if (notes == null) {
+            holder.mNotesView.visibility = View.GONE
         }
-
     }
 
-    @Override
-    public int getItemCount() {
-        return mSearchList.size();
+    override fun getItemCount(): Int {
+        return mSearchList.size
     }
 
-    public class SearchDataViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener{
-        public TextView mKanjiView;
-        public TextView mKanaView;
-        public TextView mEnglishView;
-        public TextView mNotesView;
-
-        public SearchDataViewHolder(@NonNull View itemView) {
-            super(itemView);
-            itemView.setOnLongClickListener(this);
-
-            mKanjiView = itemView.findViewById(R.id.kanjiview);
-            mKanaView = itemView.findViewById(R.id.kanaview);
-            mEnglishView = itemView.findViewById(R.id.englishview);
-            mNotesView = itemView.findViewById(R.id.notesview);
-
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
+    inner class SearchDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), OnLongClickListener {
+        var mKanjiView: TextView
+        var mKanaView: TextView
+        var mEnglishView: TextView
+        var mNotesView: TextView
+        override fun onLongClick(view: View): Boolean {
             //get data from the clicked item and add to my list
-            String kanji = mKanjiView.getText().toString();
-            String kana = mKanaView.getText().toString();
-            String english = mEnglishView.getText().toString();
-            String notes = mNotesView.getText().toString();
+            val kanji = mKanjiView.text.toString()
+            val kana = mKanaView.text.toString()
+            val english = mEnglishView.text.toString()
+            val notes = mNotesView.text.toString()
 
             //no examples currently supported on jisho API
-            AddData(kanji, kana, english, "", notes);
-            return true;
+            AddData(kanji, kana, english, "", notes)
+            return true
         }
 
-        private void AddData(String word, String kana, String meaning, String example, String notes) {
+        private fun AddData(word: String, kana: String, meaning: String, example: String, notes: String) {
             if (myDB.addData(word, kana, meaning, example, notes)) {
-                Toast.makeText(mContext, "Data Inserted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Data Inserted", Toast.LENGTH_SHORT).show()
                 //call searchpage context and move to mainactivity
-                mContext.startActivity(new Intent(mContext, MainActivity.class));
+                mContext.startActivity(Intent(mContext, MainActivity::class.java))
             } else {
-                Toast.makeText(mContext, "Insertion Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Insertion Failed", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
+        init {
+            itemView.setOnLongClickListener(this)
+            mKanjiView = itemView.findViewById(R.id.kanjiview)
+            mKanaView = itemView.findViewById(R.id.kanaview)
+            mEnglishView = itemView.findViewById(R.id.englishview)
+            mNotesView = itemView.findViewById(R.id.notesview)
+        }
+    }
 }
