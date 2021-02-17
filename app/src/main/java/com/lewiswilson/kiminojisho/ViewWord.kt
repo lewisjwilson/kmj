@@ -14,7 +14,7 @@ class ViewWord : AppCompatActivity() {
         setContentView(R.layout.view_word)
 
         val myDB = DatabaseHelper(this)
-        val list_selection: String? = MainActivity.list_selection
+        val list_selection: String = MainActivity.list_selection.toString()
         val unparsed_data = myDB.readData(list_selection)
 
         //parsing data
