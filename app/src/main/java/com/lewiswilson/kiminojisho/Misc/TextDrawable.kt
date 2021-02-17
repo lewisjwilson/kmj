@@ -1,48 +1,34 @@
-package com.lewiswilson.kiminojisho.Misc;
+package com.lewiswilson.kiminojisho.Misc
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
+import android.graphics.*
+import android.graphics.drawable.Drawable
 
-public class TextDrawable extends Drawable {
-
-    private final String text;
-    private final Paint paint;
-
-    public TextDrawable(String text) {
-
-        this.text = text;
-
-        this.paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(22f);
-        paint.setAntiAlias(true);
-        paint.setFakeBoldText(true);
-        paint.setShadowLayer(6f, 0, 0, Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setTextAlign(Paint.Align.LEFT);
+class TextDrawable(private val text: String) : Drawable() {
+    private val paint: Paint
+    override fun draw(canvas: Canvas) {
+        canvas.drawText(text, 0f, 0f, paint)
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawText(text, 0, 0, paint);
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        paint.setAlpha(alpha);
+    override fun setColorFilter(cf: ColorFilter?) {
+        paint.colorFilter = cf
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        paint.setColorFilter(cf);
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
     }
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSLUCENT;
+    init {
+        paint = Paint()
+        paint.color = Color.WHITE
+        paint.textSize = 22f
+        paint.isAntiAlias = true
+        paint.isFakeBoldText = true
+        paint.setShadowLayer(6f, 0f, 0f, Color.BLACK)
+        paint.style = Paint.Style.FILL
+        paint.textAlign = Paint.Align.LEFT
     }
 }
