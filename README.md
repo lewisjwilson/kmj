@@ -1,4 +1,4 @@
-# KimiNoJisho
+# kiminojisho (kmj)
 
 KimiNoJisho is THE Japanese personal dictionary app! If, just like me, you shave come across so many new words and phrases in Japanese that you just can’t seem to keep track of, then this is the app for you.
 
