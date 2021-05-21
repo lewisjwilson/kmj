@@ -1,5 +1,7 @@
 # kiminojisho (kmj)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/thicksandwich/kmj/badge)](https://www.codefactor.io/repository/github/thicksandwich/kmj)
+
 KimiNoJisho is THE Japanese personal dictionary app! If, just like me, you shave come across so many new words and phrases in Japanese that you just can’t seem to keep track of, then this is the app for you.
 
 KimiNoJisho provides a slick and simple interface for adding new words to YOUR personal dictionary. Use the search feature to add a new word to your custom list. Manual entry is also avaliable for words you pick up through friends/other means. You can even add notes and your own example sentences if you should so desire.
