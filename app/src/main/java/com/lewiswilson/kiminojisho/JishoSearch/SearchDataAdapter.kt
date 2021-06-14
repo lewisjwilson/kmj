@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.SearchRecycler
+package com.lewiswilson.kiminojisho.JishoSearch
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.MainActivity
 import com.lewiswilson.kiminojisho.R
-import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter.SearchDataViewHolder
+import com.lewiswilson.kiminojisho.JishoSearch.SearchDataAdapter.SearchDataViewHolder
 import java.util.*
 
 class SearchDataAdapter(private val mContext: Context, private val mSearchList: ArrayList<SearchDataItem>, private val myDB: DatabaseHelper) : RecyclerView.Adapter<SearchDataViewHolder>() {

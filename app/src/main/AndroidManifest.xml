@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.Transparency"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SearchPage"
+            android:name=".JishoSearch.SearchPage"
             android:label="Search"
             android:theme="@style/AppTheme.Transparency"
             android:windowSoftInputMode="adjustResize" />

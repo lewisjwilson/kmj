@@ -1,51 +1,119 @@
-package com.lewiswilson.kiminojisho
+package com.lewiswilson.kiminojisho.JishoSearch
 
 import android.content.Intent
 import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lewiswilson.kiminojisho.AddWord
+import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.JSON.Japanese
 import com.lewiswilson.kiminojisho.JSON.JishoData
 import com.lewiswilson.kiminojisho.JSON.RetrofitClient
-import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataAdapter
-import com.lewiswilson.kiminojisho.SearchRecycler.SearchDataItem
+import com.lewiswilson.kiminojisho.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 import kotlinx.android.synthetic.main.search_page.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 
-class SearchPage : AppCompatActivity() {
+class SearchPage : AppCompatActivity(), CoroutineScope {
 
     private var mSearchList: ArrayList<SearchDataItem>? = ArrayList()
     private var mSearchDataAdapter: SearchDataAdapter? = null
+    private val myDB = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_page)
+        job = Job()
+        setUpSearchStateFlow()
         sp = this
-        val myDB = DatabaseHelper(this)
+
+        // setting autofocus on searchview when activity is started
+        sv_searchfield.isIconifiedByDefault = false
+        sv_searchfield.isFocusable = true
+        sv_searchfield.requestFocusFromTouch()
 
         //initiate recyclerview and set parameters
         rv_searchdata.setHasFixedSize(true)
         rv_searchdata.setLayoutManager(LinearLayoutManager(this))
 
-        search_button.setOnClickListener {
+       btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
+    }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private lateinit var job: Job
+
+    override fun onDestroy() {
+        job.cancel()
+        super.onDestroy()
+    }
+
+    private fun setUpSearchStateFlow() {
+        launch {
+            sv_searchfield.getQueryTextChangeStateFlow()
+                .debounce(300)
+                .filter { query ->
+                    return@filter !query.isEmpty()
+                }
+                .distinctUntilChanged()
+                .flatMapLatest { query ->
+                    dataFromNetwork(query)
+                        .catch {
+                            emitAll(flowOf(""))
+                        }
+                }
+                .flowOn(Dispatchers.Main)
+                .collect { result ->
+                    val text = ""
+                }
+        }
+    }
+
+    private fun SearchView.getQueryTextChangeStateFlow(): StateFlow<String> {
+
+        val query = MutableStateFlow("")
+
+        setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                query.value = newText
+                return true
+            }
+        })
+
+        return query
+    }
+
+    //get API data
+    private fun dataFromNetwork(query: String): Flow<String> {
+        return flow {
+            tv_info.visibility = View.INVISIBLE
             //if the search adapter has data in it already, clear the recyclerview
+            rv_searchdata.adapter = mSearchDataAdapter
             if (mSearchDataAdapter != null) {
                 clearData()
             }
-            val searchtext = et_searchfield.text.toString()
 
             //if the searchtext contains any japanese...
-            val call: Call<JishoData> = if (containsJapanese(searchtext)) {
-                RetrofitClient.getInstance().myApi.getData(searchtext)
+            val call: Call<JishoData> = if (containsJapanese(query)) {
+                RetrofitClient.getInstance().myApi.getData(query)
             } else {
                 //use searchtext to query API (using API interface)
-                RetrofitClient.getInstance().myApi.getData("\"" + searchtext + "\"")
+                RetrofitClient.getInstance().myApi.getData( query )
             }
             call.enqueue(object : Callback<JishoData> {
                 override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
@@ -55,7 +123,8 @@ class SearchPage : AppCompatActivity() {
 
                     //if no data was found, try a call assuming romaji style
                     if (data.isEmpty()) {
-                        Toast.makeText(applicationContext, "No data found", Toast.LENGTH_LONG).show()
+                        tv_info.visibility = View.VISIBLE
+                        tv_info.setText("No results found")
                     }
 
                     //try to retrieve data from jishoAPI
@@ -93,10 +162,9 @@ class SearchPage : AppCompatActivity() {
                             mSearchList!!.add(SearchDataItem(kanji, kana, english, notes))
                         }
                         mSearchDataAdapter = mSearchList?.let { it1 -> SearchDataAdapter(this@SearchPage, it1, myDB) }
-                        rv_searchdata.setAdapter(mSearchDataAdapter)
+                        rv_searchdata.adapter = mSearchDataAdapter
                     } catch (e: Exception) {
                         Log.d("", "Data Retrieval Error: " + e.message)
-                        Toast.makeText(applicationContext, "No data found", Toast.LENGTH_LONG).show()
                     }
                 }
 
@@ -106,8 +174,8 @@ class SearchPage : AppCompatActivity() {
                     Log.d("", "SearchPage (Error): " + t.message)
                 }
             })
+            emit(query)
         }
-        btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
     }
 
     private fun containsJapanese(input: String): Boolean {

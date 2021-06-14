@@ -17,7 +17,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     private var db: SQLiteDatabase? = null
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, WORD TEXT, KANA TEXT, MEANING TEXT, EXAMPLE TEXT, UNIQUE(WORD))")
+        db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, WORD TEXT, KANA TEXT, MEANING TEXT, EXAMPLE TEXT, NOTES TEXT, UNIQUE(WORD))")
     }
 
     //Changes made for Importing
@@ -28,7 +28,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             //} catch (IOException e) {
             //	e.printStackTrace();
             //}
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COL5 TEXT")
+            //db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COL5 TEXT")
         }
     }
 

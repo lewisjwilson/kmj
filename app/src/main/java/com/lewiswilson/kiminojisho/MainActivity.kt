@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.lewiswilson.kiminojisho.MainActivity
+import com.lewiswilson.kiminojisho.JishoSearch.SearchPage
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
 import java.io.File
