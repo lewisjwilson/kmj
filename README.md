@@ -1,4 +1,4 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/thicksandwich/kmj/badge)](https://www.codefactor.io/repository/github/thicksandwich/kmj)
+[![CodeFactor](https://www.codefactor.io/repository/github/lewisjwilson/kmj/badge)](https://www.codefactor.io/repository/github/lewisjwilson/kmj)
 
 # kiminojisho (kmj)
 
