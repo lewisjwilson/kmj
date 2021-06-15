@@ -8,6 +8,9 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
     <item
+        android:id="@+id/action_sortby"
+        android:title="Sort by..." />
+    <item
         android:id="@+id/action_alarm"
         android:title="@string/ActionAlarm"
         app:showAsAction="never" />

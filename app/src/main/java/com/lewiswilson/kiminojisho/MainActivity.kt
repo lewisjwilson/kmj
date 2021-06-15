@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -20,65 +22,50 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.JishoSearch.SearchPage
+import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.my_list_item.view.*
+import kotlinx.android.synthetic.main.search_page.*
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
     private val PREFS_NAME = "MyPrefs"
     private var myDB: DatabaseHelper? = null
-    private var jishoList: ArrayList<String>? = null
-    private var listAdapter: ArrayAdapter<String>? = null
+    private var jishoList: ArrayList<MyListItem>? = ArrayList()
+    private var rvAdapter: MyListAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_main)
         ma = this
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
         //Check if it is a first time launch
         if (prefs.getBoolean("first_launch", true)) {
             firstLaunch()
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
         }
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val listView = findViewById<ListView>(R.id.list_jisho)
-        listView.emptyView = findViewById(R.id.txt_listempty)
         val flbtn_add = findViewById<FloatingActionButton>(R.id.flbtn_add)
         val flbtn_rand = findViewById<FloatingActionButton>(R.id.flbtn_rand)
         myDB = DatabaseHelper(this)
-        jishoList = ArrayList()
-        val data = myDB!!.listContents
 
-        //Checks if database is empty and lists entries if not
-        if (data.count == 0) {
-            flbtn_rand.isEnabled = false
-        } else {
-            flbtn_rand.isEnabled = true
-            while (data.moveToNext()) {
-                //ListView Data Layout
-                if (data.getString(1) == data.getString(2)) {
-                    jishoList!!.add(data.getString(1) + " ; " +
-                            data.getString(3))
-                } else {
-                    jishoList!!.add(data.getString(1) + " ; " +
-                            data.getString(2) + " ; " +
-                            data.getString(3))
-                }
-                listAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, jishoList!!)
-                listView.adapter = listAdapter
-            }
-        }
-        listView.onItemClickListener = OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            //Get "Word" value from listview for using to select db record
-            list_selection = listView.getItemAtPosition(position) as String
-            list_selection = list_selection!!.split(" ;").toTypedArray()[0]
-            startActivity(Intent(this@MainActivity, ViewWord::class.java))
-        }
+        //initiate recyclerview and set parameters
+        rv_mylist.setHasFixedSize(true)
+        rv_mylist.setLayoutManager(LinearLayoutManager(this))
+
+        val data = myDB!!.listContents
+        populateRV(data)
+
         flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
         flbtn_rand.setOnClickListener { v: View? ->
             list_selection = myDB!!.random(0)
@@ -86,36 +73,55 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun firstLaunch() {
-        val fscv1 = FancyShowCaseView.Builder(this)
-                .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
-                .backgroundColor(Color.parseColor("#DD008577"))
-                .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
-                .build()
-        val fscv2 = FancyShowCaseView.Builder(this)
-                .title("This is the main screen. This shows you dictionary entries.")
-                .backgroundColor(Color.parseColor("#DD008577"))
-                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-                .build()
-        val fscv3 = FancyShowCaseView.Builder(this)
-                .title("To create your first dictionary entry, use this button.")
-                .focusOn(findViewById(R.id.flbtn_add))
-                .backgroundColor(Color.parseColor("#DD008577"))
-                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-                .build()
-        val fscv4 = FancyShowCaseView.Builder(this)
-                .title("To test yourself, let the app choose a random word from your dictionary!")
-                .focusOn(findViewById(R.id.flbtn_rand))
-                .backgroundColor(Color.parseColor("#DD008577"))
-                .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-                .build()
-        val fscvQueue = FancyShowCaseQueue()
-                .add(fscv1)
-                .add(fscv2)
-                .add(fscv3)
-                .add(fscv4)
-        fscvQueue.show()
+    //populate recyclerview with data
+    fun populateRV(data: Cursor) {
+        //Checks if database is empty and lists entries if not
+        if (data.count == 0) {
+            flbtn_rand.isEnabled = false
+        } else {
+            flbtn_rand.isEnabled = true
+            while (data.moveToNext()) {
+                //ListView Data Layout
+                Log.d("HERE!", data.getString(1))
+                if (data.getString(1) == data.getString(2)) {
+                    jishoList!!.add(
+                        MyListItem(data.getString(1),
+                            data.getString(1),
+                            data.getString(3),
+                            ""
+                        )
+                    )
+                } else {
+                    Log.d("HERE!", data.getString(1) + " " + data.getString(2)+ " " + data.getString(3) + " " + data.getString(4))
+                    jishoList!!.add(
+                        MyListItem(data.getString(1),
+                            data.getString(2),
+                            data.getString(3),
+                            data.getString(5)
+                        )
+                    )
+                }
+                rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, myDB!!, this) }
+                rv_mylist.adapter = rvAdapter
+            }
+        }
     }
+
+    // recyclerview item click
+    override fun onItemClick(kanji: String) {
+        list_selection = kanji
+        startActivity(Intent(this@MainActivity, ViewWord::class.java))
+    }
+
+    fun clearData() {
+        jishoList!!.clear() // clear list
+        rvAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
+    }
+
+
+
+
+
 
     // Menu icons are inflated just as they were with actionbar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -133,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(searchtext: String): Boolean {
                 //filter arraylist
-                listAdapter!!.filter.filter(searchtext)
+                //listAdapter!!.filter.filter(searchtext)
                 return false
             }
         })
@@ -143,6 +149,10 @@ class MainActivity : AppCompatActivity() {
     //Toolbar Menu Option Activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_sortby -> {
+                //
+                true
+            }
             R.id.action_alarm -> {
                 setupNotifications()
                 true
@@ -225,6 +235,7 @@ class MainActivity : AppCompatActivity() {
 
     //Request Permissions
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
             if (!(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this@MainActivity, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
@@ -297,5 +308,36 @@ class MainActivity : AppCompatActivity() {
         var fileUri: Uri? = null
         @JvmField
         var ma: AppCompatActivity? = null
+    }
+
+    private fun firstLaunch() {
+        val fscv1 = FancyShowCaseView.Builder(this)
+            .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
+            .backgroundColor(Color.parseColor("#DD008577"))
+            .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
+            .build()
+        val fscv2 = FancyShowCaseView.Builder(this)
+            .title("This is the main screen. This shows you dictionary entries.")
+            .backgroundColor(Color.parseColor("#DD008577"))
+            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+            .build()
+        val fscv3 = FancyShowCaseView.Builder(this)
+            .title("To create your first dictionary entry, use this button.")
+            .focusOn(findViewById(R.id.flbtn_add))
+            .backgroundColor(Color.parseColor("#DD008577"))
+            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+            .build()
+        val fscv4 = FancyShowCaseView.Builder(this)
+            .title("To test yourself, let the app choose a random word from your dictionary!")
+            .focusOn(findViewById(R.id.flbtn_rand))
+            .backgroundColor(Color.parseColor("#DD008577"))
+            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
+            .build()
+        val fscvQueue = FancyShowCaseQueue()
+            .add(fscv1)
+            .add(fscv2)
+            .add(fscv3)
+            .add(fscv4)
+        fscvQueue.show()
     }
 }

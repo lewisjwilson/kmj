@@ -1,12 +1,10 @@
 package com.lewiswilson.kiminojisho.JishoSearch
 
 import android.content.Intent
-import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lewiswilson.kiminojisho.AddWord
@@ -109,12 +107,8 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
             }
 
             //if the searchtext contains any japanese...
-            val call: Call<JishoData> = if (containsJapanese(query)) {
-                RetrofitClient.getInstance().myApi.getData(query)
-            } else {
-                //use searchtext to query API (using API interface)
-                RetrofitClient.getInstance().myApi.getData( query )
-            }
+            val call: Call<JishoData> = RetrofitClient.getInstance().myApi.getData(query)
+
             call.enqueue(object : Callback<JishoData> {
                 override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
 
@@ -161,7 +155,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                             }
                             mSearchList!!.add(SearchDataItem(kanji, kana, english, notes))
                         }
-                        mSearchDataAdapter = mSearchList?.let { it1 -> SearchDataAdapter(this@SearchPage, it1, myDB) }
+                        mSearchDataAdapter = mSearchList?.let { it -> SearchDataAdapter(this@SearchPage, it, myDB) }
                         rv_searchdata.adapter = mSearchDataAdapter
                     } catch (e: Exception) {
                         Log.d("", "Data Retrieval Error: " + e.message)
@@ -170,30 +164,11 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
 
                 override fun onFailure(call: Call<JishoData>, t: Throwable) {
                     //handle error or failure cases here
-                    Toast.makeText(applicationContext, t.message, Toast.LENGTH_LONG).show()
                     Log.d("", "SearchPage (Error): " + t.message)
                 }
             })
             emit(query)
         }
-    }
-
-    private fun containsJapanese(input: String): Boolean {
-        val japaneseUnicodeBlocks: HashSet<UCharacter.UnicodeBlock?> = object : HashSet<UCharacter.UnicodeBlock?>() {
-            init {
-                add(UCharacter.UnicodeBlock.HIRAGANA)
-                add(UCharacter.UnicodeBlock.KATAKANA)
-                add(UCharacter.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS)
-            }
-        }
-
-        //for each character in string, if a japanese character occurs at all, return true
-        for (c in input.toCharArray()) {
-            if (japaneseUnicodeBlocks.contains(UCharacter.UnicodeBlock.of(c.toInt()))) {
-                return true
-            }
-        }
-        return false
     }
 
     fun clearData() {

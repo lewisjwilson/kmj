@@ -67,7 +67,7 @@ class AddWord : AppCompatActivity() {
         if (myDB!!.addData(word, kana, meaning, example, notes)) {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "This word is already in your list!", Toast.LENGTH_SHORT).show()
         }
     }
 
