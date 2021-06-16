@@ -26,15 +26,9 @@ class MyListAdapter(private val mContext: Context,
         val kanji = currentItem.kanji
         val kana = currentItem.kana
         val english = currentItem.english
-        val notes = currentItem.notes
         holder.mKanjiView.text = kanji
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
-        holder.mNotesView.text = notes
-        if (notes == null) {
-            holder.mNotesView.visibility = View.GONE
-        }
-
 
     }
 
@@ -46,7 +40,6 @@ class MyListAdapter(private val mContext: Context,
         var mKanjiView: TextView = itemView.findViewById(R.id.kanjiview)
         var mKanaView: TextView = itemView.findViewById(R.id.kanaview)
         var mEnglishView: TextView = itemView.findViewById(R.id.englishview)
-        var mNotesView: TextView = itemView.findViewById(R.id.notesview)
 
         init{
             itemView.setOnClickListener(this)
