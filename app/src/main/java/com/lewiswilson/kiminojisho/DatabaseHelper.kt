@@ -48,7 +48,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     //Import DB from Assets folder
     @Throws(IOException::class)
     private fun copyDatabase() {
-        val myInput = MainActivity.fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
+        val myInput =
+            MainActivity.fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
         val outFileName = DATABASE_PATH.toString() + DATABASE_NAME
         val myOutput: OutputStream = FileOutputStream(outFileName)
         val buffer = ByteArray(10)
@@ -71,7 +72,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         super.close()
     }
 
-    fun updateData(list_selection: String, new_kana: String?, new_meaning: String?, new_example: String?, new_notes: String?) {
+    fun updateData(
+        list_selection: String,
+        new_kana: String?,
+        new_meaning: String?,
+        new_example: String?,
+        new_notes: String?
+    ) {
         db = writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COL2, new_kana)
@@ -128,7 +135,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 getNotes
     }
 
-    fun addData(word: String, kana: String?, meaning: String?, example: String?, notes: String?): Boolean {
+    fun addData(
+        word: String,
+        kana: String?,
+        meaning: String?,
+        example: String?,
+        notes: String?
+    ): Boolean {
         db = writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COL1, word)
@@ -145,8 +158,9 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return db?.insert(str, null, contentValues) != -1L
     }
 
-    val listContents: Cursor
-        get() = writableDatabase.rawQuery("SELECT * FROM jisho_data ORDER BY MEANING COLLATE NOCASE ASC", null)
+    fun listContents(column: String, ascDesc: String): Cursor {
+        return writableDatabase.rawQuery("SELECT * FROM jisho_data ORDER BY $column COLLATE NOCASE $ascDesc", null)
+    }
 
     fun random(flag: Int): String {
         var rand_word = ""

@@ -5,6 +5,7 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Color
@@ -46,11 +47,14 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
         ma = this
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+
         //Check if it is a first time launch
         if (prefs.getBoolean("first_launch", true)) {
             firstLaunch()
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
+            prefs.edit().putString("sortby_col", "MEANING").apply()
+            prefs.edit().putString("sort_style", "ASC").apply()
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -63,8 +67,7 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
         rv_mylist.setHasFixedSize(true)
         rv_mylist.setLayoutManager(LinearLayoutManager(this))
 
-        val data = myDB!!.listContents
-        populateRV(data)
+        populateRV()
 
         flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
         flbtn_rand.setOnClickListener { v: View? ->
@@ -74,7 +77,12 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
     }
 
     //populate recyclerview with data
-    fun populateRV(data: Cursor) {
+    fun populateRV() {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val column = prefs.getString("sortby_col", "MEANING")
+        val ascDesc = prefs.getString("sort_style", "ASC")
+        val data = myDB!!.listContents(column!!, ascDesc!!)
+
         //Checks if database is empty and lists entries if not
         if (data.count == 0) {
             flbtn_rand.isEnabled = false
@@ -105,6 +113,7 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
                 rv_mylist.adapter = rvAdapter
             }
         }
+
     }
 
     // recyclerview item click
@@ -116,12 +125,8 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
     fun clearData() {
         jishoList!!.clear() // clear list
         rvAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
+        populateRV()
     }
-
-
-
-
-
 
     // Menu icons are inflated just as they were with actionbar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -148,9 +153,30 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
 
     //Toolbar Menu Option Activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return when (item.itemId) {
-            R.id.action_sortby -> {
-                //
+            R.id.meaning_asc -> {
+                prefs.edit().putString("sortby_col", "MEANING").apply()
+                prefs.edit().putString("sort_style", "ASC").apply()
+                clearData()
+                true
+            }
+            R.id.meaning_desc -> {
+                prefs.edit().putString("sortby_col", "MEANING").apply()
+                prefs.edit().putString("sort_style", "DESC").apply()
+                clearData()
+                true
+            }
+            R.id.kana_asc -> {
+                prefs.edit().putString("sortby_col", "KANA").apply()
+                prefs.edit().putString("sort_style", "ASC").apply()
+                clearData()
+                true
+            }
+            R.id.kana_desc -> {
+                prefs.edit().putString("sortby_col", "KANA").apply()
+                prefs.edit().putString("sort_style", "DESC").apply()
+                clearData()
                 true
             }
             R.id.action_alarm -> {

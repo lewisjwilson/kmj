@@ -9,7 +9,30 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_sortby"
-        android:title="Sort by..." />
+        android:title="Sort by...">
+
+        <menu>
+            <item
+                android:id="@+id/meaning_asc"
+                android:title="Meaning A->Z">
+            </item>
+            <item
+                android:id="@+id/meaning_desc"
+                android:title="Meaning Z->A">
+            </item>
+            <item
+                android:id="@+id/kana_asc"
+                android:title="Kana あ->ン">
+            </item>
+            <item
+                android:id="@+id/kana_desc"
+                android:title="Kana ン->あ">
+            </item>
+
+
+        </menu>
+
+    </item>
     <item
         android:id="@+id/action_alarm"
         android:title="@string/ActionAlarm"
