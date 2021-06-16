@@ -5,10 +5,9 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +17,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -35,10 +33,13 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
+
+class MainActivity : AppCompatActivity(),
+    MyListAdapter.OnItemClickListener {
     private val PREFS_NAME = "MyPrefs"
     private var myDB: DatabaseHelper? = null
     private var jishoList: ArrayList<MyListItem>? = ArrayList()
+    private var searchList: ArrayList<MyListItem>? = ArrayList()
     private var rvAdapter: MyListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +69,8 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
         rv_mylist.setLayoutManager(LinearLayoutManager(this))
 
         populateRV()
+        //displaylist shows when searching in searchview
+        searchList!!.addAll(jishoList!!)
 
         flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
         flbtn_rand.setOnClickListener { v: View? ->
@@ -90,7 +93,7 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
             flbtn_rand.isEnabled = true
             while (data.moveToNext()) {
                 //ListView Data Layout
-                Log.d("HERE!", data.getString(1))
+                Log.d("HERE1!", data.getString(1))
                 if (data.getString(1) == data.getString(2)) {
                     jishoList!!.add(
                         MyListItem(data.getString(1),
@@ -100,7 +103,7 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
                         )
                     )
                 } else {
-                    Log.d("HERE!", data.getString(1) + " " + data.getString(2)+ " " + data.getString(3) + " " + data.getString(4))
+                    Log.d("HERE2!", data.getString(1) + " " + data.getString(2)+ " " + data.getString(3) + " " + data.getString(4))
                     jishoList!!.add(
                         MyListItem(data.getString(1),
                             data.getString(2),
@@ -109,9 +112,11 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
                         )
                     )
                 }
-                rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, myDB!!, this) }
+                rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, this) }
                 rv_mylist.adapter = rvAdapter
+
             }
+
         }
 
     }
@@ -142,9 +147,26 @@ class MainActivity : AppCompatActivity(), MyListAdapter.onItemClickListener {
                 return false
             }
 
-            override fun onQueryTextChange(searchtext: String): Boolean {
-                //filter arraylist
-                //listAdapter!!.filter.filter(searchtext)
+            override fun onQueryTextChange(searchtext: String?): Boolean {
+                // populate the recyclerview on search query change
+                if(searchtext!!.isNotEmpty()){
+                    jishoList!!.clear()
+                    val search = searchtext.toLowerCase(Locale.getDefault())
+                    searchList!!.forEach {
+                        if(it.english.toLowerCase(Locale.getDefault()).contains(search) or
+                            it.kana.toLowerCase(Locale.getDefault()).contains(search) or
+                            it.kanji.toLowerCase(Locale.getDefault()).contains(search)){
+
+                            jishoList!!.add(it)
+                        }
+                    }
+
+                    rvAdapter!!.notifyDataSetChanged()
+
+                } else {
+                    clearData()
+                }
+
                 return false
             }
         })

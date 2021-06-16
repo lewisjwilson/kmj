@@ -1,20 +1,20 @@
 package com.lewiswilson.kiminojisho
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 
-class MyListAdapter(private val mContext: Context,
-                    private val mDataList: ArrayList<MyListItem>,
-                    private val myDB: DatabaseHelper,
-                    private val listener: onItemClickListener) : RecyclerView.Adapter<MyListAdapter.MyListViewHolder>() {
+class MyListAdapter(
+    private val mContext: Context,
+    private var mDataList: ArrayList<MyListItem>,
+    private val listener: OnItemClickListener
+) : RecyclerView.Adapter<MyListAdapter.MyListViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyListViewHolder {
         val v = LayoutInflater.from(mContext).inflate(R.layout.my_list_item, parent, false)
@@ -30,6 +30,11 @@ class MyListAdapter(private val mContext: Context,
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
 
+    }
+
+    fun updateList(data: ArrayList<MyListItem>) {
+        mDataList = data
+        notifyDataSetChanged()
     }
 
    override fun getItemCount(): Int {
@@ -52,7 +57,7 @@ class MyListAdapter(private val mContext: Context,
 
     }
 
-    interface onItemClickListener {
+    interface OnItemClickListener {
         fun onItemClick(kanji: String)
     }
 
