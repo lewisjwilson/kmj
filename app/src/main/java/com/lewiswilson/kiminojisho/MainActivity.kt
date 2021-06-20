@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity(),
 
         flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
         flbtn_rand.setOnClickListener { v: View? ->
-            list_selection = myDB!!.random(0)
+            list_index = myDB!!.random(0)
             startActivity(Intent(this@MainActivity, ViewWord::class.java))
         }
     }
@@ -103,7 +102,10 @@ class MainActivity : AppCompatActivity(),
                         )
                     )
                 } else {
-                    Log.d("HERE2!", data.getString(1) + " " + data.getString(2)+ " " + data.getString(3) + " " + data.getString(4))
+                    Log.d("HERE2!", data.getString(1) + " " +
+                            data.getString(2)+ " " +
+                            data.getString(3) + " " +
+                            data.getString(4))
                     jishoList!!.add(
                         MyListItem(data.getString(1),
                             data.getString(2),
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity(),
 
     // recyclerview item click
     override fun onItemClick(kanji: String) {
-        list_selection = kanji
+        list_index = kanji
         startActivity(Intent(this@MainActivity, ViewWord::class.java))
     }
 
@@ -350,7 +352,7 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val REQUEST_CODE = 10
         @JvmField
-        var list_selection //use to collect the "WORD" value and display data in ViewWord
+        var list_index //use to collect the "WORD" value and display data in ViewWord
                 : String? = null
         @JvmField
         var fileUri: Uri? = null

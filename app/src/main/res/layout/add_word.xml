@@ -56,7 +56,7 @@
                 android:text="@string/Kana" />
 
             <EditText
-                android:id="@+id/edit_kana"
+                android:id="@+id/view_kana"
                 android:layout_width="350dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
@@ -76,7 +76,7 @@
                 android:text="@string/Meaning" />
 
             <EditText
-                android:id="@+id/edit_meaning"
+                android:id="@+id/view_english"
                 android:layout_width="350dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
@@ -96,7 +96,7 @@
                 android:text="@string/Example" />
 
             <EditText
-                android:id="@+id/edit_example"
+                android:id="@+id/view_examples"
                 android:layout_width="350dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
@@ -116,7 +116,7 @@
                 android:text="Notes:" />
 
             <EditText
-                android:id="@+id/edit_notes"
+                android:id="@+id/view_notes"
                 android:layout_width="350dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"

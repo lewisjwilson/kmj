@@ -6,6 +6,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.add_word.*
+import kotlinx.android.synthetic.main.add_word.view_english
+import kotlinx.android.synthetic.main.add_word.view_examples
+import kotlinx.android.synthetic.main.add_word.view_kana
+import kotlinx.android.synthetic.main.add_word.view_notes
+import kotlinx.android.synthetic.main.view_word.*
 
 class AddWord : AppCompatActivity() {
     private var myDB: DatabaseHelper? = null
@@ -22,21 +27,21 @@ class AddWord : AppCompatActivity() {
                 ToggleKanji = false
                 txt_word.setText(R.string.Kana)
                 txt_kana.visibility = View.GONE
-                edit_kana.visibility = View.GONE
+                view_kana.visibility = View.GONE
             } else {
                 ToggleKanji = true
                 txt_word.setText(R.string.Kanji)
                 txt_kana.visibility = View.VISIBLE
-                edit_kana.visibility = View.VISIBLE
+                view_kana.visibility = View.VISIBLE
             }
         }
         btn_togglekanji.setOnClickListener(toggle)
         val add = View.OnClickListener { v: View? ->
             val newEntryWord = RemoveSemicolon(edit_word.text.toString().trim { it <= ' ' })
-            val newEntryKana = RemoveSemicolon(edit_kana.text.toString().trim { it <= ' ' })
-            val newEntryMeaning = RemoveSemicolon(edit_meaning.text.toString().trim { it <= ' ' })
-            val newEntryExample = RemoveSemicolon(edit_example.text.toString().trim { it <= ' ' })
-            val newEntryNotes = "[ " + RemoveSemicolon(edit_notes.text.toString().trim { it <= ' ' }) + " ]"
+            val newEntryKana = RemoveSemicolon(view_kana.text.toString().trim { it <= ' ' })
+            val newEntryMeaning = RemoveSemicolon(view_english.text.toString().trim { it <= ' ' })
+            val newEntryExample = RemoveSemicolon(view_examples.text.toString().trim { it <= ' ' })
+            val newEntryNotes = "[ " + RemoveSemicolon(view_notes.text.toString().trim { it <= ' ' }) + " ]"
             if (ToggleKanji) {
                 if (newEntryWord.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
                     Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()

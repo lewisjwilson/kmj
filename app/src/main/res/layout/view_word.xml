@@ -7,13 +7,114 @@
     android:layout_height="match_parent"
     tools:context=".ViewWord">
 
+    <TextView
+        android:id="@+id/view_kanji"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:text="漢字"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/view_kana"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:hint="@string/blank"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_kanji"
+        tools:text="かたかな" />
+
+    <TextView
+        android:id="@+id/view_english"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:ems="10"
+        android:hint="English"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_kana" />
+
+    <TextView
+        android:id="@+id/view_notes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:hint="@string/blank"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:text="Notes"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_english" />
+
+    <TextView
+        android:id="@+id/txt_examples"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:text="Examples:"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_notes" />
+
+    <TextView
+        android:id="@+id/view_examples"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:ems="10"
+        android:hint="@string/blank"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:text="Examples"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_examples" />
+
     <Button
         android:id="@+id/btn_delete"
         android:layout_width="125dp"
         android:layout_height="44dp"
         android:layout_gravity="end"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="20dp"
         android:backgroundTint="@android:color/holo_red_light"
         android:text="@string/Delete_Entry"
         android:textColor="@android:color/white"
@@ -21,140 +122,6 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:isScrollContainer="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_word"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/Kanji" />
-
-            <TextView
-                android:id="@+id/txt_word_val"
-                android:layout_width="183dp"
-                android:layout_height="23dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/Word_Contents"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txt_kana"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/Kana" />
-
-            <EditText
-                android:id="@+id/edit_kana"
-                android:hint="@string/blank"
-                android:layout_width="349dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine" />
-
-            <TextView
-                android:id="@+id/txt_meaning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/Meaning"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edit_meaning"
-                android:layout_width="349dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:ems="10"
-                android:hint="@string/blank"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine" />
-
-            <TextView
-                android:id="@+id/txt_example"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/Example" />
-
-            <EditText
-                android:id="@+id/edit_example"
-                android:layout_width="349dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/blank"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine" />
-
-            <TextView
-                android:id="@+id/txt_notes"
-                android:layout_width="349dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:text="Notes:" />
-
-            <EditText
-                android:id="@+id/edit_notes"
-                android:layout_width="349dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="0dp"
-                android:ems="10"
-                android:hint="@string/blank"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine" />
-
-            <Button
-                android:id="@+id/btn_update"
-                android:layout_width="211dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="@string/Update_Entry"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/edit_notes" />
-
-        </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btn_hideshow"
-        android:layout_width="211dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:text="@string/HideShow"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flbtn_rand"

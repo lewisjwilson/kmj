@@ -17,7 +17,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     private var db: SQLiteDatabase? = null
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, WORD TEXT, KANA TEXT, MEANING TEXT, EXAMPLE TEXT, NOTES TEXT, UNIQUE(WORD))")
+        db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "WORD TEXT, " +
+                "KANA TEXT, " +
+                "MEANING TEXT, " +
+                "EXAMPLE TEXT, " +
+                "NOTES TEXT, " +
+                "UNIQUE(WORD))")
     }
 
     //Changes made for Importing
@@ -159,12 +165,15 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     fun listContents(column: String, ascDesc: String): Cursor {
-        return writableDatabase.rawQuery("SELECT * FROM jisho_data ORDER BY $column COLLATE NOCASE $ascDesc", null)
+        return writableDatabase.rawQuery("SELECT * FROM jisho_data " +
+                "ORDER BY $column " +
+                "COLLATE NOCASE $ascDesc", null)
     }
 
     fun random(flag: Int): String {
         var rand_word = ""
-        val cursor = readableDatabase.rawQuery("SELECT WORD, KANA, MEANING FROM jisho_data WHERE ID IN (SELECT ID FROM jisho_data ORDER BY RANDOM() LIMIT 1)", null)
+        val cursor = readableDatabase.rawQuery("SELECT WORD, KANA, MEANING FROM jisho_data " +
+                "WHERE ID IN (SELECT ID FROM jisho_data ORDER BY RANDOM() LIMIT 1)", null)
         val str = COL1
         if (flag == 0) {
             if (cursor.moveToFirst()) {
