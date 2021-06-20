@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(),
 
         flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
         flbtn_rand.setOnClickListener { v: View? ->
-            list_index = myDB!!.random(0)
+            //list_index = myDB!!.random(0)
             startActivity(Intent(this@MainActivity, ViewWord::class.java))
         }
     }
@@ -92,22 +92,19 @@ class MainActivity : AppCompatActivity(),
             flbtn_rand.isEnabled = true
             while (data.moveToNext()) {
                 //ListView Data Layout
-                Log.d("HERE1!", data.getString(1))
                 if (data.getString(1) == data.getString(2)) {
                     jishoList!!.add(
-                        MyListItem(data.getString(1),
+                        MyListItem(data.getInt(0),
+                            data.getString(1),
                             data.getString(1),
                             data.getString(3),
                             ""
                         )
                     )
                 } else {
-                    Log.d("HERE2!", data.getString(1) + " " +
-                            data.getString(2)+ " " +
-                            data.getString(3) + " " +
-                            data.getString(4))
-                    jishoList!!.add(
-                        MyListItem(data.getString(1),
+                   jishoList!!.add(
+                        MyListItem(data.getInt(0),
+                            data.getString(1),
                             data.getString(2),
                             data.getString(3),
                             data.getString(5)
@@ -124,8 +121,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     // recyclerview item click
-    override fun onItemClick(kanji: String) {
-        list_index = kanji
+    override fun onItemClick(id: Int) {
+        item_id = id
         startActivity(Intent(this@MainActivity, ViewWord::class.java))
     }
 
@@ -352,8 +349,8 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val REQUEST_CODE = 10
         @JvmField
-        var list_index //use to collect the "WORD" value and display data in ViewWord
-                : String? = null
+        var item_id //use item_id to get and display database data
+                : Int? = null
         @JvmField
         var fileUri: Uri? = null
         @JvmField

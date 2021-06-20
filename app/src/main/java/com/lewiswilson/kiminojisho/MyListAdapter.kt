@@ -1,10 +1,12 @@
 package com.lewiswilson.kiminojisho
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
@@ -23,25 +25,23 @@ class MyListAdapter(
 
     override fun onBindViewHolder(holder: MyListViewHolder, position: Int) {
         val currentItem = mDataList[position]
+        val id = currentItem.id
         val kanji = currentItem.kanji
         val kana = currentItem.kana
         val english = currentItem.english
+        holder.mId.text = id.toString()
         holder.mKanjiView.text = kanji
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
 
     }
 
-    fun updateList(data: ArrayList<MyListItem>) {
-        mDataList = data
-        notifyDataSetChanged()
-    }
-
-   override fun getItemCount(): Int {
+    override fun getItemCount(): Int {
         return mDataList.size
     }
 
     inner class MyListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        var mId: TextView = itemView.findViewById(R.id.itemid)
         var mKanjiView: TextView = itemView.findViewById(R.id.kanjiview)
         var mKanaView: TextView = itemView.findViewById(R.id.kanaview)
         var mEnglishView: TextView = itemView.findViewById(R.id.englishview)
@@ -51,14 +51,15 @@ class MyListAdapter(
         }
 
         override fun onClick(v: View?) {
-            val kanji  = mKanjiView.text.toString()
-            listener.onItemClick(kanji)
+            val id = Integer.parseInt(mId.text.toString())
+            Log.d("ID: ", id.toString())
+            listener.onItemClick(id)
         }
 
     }
 
     interface OnItemClickListener {
-        fun onItemClick(kanji: String)
+        fun onItemClick(item_id: Int)
     }
 
 }

@@ -95,14 +95,14 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         db?.update(TABLE_NAME, contentValues, sb, null)
     }
 
-    fun deleteData(list_selection: String?) {
+    fun deleteData(itemId: String?) {
         //PreparedStatement (Avoiding SQL Injection & Crash)
         try {
             db = writableDatabase
             db?.beginTransaction()
-            val sql = "DELETE FROM jisho_data WHERE WORD = ?"
+            val sql = "DELETE FROM jisho_data WHERE " + COL0 + " = ?"
             val statement = db?.compileStatement(sql)
-            statement?.bindString(1, list_selection)
+            statement?.bindString(1, itemId)
             statement?.executeUpdateDelete()
             db?.setTransactionSuccessful()
         } catch (e: SQLException) {
@@ -110,6 +110,23 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         } finally {
             db?.endTransaction()
         }
+    }
+
+    fun getData(item_id: Int): HashMap<String, String>{
+        db = readableDatabase
+        val cur = db?.rawQuery("SELECT * FROM " + TABLE_NAME +
+        " WHERE " + COL0 + "=?", arrayOf(item_id.toString()))
+
+        var hashMap = HashMap<String, String>()
+
+        if (cur?.moveToFirst() == true) {
+            hashMap.put("kanji", cur.getString(cur.getColumnIndex(COL1)))
+            hashMap.put("kana", cur.getString(cur.getColumnIndex(COL2)))
+            hashMap.put("english", cur.getString(cur.getColumnIndex(COL3)))
+            hashMap.put("example", cur.getString(cur.getColumnIndex(COL4)))
+            hashMap.put("notes", cur.getString(cur.getColumnIndex(COL5)))
+        }
+        return hashMap
     }
 
     fun readData(list_selection: String): String {
@@ -197,6 +214,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     companion object {
+        private const val COL0 = "ID"
         private const val COL1 = "WORD"
         private const val COL2 = "KANA"
         private const val COL3 = "MEANING"
