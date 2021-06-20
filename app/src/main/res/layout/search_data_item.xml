@@ -1,53 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="4dp"
     app:cardCornerRadius="8dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp">
+        app:layout_constraintBottom_toBottomOf="@+id/kanaview"
+        app:layout_constraintTop_toBottomOf="@+id/kanaview">
+
+        <TextView
+            android:id="@+id/notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="notes"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/examples"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="examples"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/kanjiview"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="15dp"
             android:text="漢字"
             android:textColor="@android:color/black"
             android:textSize="20dp"
-            android:textStyle="bold">
-        </TextView>
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/kanaview"
+            app:layout_constraintEnd_toEndOf="@+id/kanaview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintVertical_chainStyle="packed"></TextView>
 
         <TextView
             android:id="@+id/kanaview"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="1dp"
             android:text="かたかな"
             android:textColor="@color/colorAccent"
-            android:textSize="14dp">
-        </TextView>
+            android:textSize="14dp"
+            app:layout_constraintBottom_toTopOf="@+id/englishview"
+            app:layout_constraintEnd_toStartOf="@+id/star"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/kanjiview"></TextView>
 
         <TextView
             android:id="@+id/englishview"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="15dp"
             android:text="English Definition"
             android:textColor="@android:color/black"
-            android:textSize="14dp"></TextView>
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/star"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/kanaview"></TextView>
 
-        <TextView
-            android:id="@+id/notesview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="[ Notes ]"
-            android:textSize="12sp" />
+        <ImageView
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="20dp"
+            android:scaleType="centerInside"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/star_empty" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -13,6 +13,7 @@ import com.lewiswilson.kiminojisho.JSON.Japanese
 import com.lewiswilson.kiminojisho.JSON.JishoData
 import com.lewiswilson.kiminojisho.JSON.RetrofitClient
 import com.lewiswilson.kiminojisho.R
+import kotlinx.android.synthetic.main.search_data_item.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -153,9 +154,15 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                             if (noOfDefinitions > 1) {
                                 english = english + ", " + sense[0].englishDefinitions[1]
                             }
-                            mSearchList!!.add(SearchDataItem(kanji, kana, english, notes))
+
+                           val  star_filled = myDB.checkStarred(kanji)
+
+                            mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", star_filled))
                         }
-                        mSearchDataAdapter = mSearchList?.let { it -> SearchDataAdapter(this@SearchPage, it, myDB) }
+                        mSearchDataAdapter = mSearchList?.let { it -> SearchDataAdapter(
+                            this@SearchPage,
+                            it
+                        ) }
                         rv_searchdata.adapter = mSearchDataAdapter
                     } catch (e: Exception) {
                         Log.d("", "Data Retrieval Error: " + e.message)

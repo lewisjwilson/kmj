@@ -78,23 +78,6 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         super.close()
     }
 
-    fun updateData(
-        list_selection: String,
-        new_kana: String?,
-        new_meaning: String?,
-        new_example: String?,
-        new_notes: String?
-    ) {
-        db = writableDatabase
-        val contentValues = ContentValues()
-        contentValues.put(COL2, new_kana)
-        contentValues.put(COL3, new_meaning)
-        contentValues.put(COL4, new_example)
-        contentValues.put(COL5, new_notes)
-        val sb = "WORD='$list_selection'"
-        db?.update(TABLE_NAME, contentValues, sb, null)
-    }
-
     fun deleteData(itemId: String?) {
         //PreparedStatement (Avoiding SQL Injection & Crash)
         try {
@@ -129,33 +112,17 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return hashMap
     }
 
-    fun readData(list_selection: String): String {
+    fun checkStarred(kanji: String): Boolean {
         db = readableDatabase
-        //PreparedStatement (Avoiding SQL Injection)
-        val cursor = db?.rawQuery("SELECT * FROM jisho_data WHERE WORD=?", arrayOf(list_selection))
-        var getWord = ""
-        var getKana = ""
-        var getMeaning = ""
-        var getExample = ""
-        var getNotes = ""
-        if (cursor?.moveToFirst() == true) {
-            getWord = cursor.getString(cursor.getColumnIndex(COL1))
-            getKana = cursor.getString(cursor.getColumnIndex(COL2))
-            getMeaning = cursor.getString(cursor.getColumnIndex(COL3))
-            getExample = cursor.getString(cursor.getColumnIndex(COL4))
-            getNotes = cursor.getString(cursor.getColumnIndex(COL5))
+        val cur = db?.rawQuery("SELECT EXISTS(SELECT 1 FROM " + TABLE_NAME +
+                " WHERE " + COL1 + "=?)", arrayOf(kanji));
+        var bool = false
+        if (cur?.moveToFirst() == true) {
+            bool = (cur.getInt(0) == 1);
         }
-        cursor?.close()
-        val str2 = ";"
-        return getWord +
-                str2 +
-                getKana +
-                str2 +
-                getMeaning +
-                str2 +
-                getExample +
-                str2 +
-                getNotes
+        Log.d("KANJI: ", kanji)
+        Log.d("CHECKSTARRED: ", bool.toString())
+        return bool
     }
 
     fun addData(

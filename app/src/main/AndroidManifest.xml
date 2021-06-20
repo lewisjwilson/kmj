@@ -34,6 +34,10 @@
             android:label="@string/View_Edit"
             android:windowSoftInputMode="adjustPan"/>
         <activity
+            android:name=".JishoSearch.ViewWordRemote"
+            android:label="@string/View_Edit"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
             android:name=".About"
             android:label="@string/About" />
         <activity
