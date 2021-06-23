@@ -80,12 +80,10 @@
             android:layout_height="0dp"
             android:layout_marginEnd="20dp"
             android:scaleType="centerInside"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/star_empty" />
+            app:srcCompat="@drawable/star_filled" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

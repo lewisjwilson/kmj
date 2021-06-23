@@ -1,11 +1,13 @@
 package com.lewiswilson.kiminojisho
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.view_word.*
 
 class ViewWord : AppCompatActivity() {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -35,8 +36,8 @@ class SearchDataAdapter(
         holder.mEnglishView.text = english
         holder.mExampleView.text = example
         holder.mNotesView.text = notes
-        if(star_filled){
-            holder.mStar.setImageResource(R.drawable.star_filled)
+        if(!star_filled){
+            holder.mStar.visibility = GONE
         }
 
     }

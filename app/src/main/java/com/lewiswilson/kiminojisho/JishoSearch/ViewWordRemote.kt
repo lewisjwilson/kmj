@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.MainActivity
 import com.lewiswilson.kiminojisho.R
@@ -16,7 +18,11 @@ class ViewWordRemote : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_word)
 
-        val myDB = DatabaseHelper(this)
+        //implementing ads
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
 
         view_star.setImageResource(R.drawable.star_empty)
         var star_filled = false
