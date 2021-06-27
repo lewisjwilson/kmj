@@ -95,6 +95,23 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         }
     }
 
+    fun deleteFromRemote(kanji: String) {
+        //PreparedStatement (Avoiding SQL Injection & Crash)
+        try {
+            db = writableDatabase
+            db?.beginTransaction()
+            val sql = "DELETE FROM jisho_data WHERE " + COL1 + " = ?"
+            val statement = db?.compileStatement(sql)
+            statement?.bindString(1, kanji)
+            statement?.executeUpdateDelete()
+            db?.setTransactionSuccessful()
+        } catch (e: SQLException) {
+            Log.w("Exception:", e)
+        } finally {
+            db?.endTransaction()
+        }
+    }
+
     fun getData(item_id: Int): HashMap<String, String>{
         db = readableDatabase
         val cur = db?.rawQuery("SELECT * FROM " + TABLE_NAME +

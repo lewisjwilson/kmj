@@ -1,7 +1,9 @@
 package com.lewiswilson.kiminojisho.JishoSearch
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,9 +12,20 @@ import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.MainActivity
 import com.lewiswilson.kiminojisho.R
+import kotlinx.android.synthetic.main.search_data_item.*
 import kotlinx.android.synthetic.main.view_word.*
+import kotlin.math.log
 
 class ViewWordRemote : AppCompatActivity() {
+
+    private var kanji: String? = ""
+    private var kana: String? = ""
+    private var english: String? = ""
+    private var example: String? = ""
+    private var notes: String? = ""
+    private var starFilled: Boolean = false
+    private var starFilledInitial: Boolean = false
+    private val myDB = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,24 +36,14 @@ class ViewWordRemote : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-
-        view_star.setImageResource(R.drawable.star_empty)
-        var star_filled = false
-        view_star.setOnClickListener{
-            star_filled = !star_filled
-            if(star_filled){
-                view_star.setImageResource(R.drawable.star_filled)
-            } else {
-                view_star.setImageResource(R.drawable.star_empty)
-            }
-        }
-
         //parsing from hashmap in DatabaseHelper.kt
-        val kanji = intent.getStringExtra("kanji")
-        val kana = intent.getStringExtra("kana")
-        val english = intent.getStringExtra("english")
-        val example = intent.getStringExtra("example")
-        val notes = intent.getStringExtra("notes")
+        kanji = intent.getStringExtra("kanji")
+        kana = intent.getStringExtra("kana")
+        english = intent.getStringExtra("english")
+        example = intent.getStringExtra("example")
+        notes = intent.getStringExtra("notes")
+        starFilled = intent.getBooleanExtra("star_filled", false)
+        starFilledInitial = starFilled
 
         view_kanji.text = kanji
         view_kana.text = kana
@@ -48,13 +51,42 @@ class ViewWordRemote : AppCompatActivity() {
         view_examples.text = example
         view_notes.text = notes
 
-        btn_delete.setOnClickListener { v: View? ->
-            //myDB.deleteData(itemId)
-            Toast.makeText(this@ViewWordRemote, "Entry Deleted", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this@ViewWordRemote, MainActivity::class.java))
-            finish()
-            MainActivity.ma!!.finish()
+        if(starFilled){
+            view_star.setImageResource(R.drawable.star_filled)
+        }
+
+        view_star.setOnClickListener{
+            starFilled = !starFilled
+            if(starFilled){
+                view_star.setImageResource(R.drawable.star_filled)
+            } else {
+                view_star.setImageResource(R.drawable.star_empty)
+            }
         }
 
     }
+
+    override fun onPause(){
+        super.onPause()
+
+        if(starFilled!=starFilledInitial) {
+            if (starFilled) {
+                myDB.addData(kanji!!, kana, english, example, notes)
+            } else {
+                try {
+                    myDB.deleteFromRemote(kanji!!)
+                } catch (e: NullPointerException) {
+                    Log.d("Item Not Found", "Item not in dictionary. (Normal)")
+                }
+            }
+            //go to mainactivity
+            startActivity(Intent(this@ViewWordRemote, MainActivity::class.java))
+            finish()
+        }
+
+
+    }
+
+
+
 }

@@ -1,7 +1,9 @@
 package com.lewiswilson.kiminojisho.JishoSearch
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -39,27 +41,32 @@ class SearchDataAdapter(
         if(!star_filled){
             holder.mStar.visibility = GONE
         }
-
     }
 
     override fun getItemCount(): Int {
         return mSearchList.size
     }
 
-    inner class SearchDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), OnLongClickListener {
+    inner class SearchDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         var mKanjiView: TextView
         var mKanaView: TextView
         var mEnglishView: TextView
         var mExampleView: TextView
         var mNotesView: TextView
         var mStar: ImageView
-        override fun onLongClick(view: View): Boolean {
+        override fun onClick(view: View) {
             //get data from the clicked item and add to my list
             val kanji = mKanjiView.text.toString()
             val kana = mKanaView.text.toString()
             val english = mEnglishView.text.toString()
             val example = mExampleView.text.toString()
             val notes = mNotesView.text.toString()
+            var star_filled = false
+
+            if(mStar.visibility != GONE) {
+                star_filled = true
+            }
 
             //no examples currently supported on jisho API
             val intent = Intent(mContext, ViewWordRemote::class.java)
@@ -68,12 +75,12 @@ class SearchDataAdapter(
             intent.putExtra("english",english)
             intent.putExtra("example", example)
             intent.putExtra("notes", notes)
+            intent.putExtra("star_filled", star_filled)
             mContext.startActivity(intent)
-            return true
         }
 
         init {
-            itemView.setOnLongClickListener(this)
+            itemView.setOnClickListener(this)
             mKanjiView = itemView.findViewById(R.id.kanjiview)
             mKanaView = itemView.findViewById(R.id.kanaview)
             mEnglishView = itemView.findViewById(R.id.englishview)
