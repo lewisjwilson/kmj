@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(),
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
             prefs.edit().putString("sortby_col", "MEANING").apply()
-            prefs.edit().putString("sort_style", "ASC").apply()
         }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -82,8 +81,7 @@ class MainActivity : AppCompatActivity(),
     fun populateRV() {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val column = prefs.getString("sortby_col", "MEANING")
-        val ascDesc = prefs.getString("sort_style", "ASC")
-        val data = myDB!!.listContents(column!!, ascDesc!!)
+        val data = myDB!!.listContents(column!!)
 
         //Checks if database is empty and lists entries if not
         if (data.count == 0) {
@@ -176,30 +174,20 @@ class MainActivity : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return when (item.itemId) {
-            R.id.meaning_asc -> {
+            R.id.meaning -> {
                 prefs.edit().putString("sortby_col", "MEANING").apply()
                 prefs.edit().putString("sort_style", "ASC").apply()
                 clearData()
                 true
             }
-            R.id.meaning_desc -> {
-                prefs.edit().putString("sortby_col", "MEANING").apply()
-                prefs.edit().putString("sort_style", "DESC").apply()
-                clearData()
-                true
-            }
-            R.id.kana_asc -> {
+
+            R.id.kana -> {
                 prefs.edit().putString("sortby_col", "KANA").apply()
                 prefs.edit().putString("sort_style", "ASC").apply()
                 clearData()
                 true
             }
-            R.id.kana_desc -> {
-                prefs.edit().putString("sortby_col", "KANA").apply()
-                prefs.edit().putString("sort_style", "DESC").apply()
-                clearData()
-                true
-            }
+
             R.id.action_alarm -> {
                 setupNotifications()
                 true

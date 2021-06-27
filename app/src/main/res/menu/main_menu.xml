@@ -13,23 +13,13 @@
 
         <menu>
             <item
-                android:id="@+id/meaning_asc"
-                android:title="Meaning A->Z">
+                android:id="@+id/meaning"
+                android:title="English">
             </item>
             <item
-                android:id="@+id/meaning_desc"
-                android:title="Meaning Z->A">
+                android:id="@+id/kana"
+                android:title="Kana">
             </item>
-            <item
-                android:id="@+id/kana_asc"
-                android:title="Kana あ->ン">
-            </item>
-            <item
-                android:id="@+id/kana_desc"
-                android:title="Kana ン->あ">
-            </item>
-
-
         </menu>
 
     </item>

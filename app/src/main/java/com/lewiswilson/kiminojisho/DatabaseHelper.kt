@@ -148,10 +148,10 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return db?.insert(str, null, contentValues) != -1L
     }
 
-    fun listContents(column: String, ascDesc: String): Cursor {
+    fun listContents(column: String): Cursor {
         return writableDatabase.rawQuery("SELECT * FROM jisho_data " +
                 "ORDER BY $column " +
-                "COLLATE NOCASE $ascDesc", null)
+                "COLLATE NOCASE ASC", null)
     }
 
     fun random(flag: Int): String {
