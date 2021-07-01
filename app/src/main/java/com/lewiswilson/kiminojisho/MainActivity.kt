@@ -2,6 +2,8 @@ package com.lewiswilson.kiminojisho
 
 import android.app.*
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -28,8 +30,10 @@ import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStreamReader
 import java.util.*
 
 
@@ -344,6 +348,8 @@ class MainActivity : AppCompatActivity(),
         @JvmField
         var ma: AppCompatActivity? = null
     }
+
+
 
     private fun firstLaunch() {
         val fscv1 = FancyShowCaseView.Builder(this)

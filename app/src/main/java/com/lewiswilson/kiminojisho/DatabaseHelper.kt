@@ -12,29 +12,31 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 5) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 7) {
 
     private var db: SQLiteDatabase? = null
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        db.execSQL("CREATE TABLE IF NOT EXISTS jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "WORD TEXT, " +
                 "KANA TEXT, " +
                 "MEANING TEXT, " +
                 "EXAMPLE TEXT, " +
                 "NOTES TEXT, " +
                 "UNIQUE(WORD))")
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS examples (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "JAPANESE TEXT, " +
+                "ENGLISH TEXT)")
     }
 
     //Changes made for Importing
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (newVersion > oldVersion) {
-            //try{
-            //	copyDatabase();
-            //} catch (IOException e) {
-            //	e.printStackTrace();
-            //}
-            //db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COL5 TEXT")
+        if (newVersion > 5) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS examples (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "JAPANESE TEXT, " +
+                    "ENGLISH TEXT)")
+            Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
         }
     }
 
@@ -114,7 +116,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     fun getData(item_id: Int): HashMap<String, String>{
         db = readableDatabase
-        val cur = db?.rawQuery("SELECT * FROM " + TABLE_NAME +
+        val cur = db?.rawQuery("SELECT * FROM " + TABLE1_NAME +
         " WHERE " + COL0 + "=?", arrayOf(item_id.toString()))
 
         var hashMap = HashMap<String, String>()
@@ -126,12 +128,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             hashMap.put("example", cur.getString(cur.getColumnIndex(COL4)))
             hashMap.put("notes", cur.getString(cur.getColumnIndex(COL5)))
         }
+        db?.close()
         return hashMap
     }
 
     fun checkStarred(kanji: String): Boolean {
         db = readableDatabase
-        val cur = db?.rawQuery("SELECT EXISTS(SELECT 1 FROM " + TABLE_NAME +
+        val cur = db?.rawQuery("SELECT EXISTS(SELECT 1 FROM " + TABLE1_NAME +
                 " WHERE " + COL1 + "=?)", arrayOf(kanji));
         var bool = false
         if (cur?.moveToFirst() == true) {
@@ -156,7 +159,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         contentValues.put(COL3, meaning)
         contentValues.put(COL4, example)
         contentValues.put(COL5, notes)
-        val str = TABLE_NAME
+        val str = TABLE1_NAME
         val sb = "addData: Adding " +
                 word +
                 " to " +
@@ -197,7 +200,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return rand_word
     }
 
-    companion object {
+     companion object {
         private const val COL0 = "ID"
         private const val COL1 = "WORD"
         private const val COL2 = "KANA"
@@ -206,7 +209,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         private const val COL5 = "NOTES"
         private const val DATABASE_NAME = "kiminojisho.db"
         private val DATABASE_PATH = MyApplication.appContext?.getDatabasePath(DATABASE_NAME)//"/data/data/com.lewiswilson.kiminojisho/databases/"
-        private const val TABLE_NAME = "jisho_data"
+        private const val TABLE1_NAME = "jisho_data"
         private const val TAG = "DatabaseHelper"
     }
 

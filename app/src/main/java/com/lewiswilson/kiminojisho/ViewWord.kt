@@ -1,14 +1,19 @@
 package com.lewiswilson.kiminojisho
 
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.view_word.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
+import java.util.*
+import kotlin.collections.*
 
 class ViewWord : AppCompatActivity() {
 
@@ -19,6 +24,8 @@ class ViewWord : AppCompatActivity() {
         val myDB = DatabaseHelper(this)
         val itemId: String = MainActivity.item_id.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
+
+        readExamples()
 
         // coming from Mylist, so default is filled star
         view_star.setImageResource(R.drawable.star_filled)
@@ -54,4 +61,23 @@ class ViewWord : AppCompatActivity() {
         }
 
     }
+
+    fun readExamples(){
+
+        val minput = InputStreamReader(assets.open("examples.tsv"))
+        val reader = BufferedReader(minput)
+
+        var line : String?
+        Log.d(TAG, "HERE")
+        var last = "NONE"
+
+        while (reader.readLine().also { line = it } != null){
+            val row : List<String> = line!!.split("\t")
+            last = "${row[0]} | ${row[1]}"
+        }
+
+        Log.d(TAG, last)
+
+    }
+
 }
