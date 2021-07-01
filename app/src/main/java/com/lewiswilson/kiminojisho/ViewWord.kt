@@ -8,14 +8,20 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.view_word.*
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.util.*
+import java.util.ArrayList
 import kotlin.collections.*
 
 class ViewWord : AppCompatActivity() {
+
+    private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
+    private var rvAdapter: ExamplesAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +30,6 @@ class ViewWord : AppCompatActivity() {
         val myDB = DatabaseHelper(this)
         val itemId: String = MainActivity.item_id.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
-
-        readExamples()
 
         // coming from Mylist, so default is filled star
         view_star.setImageResource(R.drawable.star_filled)
@@ -49,34 +53,46 @@ class ViewWord : AppCompatActivity() {
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        view_examples.text = example
+        //view_examples.text = example
         view_notes.text = notes
 
-        btn_delete.setOnClickListener { v: View? ->
-            myDB.deleteData(itemId)
-            Toast.makeText(this@ViewWord, "Entry Deleted", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this@ViewWord, MainActivity::class.java))
-            finish()
-            MainActivity.ma!!.finish()
+        //initiate recyclerview and set parameters
+        rv_examples.setHasFixedSize(true)
+        rv_examples.setLayoutManager(LinearLayoutManager(this))
+
+        // search word and add matching examples to recycler
+        if (kanji != null) {
+            readExamples(kanji)
         }
+
 
     }
 
-    fun readExamples(){
+    fun readExamples(filter: String) {
 
         val minput = InputStreamReader(assets.open("examples.tsv"))
         val reader = BufferedReader(minput)
 
         var line : String?
-        Log.d(TAG, "HERE")
-        var last = "NONE"
+
+        val examples_no = 10
+        var count = 0
 
         while (reader.readLine().also { line = it } != null){
-            val row : List<String> = line!!.split("\t")
-            last = "${row[0]} | ${row[1]}"
-        }
+            if (reader.readLine().also { line = it}.contains(filter)) {
+                val japanese = line!!.split("\t")[0]
+                val english = line!!.split("\t")[1]
+                examplesList?.add(ExamplesItem(japanese, english))
+                count++
+            }
+            if (count>=examples_no)
+            {
+                break
+            }
 
-        Log.d(TAG, last)
+        }
+        rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWord, it) }
+        rv_examples.adapter = rvAdapter
 
     }
 

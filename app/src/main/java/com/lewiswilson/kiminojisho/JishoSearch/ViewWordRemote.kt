@@ -7,13 +7,15 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.MainActivity
-import com.lewiswilson.kiminojisho.R
+import com.lewiswilson.kiminojisho.*
 import kotlinx.android.synthetic.main.search_data_item.*
 import kotlinx.android.synthetic.main.view_word.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.ArrayList
 import kotlin.math.log
 
 class ViewWordRemote : AppCompatActivity() {
@@ -26,6 +28,8 @@ class ViewWordRemote : AppCompatActivity() {
     private var starFilled: Boolean = false
     private var starFilledInitial: Boolean = false
     private val myDB = DatabaseHelper(this)
+    private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
+    private var rvAdapter: ExamplesAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +52,7 @@ class ViewWordRemote : AppCompatActivity() {
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        view_examples.text = example
+        //view_examples.text = example
         view_notes.text = notes
 
         if(starFilled){
@@ -63,6 +67,14 @@ class ViewWordRemote : AppCompatActivity() {
                 view_star.setImageResource(R.drawable.star_empty)
             }
         }
+
+        //initiate recyclerview and set parameters
+        rv_examples.setHasFixedSize(true)
+        rv_examples.setLayoutManager(LinearLayoutManager(this))
+
+        // search word and add matching examples to recycler
+        kanji?.let { readExamples(it) }
+
 
     }
 
@@ -84,6 +96,34 @@ class ViewWordRemote : AppCompatActivity() {
             finish()
         }
 
+
+    }
+
+    fun readExamples(filter: String) {
+
+        val minput = InputStreamReader(assets.open("examples.tsv"))
+        val reader = BufferedReader(minput)
+
+        var line : String?
+
+        val examples_no = 10
+        var count = 0
+
+        while (reader.readLine().also { line = it } != null){
+            if (reader.readLine().also { line = it}.contains(filter)) {
+                val japanese = line!!.split("\t")[0]
+                val english = line!!.split("\t")[1]
+                examplesList?.add(ExamplesItem(japanese, english))
+                count++
+            }
+            if (count>=examples_no)
+            {
+                break
+            }
+
+        }
+        rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWordRemote, it) }
+        rv_examples.adapter = rvAdapter
 
     }
 

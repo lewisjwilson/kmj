@@ -89,40 +89,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_notes" />
 
-    <TextView
-        android:id="@+id/view_examples"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_examples"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:ems="10"
-        android:hint="@string/blank"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:text="Examples"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_examples" />
-
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="125dp"
-        android:layout_height="44dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@android:color/holo_red_light"
-        android:text="@string/Delete_Entry"
-        android:textColor="@android:color/white"
-        android:textColorHighlight="@android:color/holo_red_light"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_examples"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/view_star"
