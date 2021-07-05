@@ -138,10 +138,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 " WHERE " + COL1 + "=?)", arrayOf(kanji));
         var bool = false
         if (cur?.moveToFirst() == true) {
-            bool = (cur.getInt(0) == 1);
+            bool = cur.getInt(0) == 1
         }
-        Log.d("KANJI: ", kanji)
-        Log.d("CHECKSTARRED: ", bool.toString())
         return bool
     }
 

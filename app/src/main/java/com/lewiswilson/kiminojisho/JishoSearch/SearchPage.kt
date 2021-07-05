@@ -61,7 +61,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
     private fun setUpSearchStateFlow() {
         launch {
             sv_searchfield.getQueryTextChangeStateFlow()
-                .debounce(300)
+                .debounce(500)
                 .filter { query ->
                     return@filter !query.isEmpty()
                 }
@@ -73,9 +73,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         }
                 }
                 .flowOn(Dispatchers.Main)
-                .collect { result ->
-                    val text = ""
-                }
+                .collect{}
         }
     }
 
