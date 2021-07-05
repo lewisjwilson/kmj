@@ -1,7 +1,6 @@
 package com.lewiswilson.kiminojisho
 
 import android.app.*
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -34,7 +33,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(),
     MyListAdapter.OnItemClickListener {
-    private val PREFSNAME = "MyPrefs"
+    private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = null
     private var jishoList: ArrayList<MyListItem>? = ArrayList()
     private var searchList: ArrayList<MyListItem>? = ArrayList()
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.my_list)
         ma = this
-        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
 
         //Check if it is a first time launch
@@ -74,7 +73,7 @@ class MainActivity : AppCompatActivity(),
 
     //populate recyclerview with data
     private fun populateRV() {
-        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         val column = prefs.getString("sortby_col", "MEANING")
         val data = myDB!!.listContents(column!!)
 
@@ -161,7 +160,7 @@ class MainActivity : AppCompatActivity(),
 
     //Toolbar Menu Option Activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         return when (item.itemId) {
             R.id.meaning -> {
                 prefs.edit().putString("sortby_col", "MEANING").apply()
