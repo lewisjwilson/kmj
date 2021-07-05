@@ -19,14 +19,6 @@
             android:orientation="vertical"
             android:paddingBottom="50dp">
 
-            <Button
-                android:id="@+id/btn_togglekanji"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Toggle_Kanji"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
             <TextView
                 android:id="@+id/txt_word"
                 android:layout_width="wrap_content"

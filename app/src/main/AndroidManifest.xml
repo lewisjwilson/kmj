@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Misc.SplashScreen"
+            android:name=".misc.SplashScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
             android:label="@string/View_Edit"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".JishoSearch.ViewWordRemote"
+            android:name=".jishoSearch.ViewWordRemote"
             android:label="@string/View_Edit"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -46,7 +46,7 @@
             android:theme="@style/AppTheme.Transparency"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".JishoSearch.SearchPage"
+            android:name=".jishoSearch.SearchPage"
             android:label="Search"
             android:theme="@style/AppTheme.Transparency"
             android:windowSoftInputMode="adjustResize" />

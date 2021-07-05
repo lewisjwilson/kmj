@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.Misc
+package com.lewiswilson.kiminojisho.misc
 
 import android.graphics.*
 import android.graphics.drawable.Drawable

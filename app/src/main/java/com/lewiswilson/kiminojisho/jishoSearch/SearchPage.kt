@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.JishoSearch
+package com.lewiswilson.kiminojisho.jishoSearch
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lewiswilson.kiminojisho.AddWord
 import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.JSON.Japanese
-import com.lewiswilson.kiminojisho.JSON.JishoData
-import com.lewiswilson.kiminojisho.JSON.RetrofitClient
+import com.lewiswilson.kiminojisho.json.Japanese
+import com.lewiswilson.kiminojisho.json.JishoData
+import com.lewiswilson.kiminojisho.json.RetrofitClient
 import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.search_data_item.*
 import retrofit2.Call
@@ -153,9 +153,9 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                                 english = english + ", " + sense[0].englishDefinitions[1]
                             }
 
-                           val  star_filled = myDB.checkStarred(kanji)
+                           val  starFilled = myDB.checkStarred(kanji)
 
-                            mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", star_filled))
+                            mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
                         }
                         mSearchDataAdapter = mSearchList?.let { it -> SearchDataAdapter(
                             this@SearchPage,

@@ -1,11 +1,8 @@
-package com.lewiswilson.kiminojisho.JishoSearch
+package com.lewiswilson.kiminojisho.jishoSearch
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -16,7 +13,6 @@ import kotlinx.android.synthetic.main.view_word.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.ArrayList
-import kotlin.math.log
 
 class ViewWordRemote : AppCompatActivity() {
 
@@ -106,7 +102,7 @@ class ViewWordRemote : AppCompatActivity() {
 
         var line : String?
 
-        val examples_no = 10
+        val examplesNo = 10
         var count = 0
 
         while (reader.readLine().also { line = it } != null){
@@ -116,7 +112,7 @@ class ViewWordRemote : AppCompatActivity() {
                 examplesList?.add(ExamplesItem(japanese, english))
                 count++
             }
-            if (count>=examples_no)
+            if (count>=examplesNo)
             {
                 break
             }

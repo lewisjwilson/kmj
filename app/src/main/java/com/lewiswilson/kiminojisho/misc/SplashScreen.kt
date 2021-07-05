@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.Misc
+package com.lewiswilson.kiminojisho.misc
 
 import android.content.Intent
 import android.os.Bundle

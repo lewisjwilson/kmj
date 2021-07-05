@@ -114,12 +114,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         }
     }
 
-    fun getData(item_id: Int): HashMap<String, String>{
+    fun getData(itemId: Int): HashMap<String, String>{
         db = readableDatabase
-        val cur = db?.rawQuery("SELECT * FROM " + TABLE1_NAME +
-        " WHERE " + COL0 + "=?", arrayOf(item_id.toString()))
 
-        var hashMap = HashMap<String, String>()
+        val cur = db?.rawQuery("SELECT * FROM " + TABLE1_NAME +
+        " WHERE " + COL0 + "=?", arrayOf(itemId.toString()))
+
+        val hashMap = HashMap<String, String>()
 
         if (cur?.moveToFirst() == true) {
             hashMap.put("kanji", cur.getString(cur.getColumnIndex(COL1)))
@@ -128,18 +129,19 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             hashMap.put("example", cur.getString(cur.getColumnIndex(COL4)))
             hashMap.put("notes", cur.getString(cur.getColumnIndex(COL5)))
         }
-        db?.close()
+        cur?.close()
         return hashMap
     }
 
     fun checkStarred(kanji: String): Boolean {
         db = readableDatabase
         val cur = db?.rawQuery("SELECT EXISTS(SELECT 1 FROM " + TABLE1_NAME +
-                " WHERE " + COL1 + "=?)", arrayOf(kanji));
+                " WHERE " + COL1 + "=?)", arrayOf(kanji))
         var bool = false
         if (cur?.moveToFirst() == true) {
             bool = cur.getInt(0) == 1
         }
+        cur?.close()
         return bool
     }
 
@@ -173,13 +175,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     fun random(flag: Int): String {
-        var rand_word = ""
+        var randWord = ""
         val cursor = readableDatabase.rawQuery("SELECT WORD, KANA, MEANING FROM jisho_data " +
                 "WHERE ID IN (SELECT ID FROM jisho_data ORDER BY RANDOM() LIMIT 1)", null)
         val str = COL1
         if (flag == 0) {
             if (cursor.moveToFirst()) {
-                rand_word = cursor.getString(cursor.getColumnIndex(str))
+                randWord = cursor.getString(cursor.getColumnIndex(str))
             }
         } else if (cursor.moveToFirst()) {
             val sb = StringBuilder()
@@ -192,10 +194,10 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 sb.append(" ; ")
             }
             sb.append(cursor.getString(cursor.getColumnIndex(COL3)))
-            rand_word = sb.toString()
+            randWord = sb.toString()
         }
         cursor.close()
-        return rand_word
+        return randWord
     }
 
      companion object {

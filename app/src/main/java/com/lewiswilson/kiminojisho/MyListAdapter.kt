@@ -58,7 +58,7 @@ class MyListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(item_id: Int)
+        fun onItemClick(itemId: Int)
     }
 
 }

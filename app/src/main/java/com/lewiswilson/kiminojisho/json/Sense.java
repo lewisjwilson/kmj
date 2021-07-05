@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.JSON;
+package com.lewiswilson.kiminojisho.json;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

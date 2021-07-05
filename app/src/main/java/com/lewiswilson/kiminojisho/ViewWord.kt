@@ -1,18 +1,13 @@
 package com.lewiswilson.kiminojisho
 
-import android.content.ContentValues.TAG
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.content_main.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.view_word.*
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import java.util.*
 import java.util.ArrayList
@@ -27,16 +22,21 @@ class ViewWord : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_word)
 
+        //implementing ads
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
         val myDB = DatabaseHelper(this)
-        val itemId: String = MainActivity.item_id.toString()
+        val itemId: String = MainActivity.itemId.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
 
         // coming from Mylist, so default is filled star
         view_star.setImageResource(R.drawable.star_filled)
-        var star_filled = true
+        var starFilled = true
         view_star.setOnClickListener{
-            star_filled = !star_filled
-            if(star_filled){
+            starFilled = !starFilled
+            if(starFilled){
                 view_star.setImageResource(R.drawable.star_filled)
             } else {
                 view_star.setImageResource(R.drawable.star_empty)
@@ -47,7 +47,6 @@ class ViewWord : AppCompatActivity() {
         val kanji = itemData["kanji"]
         val kana = itemData["kana"]
         val english = itemData["english"]
-        val example = itemData["example"]
         val notes = itemData["notes"]
 
         view_kanji.text = kanji
@@ -75,7 +74,7 @@ class ViewWord : AppCompatActivity() {
 
         var line : String?
 
-        val examples_no = 10
+        val examplesNo = 10
         var count = 0
 
         while (reader.readLine().also { line = it } != null){
@@ -85,7 +84,7 @@ class ViewWord : AppCompatActivity() {
                 examplesList?.add(ExamplesItem(japanese, english))
                 count++
             }
-            if (count>=examples_no)
+            if (count>=examplesNo)
             {
                 break
             }

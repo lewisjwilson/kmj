@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.JishoSearch
+package com.lewiswilson.kiminojisho.jishoSearch
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.*
-import com.lewiswilson.kiminojisho.JishoSearch.SearchDataAdapter.SearchDataViewHolder
+import com.lewiswilson.kiminojisho.jishoSearch.SearchDataAdapter.SearchDataViewHolder
 import java.util.*
 
 class SearchDataAdapter(
@@ -29,13 +29,13 @@ class SearchDataAdapter(
         val english = currentItem.english
         val example = currentItem.example
         val notes = currentItem.notes
-        val star_filled = currentItem.star_filled
+        val starFilled = currentItem.starFilled
         holder.mKanjiView.text = kanji
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
         holder.mExampleView.text = example
         holder.mNotesView.text = notes
-        if(!star_filled){
+        if(!starFilled){
             holder.mStar.visibility = GONE
         }
     }
@@ -59,10 +59,10 @@ class SearchDataAdapter(
             val english = mEnglishView.text.toString()
             val example = mExampleView.text.toString()
             val notes = mNotesView.text.toString()
-            var star_filled = false
+            var starFilled = false
 
             if(mStar.visibility != GONE) {
-                star_filled = true
+                starFilled = true
             }
 
             //no examples currently supported on jisho API
@@ -72,7 +72,7 @@ class SearchDataAdapter(
             intent.putExtra("english",english)
             intent.putExtra("example", example)
             intent.putExtra("notes", notes)
-            intent.putExtra("star_filled", star_filled)
+            intent.putExtra("star_filled", starFilled)
             mContext.startActivity(intent)
         }
 

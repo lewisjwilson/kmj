@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.JSON;
+package com.lewiswilson.kiminojisho.json;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

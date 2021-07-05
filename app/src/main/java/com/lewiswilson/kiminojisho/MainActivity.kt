@@ -2,8 +2,6 @@ package com.lewiswilson.kiminojisho
 
 import android.app.*
 import android.app.TimePickerDialog.OnTimeSetListener
-import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -12,7 +10,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -24,22 +21,20 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.lewiswilson.kiminojisho.JishoSearch.SearchPage
-import kotlinx.android.synthetic.main.content_main.*
+import com.lewiswilson.kiminojisho.jishoSearch.SearchPage
+import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
-import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStreamReader
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(),
     MyListAdapter.OnItemClickListener {
-    private val PREFS_NAME = "MyPrefs"
+    private val PREFSNAME = "MyPrefs"
     private var myDB: DatabaseHelper? = null
     private var jishoList: ArrayList<MyListItem>? = ArrayList()
     private var searchList: ArrayList<MyListItem>? = ArrayList()
@@ -47,9 +42,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.content_main)
+        setContentView(R.layout.my_list)
         ma = this
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
 
 
         //Check if it is a first time launch
@@ -62,61 +57,51 @@ class MainActivity : AppCompatActivity(),
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val flbtn_add = findViewById<FloatingActionButton>(R.id.flbtn_add)
-        val flbtn_rand = findViewById<FloatingActionButton>(R.id.flbtn_rand)
+        val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
         myDB = DatabaseHelper(this)
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)
-        rv_mylist.setLayoutManager(LinearLayoutManager(this))
+        rv_mylist.layoutManager = LinearLayoutManager(this)
 
         populateRV()
         //displaylist shows when searching in searchview
         searchList!!.addAll(jishoList!!)
 
-        flbtn_add.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
-        flbtn_rand.setOnClickListener { v: View? ->
-            //list_index = myDB!!.random(0)
-            startActivity(Intent(this@MainActivity, ViewWord::class.java))
-        }
+        flbtnAdd.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
+
     }
 
     //populate recyclerview with data
-    fun populateRV() {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private fun populateRV() {
+        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
         val column = prefs.getString("sortby_col", "MEANING")
         val data = myDB!!.listContents(column!!)
 
         //Checks if database is empty and lists entries if not
-        if (data.count == 0) {
-            flbtn_rand.isEnabled = false
-        } else {
-            flbtn_rand.isEnabled = true
-            while (data.moveToNext()) {
-                //ListView Data Layout
-                if (data.getString(1) == data.getString(2)) {
-                    jishoList!!.add(
-                        MyListItem(data.getInt(0),
-                            data.getString(1),
-                            data.getString(1),
-                            data.getString(3),
-                            ""
-                        )
+        while (data.moveToNext()) {
+            //ListView Data Layout
+            if (data.getString(1) == data.getString(2)) {
+                jishoList!!.add(
+                    MyListItem(data.getInt(0),
+                        data.getString(1),
+                        data.getString(1),
+                        data.getString(3),
+                        ""
                     )
-                } else {
-                   jishoList!!.add(
-                        MyListItem(data.getInt(0),
-                            data.getString(1),
-                            data.getString(2),
-                            data.getString(3),
-                            data.getString(5)
-                        )
+                )
+            } else {
+               jishoList!!.add(
+                    MyListItem(data.getInt(0),
+                        data.getString(1),
+                        data.getString(2),
+                        data.getString(3),
+                        data.getString(5)
                     )
-                }
-                rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, this) }
-                rv_mylist.adapter = rvAdapter
-
+                )
             }
+            rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, this) }
+            rv_mylist.adapter = rvAdapter
 
         }
 
@@ -124,7 +109,7 @@ class MainActivity : AppCompatActivity(),
 
     // recyclerview item click
     override fun onItemClick(id: Int) {
-        item_id = id
+        itemId = id
         startActivity(Intent(this@MainActivity, ViewWord::class.java))
     }
 
@@ -176,7 +161,7 @@ class MainActivity : AppCompatActivity(),
 
     //Toolbar Menu Option Activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PREFSNAME, Context.MODE_PRIVATE)
         return when (item.itemId) {
             R.id.meaning -> {
                 prefs.edit().putString("sortby_col", "MEANING").apply()
@@ -244,8 +229,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun exportDatabase() {
         try {
-            val fileToWrite = getDatabasePath("kiminojisho.db").toString()
-            val output = openFileOutput("kiminojisho.db", Context.MODE_PRIVATE)
+            val fileToWrite = getDatabasePath(myDB?.databaseName).toString()
+            val output = openFileOutput(myDB?.databaseName, Context.MODE_PRIVATE)
             val input = FileInputStream(fileToWrite)
             val buffer = ByteArray(1024)
             var length: Int
@@ -259,11 +244,11 @@ class MainActivity : AppCompatActivity(),
 
             //exporting
             val context = applicationContext
-            val filelocation = File(filesDir, "kiminojisho.db")
+            val filelocation = File(filesDir, myDB?.databaseName)
             val path = FileProvider.getUriForFile(context, "com.lewiswilson.kiminojisho.fileprovider", filelocation)
             val fileIntent = Intent(Intent.ACTION_SEND)
             fileIntent.type = "application/x-sqlite3"
-            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "kiminojisho.db")
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT, myDB?.databaseName)
             fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             fileIntent.putExtra(Intent.EXTRA_STREAM, path)
             startActivity(Intent.createChooser(fileIntent, "Export Database"))
@@ -275,20 +260,18 @@ class MainActivity : AppCompatActivity(),
     //Request Permissions
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            if (!(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        if ((requestCode == 1) || (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))) {
                 Toast.makeText(this@MainActivity, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) ||(data != null)) {
             if (data != null) {
                 fileUri = data.data
-                importDatabase()
             }
+                importDatabase()
         }
     }
 
@@ -323,17 +306,17 @@ class MainActivity : AppCompatActivity(),
 
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(this,
-                    OnTimeSetListener { view, hourOfDay, minute ->
-                        c[Calendar.HOUR_OF_DAY] = hourOfDay
-                        c[Calendar.MINUTE] = minute
-                        c[Calendar.SECOND] = 0
-                        val intent = Intent(applicationContext, ReminderBroadcast::class.java)
-                        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-                        Toast.makeText(applicationContext, "Daily Notifications Set for " +
-                                c[Calendar.HOUR_OF_DAY] + ":" + c[Calendar.MINUTE], Toast.LENGTH_LONG).show()
-                    }, currenthour, currentminute, true)
+                { view, hourOfDay, minute ->
+                    c[Calendar.HOUR_OF_DAY] = hourOfDay
+                    c[Calendar.MINUTE] = minute
+                    c[Calendar.SECOND] = 0
+                    val intent = Intent(applicationContext, ReminderBroadcast::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+                    Toast.makeText(applicationContext, "Daily Notifications Set for " +
+                            c[Calendar.HOUR_OF_DAY] + ":" + c[Calendar.MINUTE], Toast.LENGTH_LONG).show()
+                }, currenthour, currentminute, true)
             timePickerDialog.show()
         }
     }
@@ -341,7 +324,7 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val REQUEST_CODE = 10
         @JvmField
-        var item_id //use item_id to get and display database data
+        var itemId //use item_id to get and display database data
                 : Int? = null
         @JvmField
         var fileUri: Uri? = null
@@ -352,33 +335,31 @@ class MainActivity : AppCompatActivity(),
 
 
     private fun firstLaunch() {
+        val color = "#DD008577"
         val fscv1 = FancyShowCaseView.Builder(this)
             .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
-            .backgroundColor(Color.parseColor("#DD008577"))
+            .backgroundColor(Color.parseColor(color))
             .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
             .build()
         val fscv2 = FancyShowCaseView.Builder(this)
             .title("This is the main screen. This shows you dictionary entries.")
-            .backgroundColor(Color.parseColor("#DD008577"))
+            .backgroundColor(Color.parseColor(color))
             .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
             .build()
         val fscv3 = FancyShowCaseView.Builder(this)
             .title("To create your first dictionary entry, use this button.")
             .focusOn(findViewById(R.id.flbtn_add))
-            .backgroundColor(Color.parseColor("#DD008577"))
-            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-            .build()
-        val fscv4 = FancyShowCaseView.Builder(this)
-            .title("To test yourself, let the app choose a random word from your dictionary!")
-            .focusOn(findViewById(R.id.flbtn_rand))
-            .backgroundColor(Color.parseColor("#DD008577"))
+            .backgroundColor(Color.parseColor(color))
             .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
             .build()
         val fscvQueue = FancyShowCaseQueue()
             .add(fscv1)
             .add(fscv2)
             .add(fscv3)
-            .add(fscv4)
         fscvQueue.show()
+    }
+
+    override fun onBackPressed() {
+        return
     }
 }

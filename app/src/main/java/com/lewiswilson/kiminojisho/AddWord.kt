@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.view_word.*
 
 class AddWord : AppCompatActivity() {
     private var myDB: DatabaseHelper? = null
-    private var ToggleKanji = true
 
     /* access modifiers changed from: protected */
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,46 +21,21 @@ class AddWord : AppCompatActivity() {
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 
-        val toggle = View.OnClickListener { v: View? ->
-            if (ToggleKanji) {
-                ToggleKanji = false
-                txt_word.setText(R.string.Kana)
-                txt_kana.visibility = View.GONE
-                view_kana.visibility = View.GONE
-            } else {
-                ToggleKanji = true
-                txt_word.setText(R.string.Kanji)
-                txt_kana.visibility = View.VISIBLE
-                view_kana.visibility = View.VISIBLE
-            }
-        }
-        btn_togglekanji.setOnClickListener(toggle)
         val add = View.OnClickListener { v: View? ->
             val newEntryWord = RemoveSemicolon(edit_word.text.toString().trim { it <= ' ' })
             val newEntryKana = RemoveSemicolon(view_kana.text.toString().trim { it <= ' ' })
             val newEntryMeaning = RemoveSemicolon(view_english.text.toString().trim { it <= ' ' })
             val newEntryExample = RemoveSemicolon(view_examples.text.toString().trim { it <= ' ' })
-            val newEntryNotes = "[ " + RemoveSemicolon(view_notes.text.toString().trim { it <= ' ' }) + " ]"
-            if (ToggleKanji) {
-                if (newEntryWord.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
-                    Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
-                } else {
-                    AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, newEntryNotes)
-                    val addWord = this@AddWord
-                    addWord.startActivity(Intent(addWord, MainActivity::class.java))
-                    finish()
-                    MainActivity.ma!!.finish()
-                }
+            val newEntryNotes =  RemoveSemicolon(view_notes.text.toString().trim { it <= ' ' })
+
+            if (newEntryWord.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
+                Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
             } else {
-                if (newEntryWord.length == 0 || newEntryMeaning.length == 0) {
-                    Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
-                } else {
-                    AddData(newEntryWord, newEntryWord, newEntryMeaning, newEntryExample, newEntryNotes)
-                    val addWord = this@AddWord
-                    addWord.startActivity(Intent(addWord, MainActivity::class.java))
-                    finish()
-                    MainActivity.ma!!.finish()
-                }
+                AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, newEntryNotes)
+                val addWord = this@AddWord
+                addWord.startActivity(Intent(addWord, MainActivity::class.java))
+                finish()
+                MainActivity.ma!!.finish()
             }
 
         }
