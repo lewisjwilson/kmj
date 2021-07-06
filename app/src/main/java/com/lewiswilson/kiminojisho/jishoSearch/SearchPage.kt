@@ -22,6 +22,7 @@ import java.util.*
 import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.lang.NullPointerException
 import kotlin.coroutines.CoroutineContext
 
 class SearchPage() : AppCompatActivity(), CoroutineScope {
@@ -62,15 +63,20 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
             }
             override fun onQueryTextChange(newText: String?): Boolean {
 
-                Log.d(TAG, "onQueryTextChange(out): $newText")
-                queryTextChangedJob?.cancel()
+                try {
+                    mSearchList?.let{
+                        queryTextChangedJob?.cancel()
+                        clearData()
+                    }
+                } catch (e: NullPointerException) {
+                    Log.d(TAG, "onQueryTextChange (usual on first search): ${e.printStackTrace()}")
+                }
+
                 queryTextChangedJob = launch(Dispatchers.Main) {
-                    delay(500)
+                    delay(1000)
                     if (newText != null) {
                         dataFromNetwork(newText)
                     }
-                    Log.d(TAG, "onQueryTextChange(in): $newText")
-
                 }
 
                 return true
@@ -140,7 +146,6 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
                        val  starFilled = myDB.checkStarred(kanji)
 
                         mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
-                        Log.d(TAG, "mSearchList: $mSearchList")
 
                         mSearchDataAdapter = mSearchList?.let { it ->
                             SearchDataAdapter(
