@@ -28,7 +28,7 @@ class ViewWord : AppCompatActivity() {
         adView.loadAd(adRequest)
 
         val myDB = DatabaseHelper(this)
-        val itemId: String = MainActivity.itemId.toString()
+        val itemId: String = MyList.itemId.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
 
         // coming from Mylist, so default is filled star

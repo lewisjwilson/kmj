@@ -88,7 +88,7 @@ class ViewWordRemote : AppCompatActivity() {
                 }
             }
             //go to mainactivity
-            startActivity(Intent(this@ViewWordRemote, MainActivity::class.java))
+            startActivity(Intent(this@ViewWordRemote, MyList::class.java))
             finish()
         }
 

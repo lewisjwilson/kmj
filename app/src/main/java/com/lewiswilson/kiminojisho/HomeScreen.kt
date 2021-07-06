@@ -13,7 +13,7 @@ class HomeScreen : AppCompatActivity() {
         setContentView(R.layout.home_screen)
 
         item_search.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
-        item_mylists.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, MainActivity::class.java)) }
+        item_mylists.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, MyList::class.java)) }
         item_settings.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, About::class.java)) }
 
     }

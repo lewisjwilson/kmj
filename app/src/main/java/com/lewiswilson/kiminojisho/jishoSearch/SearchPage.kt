@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho.jishoSearch
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,17 +24,24 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
-class SearchPage : AppCompatActivity(), CoroutineScope {
+class SearchPage() : AppCompatActivity(), CoroutineScope {
 
     private var mSearchList: ArrayList<SearchDataItem>? = ArrayList()
     private var mSearchDataAdapter: SearchDataAdapter? = null
     private val myDB = DatabaseHelper(this)
+    var queryTextChangedJob: Job? = null
+
+    private val job = Job()
+    override val coroutineContext = job + Dispatchers.Main
+
+    override fun onDestroy() {
+        queryTextChangedJob?.cancel()
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.search_page)
-        job = Job()
-        setUpSearchStateFlow()
         sp = this
 
         // setting autofocus on searchview when activity is started
@@ -45,135 +53,113 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         rv_searchdata.setHasFixedSize(true)
         rv_searchdata.setLayoutManager(LinearLayoutManager(this))
 
-       btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
-    }
+        btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    private lateinit var job: Job
-
-    override fun onDestroy() {
-        job.cancel()
-        super.onDestroy()
-    }
-
-    private fun setUpSearchStateFlow() {
-        launch {
-            sv_searchfield.getQueryTextChangeStateFlow()
-                .debounce(500)
-                .filter { query ->
-                    return@filter !query.isEmpty()
-                }
-                .distinctUntilChanged()
-                .flatMapLatest { query ->
-                    dataFromNetwork(query)
-                        .catch {
-                            emitAll(flowOf(""))
-                        }
-                }
-                .flowOn(Dispatchers.Main)
-                .collect{}
-        }
-    }
-
-    private fun SearchView.getQueryTextChangeStateFlow(): StateFlow<String> {
-
-        val query = MutableStateFlow("")
-
-        setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return true
+        //reload datafromnetwork on text input
+        sv_searchfield.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(searchtext: String): Boolean {
+                return false
             }
+            override fun onQueryTextChange(newText: String?): Boolean {
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                query.value = newText
+                Log.d(TAG, "onQueryTextChange(out): $newText")
+                queryTextChangedJob?.cancel()
+                queryTextChangedJob = launch(Dispatchers.Main) {
+                    delay(500)
+                    if (newText != null) {
+                        dataFromNetwork(newText)
+                    }
+                    Log.d(TAG, "onQueryTextChange(in): $newText")
+
+                }
+
                 return true
             }
         })
 
-        return query
     }
 
     //get API data
-    private fun dataFromNetwork(query: String): Flow<String> {
-        return flow {
-            tv_info.visibility = View.INVISIBLE
-            //if the search adapter has data in it already, clear the recyclerview
-            rv_searchdata.adapter = mSearchDataAdapter
-            if (mSearchDataAdapter != null) {
-                clearData()
+    private fun dataFromNetwork(query: String) {
+
+        tv_info.visibility = View.INVISIBLE
+        //if the search adapter has data in it already, clear the recyclerview
+        rv_searchdata.adapter = mSearchDataAdapter
+        if (mSearchDataAdapter != null) {
+            clearData()
+        }
+
+        //if the searchtext contains any japanese...
+        val call: Call<JishoData> = RetrofitClient.getInstance().myApi.getData(query)
+
+        call.enqueue(object : Callback<JishoData> {
+            override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
+
+                //At this point we got our word list
+                val data = response.body()!!.data
+
+                //if no data was found, try a call assuming romaji style
+                if (data.isEmpty()) {
+                    tv_info.visibility = View.VISIBLE
+                    tv_info.text = "No results found"
+                }
+
+                //try to retrieve data from jishoAPI
+                try {
+                    var japanese: List<Japanese>
+                    var kanji: String?
+                    var kana: String?
+                    var english: String
+                    var notes: String? = null
+                    for (i in data.indices) {
+                        japanese = data[i].japanese
+                        kanji = japanese[0].word
+                        kana = japanese[0].reading
+
+                        //if the result has no associated kanji
+                        if (kanji == null) {
+                            kanji = kana
+                        }
+
+                        //get english definitions
+                        val sense = data[i].senses
+                        val noOfDefinitions = sense[0].englishDefinitions.size
+                        english = sense[0].englishDefinitions[0]
+
+                        //get first tag in entry
+                        val noOfTags = sense[0].tags.size
+                        if (noOfTags > 0) {
+                            notes = "[ " + sense[0].tags[0] + " ]"
+                        }
+
+                        //If there is more than one definition, also display the second definition
+                        if (noOfDefinitions > 1) {
+                            english = english + ", " + sense[0].englishDefinitions[1]
+                        }
+
+                       val  starFilled = myDB.checkStarred(kanji)
+
+                        mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
+                        Log.d(TAG, "mSearchList: $mSearchList")
+
+                        mSearchDataAdapter = mSearchList?.let { it ->
+                            SearchDataAdapter(
+                                this@SearchPage, it
+                            )
+                        }
+                        rv_searchdata.adapter = mSearchDataAdapter
+                    }
+
+                } catch (e: Exception) {
+                    Log.d("", "Data Retrieval Error: " + e.message)
+                }
             }
 
-            //if the searchtext contains any japanese...
-            val call: Call<JishoData> = RetrofitClient.getInstance().myApi.getData(query)
-
-            call.enqueue(object : Callback<JishoData> {
-                override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
-
-                    //At this point we got our word list
-                    val data = response.body()!!.data
-
-                    //if no data was found, try a call assuming romaji style
-                    if (data.isEmpty()) {
-                        tv_info.visibility = View.VISIBLE
-                        tv_info.setText("No results found")
-                    }
-
-                    //try to retrieve data from jishoAPI
-                    try {
-                        var japanese: List<Japanese>
-                        var kanji: String?
-                        var kana: String?
-                        var english: String
-                        var notes: String? = null
-                        for (i in data.indices) {
-                            japanese = data[i].japanese
-                            kanji = japanese[0].word
-                            kana = japanese[0].reading
-
-                            //if the result has no associated kanji
-                            if (kanji == null) {
-                                kanji = kana
-                            }
-
-                            //get english definitions
-                            val sense = data[i].senses
-                            val noOfDefinitions = sense[0].englishDefinitions.size
-                            english = sense[0].englishDefinitions[0]
-
-                            //get first tag in entry
-                            val noOfTags = sense[0].tags.size
-                            if (noOfTags > 0) {
-                                notes = "[ " + sense[0].tags[0] + " ]"
-                            }
-
-                            //If there is more than one definition, also display the second definition
-                            if (noOfDefinitions > 1) {
-                                english = english + ", " + sense[0].englishDefinitions[1]
-                            }
-
-                           val  starFilled = myDB.checkStarred(kanji)
-
-                            mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
-                        }
-                        mSearchDataAdapter = mSearchList?.let { it -> SearchDataAdapter(
-                            this@SearchPage,
-                            it
-                        ) }
-                        rv_searchdata.adapter = mSearchDataAdapter
-                    } catch (e: Exception) {
-                        Log.d("", "Data Retrieval Error: " + e.message)
-                    }
-                }
-
-                override fun onFailure(call: Call<JishoData>, t: Throwable) {
-                    //handle error or failure cases here
-                    Log.d("", "SearchPage (Error): " + t.message)
-                }
-            })
-            emit(query)
-        }
+            override fun onFailure(call: Call<JishoData>, t: Throwable) {
+                //handle error or failure cases here
+                Log.d("", "SearchPage (Error): " + t.message)
+            }
+        })
     }
 
     fun clearData() {
@@ -185,3 +171,4 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         var sp: AppCompatActivity? = null
     }
 }
+

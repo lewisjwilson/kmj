@@ -6,12 +6,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.lewiswilson.kiminojisho.MainActivity
 
 class ReminderBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val myDB = DatabaseHelper(context)
-        val notificationIntent = Intent(context, MainActivity::class.java)
+        val notificationIntent = Intent(context, MyList::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val builder = NotificationCompat.Builder(context, "wotd")

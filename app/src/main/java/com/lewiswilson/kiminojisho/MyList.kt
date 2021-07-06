@@ -31,7 +31,7 @@ import java.io.FileInputStream
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(),
+class MyList : AppCompatActivity(),
     MyListAdapter.OnItemClickListener {
     private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = null
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(),
         //displaylist shows when searching in searchview
         searchList!!.addAll(jishoList!!)
 
-        flbtnAdd.setOnClickListener { v: View? -> startActivity(Intent(this@MainActivity, SearchPage::class.java)) }
+        flbtnAdd.setOnClickListener { v: View? -> startActivity(Intent(this@MyList, SearchPage::class.java)) }
 
     }
 
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity(),
                     )
                 )
             }
-            rvAdapter = jishoList?.let { it -> MyListAdapter(this@MainActivity, it, this) }
+            rvAdapter = jishoList?.let { it -> MyListAdapter(this@MyList, it, this) }
             rv_mylist.adapter = rvAdapter
 
         }
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(),
     // recyclerview item click
     override fun onItemClick(id: Int) {
         itemId = id
-        startActivity(Intent(this@MainActivity, ViewWord::class.java))
+        startActivity(Intent(this@MyList, ViewWord::class.java))
     }
 
     fun clearData() {
@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity(),
                 true
             }
             R.id.action_about -> {
-                startActivity(Intent(this@MainActivity, About::class.java))
+                startActivity(Intent(this@MyList, About::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((requestCode == 1) || (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))) {
-                Toast.makeText(this@MainActivity, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MyList, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -358,7 +358,4 @@ class MainActivity : AppCompatActivity(),
         fscvQueue.show()
     }
 
-    //override fun onBackPressed() {
-    //    return
-    //}
 }

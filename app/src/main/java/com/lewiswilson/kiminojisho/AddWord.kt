@@ -33,9 +33,9 @@ class AddWord : AppCompatActivity() {
             } else {
                 AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, newEntryNotes)
                 val addWord = this@AddWord
-                addWord.startActivity(Intent(addWord, MainActivity::class.java))
+                addWord.startActivity(Intent(addWord, MyList::class.java))
                 finish()
-                MainActivity.ma!!.finish()
+                MyList.ma!!.finish()
             }
 
         }

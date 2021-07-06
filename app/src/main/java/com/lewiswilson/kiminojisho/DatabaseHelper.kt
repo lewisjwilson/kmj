@@ -57,7 +57,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     @Throws(IOException::class)
     private fun copyDatabase() {
         val myInput =
-            MainActivity.fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
+            MyList.fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
         val outFileName = DATABASE_PATH.toString() + DATABASE_NAME
         val myOutput: OutputStream = FileOutputStream(outFileName)
         val buffer = ByteArray(10)

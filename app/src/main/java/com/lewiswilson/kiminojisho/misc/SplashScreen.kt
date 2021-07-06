@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.HomeScreen
-import com.lewiswilson.kiminojisho.MainActivity
 import com.lewiswilson.kiminojisho.R
 
 class SplashScreen : AppCompatActivity() {
