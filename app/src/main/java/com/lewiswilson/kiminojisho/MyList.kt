@@ -45,7 +45,6 @@ class MyList : AppCompatActivity(),
         ma = this
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
-
         //Check if it is a first time launch
         if (prefs.getBoolean("first_launch", true)) {
             firstLaunch()

@@ -3,6 +3,7 @@ package com.lewiswilson.kiminojisho
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.DatabaseUtils.dumpCursorToString
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -16,9 +17,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 9) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 10) {
 
     private var db: SQLiteDatabase? = null
+
+    fun createDatabase() {
+        this.readableDatabase
+        try {
+            copyDatabase()
+        } catch (e: IOException) {
+            throw Error("Error Importing Database")
+        }
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE IF NOT EXISTS jisho_data ($COL0 INTEGER PRIMARY KEY AUTOINCREMENT, " + //id
@@ -41,11 +51,11 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             //unused table
             db.execSQL("DROP TABLE IF EXISTS examples")
             //add new columns (flashcard_box, date_reviewed, next_review, times_seen, times_correct)
-            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL6 INTEGER DEFAULT \"0\" NOT NULL")
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL6 INTEGER DEFAULT \"1\" NOT NULL")
             db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL7 TEXT")
-            db.execSQL("UPDATE $TABLE1_NAME SET $COL7 = CURRENT_TIMESTAMP")
+            db.execSQL("UPDATE $TABLE1_NAME SET $COL7 = date('now')")
             db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL8 TEXT")
-            db.execSQL("UPDATE $TABLE1_NAME SET $COL8 = CURRENT_TIMESTAMP")
+            db.execSQL("UPDATE $TABLE1_NAME SET $COL8 = date('now')")
             db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL9 INTEGER DEFAULT \"0\" NOT NULL")
             db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL10 INTEGER DEFAULT \"0\" NOT NULL")
         }
@@ -53,15 +63,6 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.version = oldVersion
-    }
-
-    fun createDatabase() {
-        this.readableDatabase
-        try {
-            copyDatabase()
-        } catch (e: IOException) {
-            throw Error("Error Importing Database")
-        }
     }
 
     //Import DB from Assets folder
@@ -125,7 +126,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         }
     }
 
-    fun getData(itemId: Int): HashMap<String, String>{
+    fun getData(itemId: Int): HashMap<String, String> {
         db = readableDatabase
 
         val cur = db?.rawQuery("SELECT * FROM " + TABLE1_NAME +
@@ -159,7 +160,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     fun addData(word: String, kana: String?, meaning: String?, example: String?, notes: String?): Boolean {
         db = writableDatabase
 
-        val df: DateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date: Calendar = Calendar.getInstance()
         val dateNow: String = df.format(date.time)
         //increment day by 1
@@ -220,7 +221,32 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return randWord
     }
 
-     companion object {
+    fun dueFlashcards(): ArrayList<MyListItem>? {
+
+        var flashcardList: ArrayList<MyListItem>? = ArrayList()
+
+        Log.d(TAG, "dueFlashcards: HERE")
+        val cur = readableDatabase.rawQuery("SELECT * FROM " + TABLE1_NAME +
+                    " WHERE " + COL8 + "<= date('now')", null) //next_review < date now
+
+        while (cur.moveToNext()) {
+            flashcardList!!.add(MyListItem(cur.getInt(0), //id
+                    cur.getString(1), //kanji
+                    cur.getString(2), //kana
+                    cur.getString(3), //meaning
+                    cur.getString(5) //english
+                )
+            )
+                Log.d(TAG, "dueFlashcards: ${cur.getString(1)}")
+        }
+
+        db?.close()
+        return flashcardList
+
+    }
+
+
+        companion object {
         private const val COL0 = "ID"
         private const val COL1 = "WORD"
         private const val COL2 = "KANA"
