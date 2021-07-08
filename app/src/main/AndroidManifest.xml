@@ -30,17 +30,17 @@
         </activity>
         <activity
             android:name=".MyList"
-            android:label="@string/app_name"
+            android:label="My List"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
         <receiver android:name=".ReminderBroadcast"/>
         <activity
             android:name=".ViewWord"
-            android:label="@string/View_Edit"
+            android:label="View Word"
             android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".jishoSearch.ViewWordRemote"
-            android:label="@string/View_Edit"
+            android:label="View Word"
             android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".About"

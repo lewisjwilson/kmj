@@ -259,14 +259,14 @@ class MyList : AppCompatActivity(),
     //Request Permissions
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if ((requestCode == 1) || (!(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))) {
+        if (requestCode == 1 || !(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this@MyList, "Permission denied to read External storage", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if ((requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) ||(data != null)) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK || data != null) {
             if (data != null) {
                 fileUri = data.data
             }

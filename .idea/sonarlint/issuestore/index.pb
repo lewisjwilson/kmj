@@ -45,3 +45,17 @@ $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
 f
 6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
+h
+8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
+k
+;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4
+r
+Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
+r
+Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
+{
+Kapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/ViewWordRemote.kt,5/1/518d1c4d47fd3176cee62b21ecf6ab25cb89fd89
+i
+9app/src/main/java/com/lewiswilson/kiminojisho/ViewWord.kt,1/1/114a23fc3c4574fbd94bb3a265abb99af740737a
+w
+Gapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchPage.kt,5/6/56d8ce51cce5c036eaec85b361e538542013bc79

@@ -12,31 +12,39 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 7) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 8) {
 
     private var db: SQLiteDatabase? = null
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS jisho_data (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "WORD TEXT, " +
-                "KANA TEXT, " +
-                "MEANING TEXT, " +
-                "EXAMPLE TEXT, " +
-                "NOTES TEXT, " +
-                "UNIQUE(WORD))")
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS examples (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "JAPANESE TEXT, " +
-                "ENGLISH TEXT)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS jisho_data ($COL0 INTEGER PRIMARY KEY AUTOINCREMENT, " + //id
+                "$COL1 TEXT, " + //word
+                "$COL2 TEXT, " + //kana
+                "$COL3 TEXT, " + //meaning
+                "$COL4 TEXT, " + //example
+                "$COL5 TEXT, " + //notes
+                "$COL6 INTEGER, " + //flashcard_box
+                "$COL7 TEXT, " + //date_reviewed
+                "$COL8 TEXT, " + //next_review
+                "$COL9 INTEGER, " + //times_seen
+                "$COL10 INTEGER, " + //times_correct
+                "UNIQUE($COL1))")
     }
 
-    //Changes made for Importing
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (newVersion > 5) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS examples (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "JAPANESE TEXT, " +
-                    "ENGLISH TEXT)")
-            Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
+        Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
+
+        if (newVersion > 7) {
+            //unused table
+            db.execSQL("DROP TABLE IF EXISTS examples")
+            //add new columns (flashcard_box, date_reviewed, next_review, times_seen, times_correct)
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL6 INTEGER DEFAULT \"0\" NOT NULL")
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL7 TEXT")
+            db.execSQL("UPDATE $TABLE1_NAME SET $COL7 = CURRENT_TIMESTAMP")
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL8 TEXT")
+            db.execSQL("UPDATE $TABLE1_NAME SET $COL8 = CURRENT_TIMESTAMP")
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL9 INTEGER DEFAULT \"0\" NOT NULL")
+            db.execSQL("ALTER TABLE $TABLE1_NAME ADD $COL10 INTEGER DEFAULT \"0\" NOT NULL")
         }
     }
 
@@ -207,6 +215,11 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         private const val COL3 = "MEANING"
         private const val COL4 = "EXAMPLE"
         private const val COL5 = "NOTES"
+        private const val COL6 = "flashcard_box"
+        private const val COL7 = "date_reviewed"
+        private const val COL8 = "next_review"
+        private const val COL9 = "times_seen"
+        private const val COL10 = "times_correct"
         private const val DATABASE_NAME = "kiminojisho.db"
         private val DATABASE_PATH = MyApplication.appContext?.getDatabasePath(DATABASE_NAME)//"/data/data/com.lewiswilson.kiminojisho/databases/"
         private const val TABLE1_NAME = "jisho_data"
