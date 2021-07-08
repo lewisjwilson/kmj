@@ -11,8 +11,12 @@ import com.lewiswilson.MyApplication
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 8) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 9) {
 
     private var db: SQLiteDatabase? = null
 
@@ -33,8 +37,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
-
-        if (newVersion > 7) {
+        if (oldVersion < 8) {
             //unused table
             db.execSQL("DROP TABLE IF EXISTS examples")
             //add new columns (flashcard_box, date_reviewed, next_review, times_seen, times_correct)
@@ -153,20 +156,29 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return bool
     }
 
-    fun addData(
-        word: String,
-        kana: String?,
-        meaning: String?,
-        example: String?,
-        notes: String?
-    ): Boolean {
+    fun addData(word: String, kana: String?, meaning: String?, example: String?, notes: String?): Boolean {
         db = writableDatabase
+
+        val df: DateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+        val date: Calendar = Calendar.getInstance()
+        val dateNow: String = df.format(date.time)
+        //increment day by 1
+        date.add(Calendar.DAY_OF_MONTH, 1)
+        val dateTmrw: String = df.format(date.time)
+
+        Log.d(TAG, "addData: $date")
+
         val contentValues = ContentValues()
         contentValues.put(COL1, word)
         contentValues.put(COL2, kana)
         contentValues.put(COL3, meaning)
         contentValues.put(COL4, example)
         contentValues.put(COL5, notes)
+        contentValues.put(COL6, 1) //flashcard_box
+        contentValues.put(COL7, dateNow) //date_reviewed
+        contentValues.put(COL8, dateTmrw) //next_review
+        contentValues.put(COL9, 0) //times_seen
+        contentValues.put(COL10, 0) //times_correct
         val str = TABLE1_NAME
         val sb = "addData: Adding " +
                 word +

@@ -35,8 +35,6 @@ Napp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchDataAdapter.kt
 Kapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchDataItem.kt,0/c/0cf8e39c67fbe7ac876888d47fd3e54e01ba9748
 m
 =app/src/main/java/com/lewiswilson/kiminojisho/json/Sense.java,5/8/5825a6b5f45bdd3b03b584ddbc787d829ff2620d
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/TextDrawable.kt,9/6/96665d3056c42fad847aa67156353daca866537b
 b
 2app/src/main/java/com/lewiswilson/MyApplication.kt,d/c/dc5a7429e3901dcf12b41af693af48a693952863
 T
@@ -47,15 +45,7 @@ f
 6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 h
 8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
-k
-;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4
 r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
-{
-Kapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/ViewWordRemote.kt,5/1/518d1c4d47fd3176cee62b21ecf6ab25cb89fd89
-i
-9app/src/main/java/com/lewiswilson/kiminojisho/ViewWord.kt,1/1/114a23fc3c4574fbd94bb3a265abb99af740737a
 w
 Gapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchPage.kt,5/6/56d8ce51cce5c036eaec85b361e538542013bc79

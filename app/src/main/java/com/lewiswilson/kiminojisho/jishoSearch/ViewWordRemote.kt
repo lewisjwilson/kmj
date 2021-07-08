@@ -70,8 +70,6 @@ class ViewWordRemote : AppCompatActivity() {
 
         // search word and add matching examples to recycler
         kanji?.let { readExamples(it) }
-
-
     }
 
     override fun onPause(){

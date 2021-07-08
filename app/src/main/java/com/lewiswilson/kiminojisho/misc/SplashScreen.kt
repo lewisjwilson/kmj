@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
+import java.util.*
 
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
