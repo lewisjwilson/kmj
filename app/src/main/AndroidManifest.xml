@@ -29,6 +29,11 @@
             android:theme="@style/AppTheme">
         </activity>
         <activity
+            android:name=".flashcards.FlashcardsHome"
+            android:label="Flashcards"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
             android:name=".flashcards.Flashcards"
             android:label="Flashcards"
             android:theme="@style/AppTheme">

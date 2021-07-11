@@ -223,14 +223,16 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     fun dueFlashcards(): ArrayList<MyListItem>? {
 
-        var flashcardList: ArrayList<MyListItem>? = ArrayList()
+        val flashcardList: ArrayList<MyListItem> = ArrayList()
+
+        val reviewNo = 25
 
         Log.d(TAG, "dueFlashcards: HERE")
         val cur = readableDatabase.rawQuery("SELECT * FROM " + TABLE1_NAME +
-                    " WHERE " + COL8 + "<= date('now')", null) //next_review < date now
+                    " WHERE " + COL8 + "<= date('now') LIMIT ?", (arrayOf(reviewNo.toString()))) //next_review < date now
 
         while (cur.moveToNext()) {
-            flashcardList!!.add(MyListItem(cur.getInt(0), //id
+            flashcardList.add(MyListItem(cur.getInt(0), //id
                     cur.getString(1), //kanji
                     cur.getString(2), //kana
                     cur.getString(3), //meaning
@@ -242,9 +244,15 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         db?.close()
         return flashcardList
-
     }
 
+    // number of flashcards due
+    fun flashcardCount(): Int {
+        val cur = readableDatabase.rawQuery("SELECT COUNT(*) FROM " + TABLE1_NAME +
+                " WHERE " + COL8 + "<= date('now')", null)
+        cur.moveToFirst()
+        return cur.getInt(0)
+    }
 
         companion object {
         private const val COL0 = "ID"
