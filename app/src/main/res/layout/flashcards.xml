@@ -4,7 +4,8 @@
     xmlns:flipview="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F3F3F3">
 
     <com.wajahatkarim3.easyflipview.EasyFlipView
         android:id="@+id/flipview"
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:background="#F3F3F3"
         app:flipDuration="400"
         app:flipEnabled="true"
         app:flipFrom="front"
@@ -28,7 +30,9 @@
         <include layout="@layout/flashcard_back" />
 
         <!-- Front Layout Goes Here -->
-        <include layout="@layout/flashcard_front" />
+        <include
+            layout="@layout/flashcard_front"
+            android:background="#FFFFFF" />
 
     </com.wajahatkarim3.easyflipview.EasyFlipView>
 
@@ -54,9 +58,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.4"
         flipview:layout_constraintBottom_toBottomOf="parent"
-        flipview:layout_constraintTop_toBottomOf="@+id/flipview"
-        app:layout_constraintVertical_bias="0.4"/>
+        flipview:layout_constraintTop_toBottomOf="@+id/flipview" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -227,9 +227,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         val reviewNo = 25
 
-        Log.d(TAG, "dueFlashcards: HERE")
         val cur = readableDatabase.rawQuery("SELECT * FROM " + TABLE1_NAME +
-                    " WHERE " + COL8 + "<= date('now') LIMIT ?", (arrayOf(reviewNo.toString()))) //next_review < date now
+                    " WHERE " + COL8 + "<= date('now') LIMIT ?", arrayOf(reviewNo.toString())) //next_review < date now
 
         while (cur.moveToNext()) {
             flashcardList.add(MyListItem(cur.getInt(0), //id
@@ -239,7 +238,6 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                     cur.getString(5) //english
                 )
             )
-                Log.d(TAG, "dueFlashcards: ${cur.getString(1)}")
         }
 
         db?.close()

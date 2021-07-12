@@ -53,3 +53,7 @@ r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
 {
 Kapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/ViewWordRemote.kt,5/1/518d1c4d47fd3176cee62b21ecf6ab25cb89fd89
+@
+app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
+k
+;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4

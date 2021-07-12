@@ -6,23 +6,20 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.R
+import kotlinx.android.synthetic.main.flashcards_complete.*
 import kotlinx.android.synthetic.main.flashcards_home.*
 
-class FlashcardsHome : AppCompatActivity() {
+class FlashcardsComplete : AppCompatActivity() {
 
     private var myDB: DatabaseHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.flashcards_home)
-        myDB = DatabaseHelper(this)
+        setContentView(R.layout.flashcards_complete)
 
-        val reviewsDue = myDB?.flashcardCount()
-        fc_no.text = "Reviews: $reviewsDue"
-
-        btn_start.setOnClickListener { v: View? ->
+        btn_back.setOnClickListener { v: View? ->
             finish()
-            startActivity(Intent(this@FlashcardsHome, Flashcards::class.java)) }
+            startActivity(Intent(this@FlashcardsComplete, FlashcardsHome::class.java)) }
 
     }
 }

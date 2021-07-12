@@ -39,6 +39,11 @@
             android:theme="@style/AppTheme">
         </activity>
         <activity
+            android:name=".flashcards.FlashcardsComplete"
+            android:label="Flashcards"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
             android:name=".MyList"
             android:label="My List"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
