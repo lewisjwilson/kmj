@@ -252,6 +252,53 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return cur.getInt(0)
     }
 
+    fun updateFlashcard(id: Int, correct: Boolean, seen: Boolean) {
+        val idString = id.toString()
+
+        //get current record data
+        val cur = readableDatabase.rawQuery("SELECT * FROM $TABLE1_NAME" +
+                " WHERE $COL0 = $idString", null)
+        cur.moveToFirst()
+        var box = cur.getInt(6) //flashcard_box
+        var times_seen = cur.getInt(9)
+        var times_correct = cur.getInt(10)
+
+        if (correct && box < 5 && !seen) {
+            box++
+        } else if (!correct && box > 1 && seen) { //prevents moving down many boxes in 1 session
+            box--
+        } //otherwise, no change in box
+
+        // days interval for reviews
+        val interval: Int
+        interval = when(box){
+            1 -> 1
+            2 -> 3
+            3 -> 7
+            4 -> 20
+            5 -> 55
+            else -> 55
+        }
+        var newDateStr = ""
+        newDateStr = if(interval == 1){
+            "+$interval day"
+        } else {
+            "+$interval days"
+        }
+
+        times_seen++
+
+        writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL6 = $box WHERE $COL0 = $idString")
+        writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL9 = $times_seen WHERE $COL0 = $idString")
+        if(correct) {
+            times_correct++
+            writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL7 = date('now') WHERE $COL0 = $idString")
+            writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL8 = date('now', '$newDateStr') WHERE $COL0 = $idString")
+            writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL10 = $times_correct WHERE $COL0 = $idString")
+        }
+        writableDatabase.close()
+    }
+
         companion object {
         private const val COL0 = "ID"
         private const val COL1 = "WORD"

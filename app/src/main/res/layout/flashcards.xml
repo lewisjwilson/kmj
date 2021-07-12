@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     android:background="#F3F3F3">
 
+    <TextView
+        android:id="@+id/txt_noreviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="##/##"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.wajahatkarim3.easyflipview.EasyFlipView
         android:id="@+id/flipview"
         android:layout_width="match_parent"

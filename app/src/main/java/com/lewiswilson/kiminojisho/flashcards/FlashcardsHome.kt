@@ -20,6 +20,10 @@ class FlashcardsHome : AppCompatActivity() {
         val reviewsDue = myDB?.flashcardCount()
         fc_no.text = "Reviews: $reviewsDue"
 
+        if(reviewsDue!! <= 0){
+            btn_start.isEnabled = false
+        }
+
         btn_start.setOnClickListener { v: View? ->
             finish()
             startActivity(Intent(this@FlashcardsHome, Flashcards::class.java)) }

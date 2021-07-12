@@ -25,6 +25,8 @@ class Flashcards : AppCompatActivity() {
     private var myDB: DatabaseHelper? = null
     var flashcardList: ArrayList<MyListItem>? = null
     var seen: ArrayList<Int>? = ArrayList()
+    var completeReviews: Int = 0
+    private var totalReviews: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,9 @@ class Flashcards : AppCompatActivity() {
         myDB = DatabaseHelper(this)
 
         flashcardList = myDB!!.dueFlashcards()
+        totalReviews = flashcardList?.size!!
+
+        txt_noreviews.text = "$completeReviews/$totalReviews"
 
         flashcardSort()
 
@@ -56,26 +61,27 @@ class Flashcards : AppCompatActivity() {
 
                 Log.d(TAG, "${flashcardList?.first()?.kanji} wrong, seen")
                 //database id, correct = false, seen = true
-                dbUpdate(dbid, correct, false)
+                myDB?.updateFlashcard(dbid, correct, false)
 
             } else {
                 seen?.add(dbid)
                 Log.d(TAG, "${flashcardList?.first()?.kanji} wrong, NOT seen")
-                dbUpdate(dbid, correct, true)
+                myDB?.updateFlashcard(dbid, correct, true)
             }
 
         } else {
             //if the seen arraylist contains current word
             if( seen?.isNotEmpty() == true && seen?.contains(flashcardList?.first()?.id) == true ) {
                 Log.d(TAG, "${flashcardList?.first()?.kanji} correct, seen")
-                dbUpdate(dbid, correct, true)
+                myDB?.updateFlashcard(dbid, correct, true)
             } else {
                 Log.d(TAG, "${flashcardList?.first()?.kanji} correct, NOT seen")
-                dbUpdate(dbid, correct, false)
+                myDB?.updateFlashcard(dbid, correct, false)
             }
 
             flashcardList?.removeAt(0)
-
+            completeReviews++
+            txt_noreviews.text = "$completeReviews/$totalReviews"
         }
 
         cv_back.setCardBackgroundColor(color)
@@ -114,12 +120,5 @@ class Flashcards : AppCompatActivity() {
         fc_japanese.text = flashcardList?.first()?.kanji
         fc_english.text = flashcardList?.first()?.english
     }
-
-    private fun dbUpdate(id: Int, correct: Boolean, seen: Boolean) {
-
-        TODO() // update database on correct/wrong button press
-
-    }
-
 
 }
