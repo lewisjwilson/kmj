@@ -113,12 +113,12 @@ class Flashcards : AppCompatActivity() {
 
     private fun flashcardSort() {
 
-        //flashcardList = myDB!!.dueFlashcards()
         //randomise the order of the reviews
         flashcardList?.shuffle()
 
         fc_japanese.text = flashcardList?.first()?.kanji
         fc_english.text = flashcardList?.first()?.english
+        fc_kana.text = flashcardList?.first()?.kana
     }
 
 }
