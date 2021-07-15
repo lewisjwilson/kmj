@@ -1,6 +1,8 @@
 package com.lewiswilson.kiminojisho
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -17,6 +19,9 @@ class ViewWord : AppCompatActivity() {
 
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
     private var rvAdapter: ExamplesAdapter? = null
+    private val myDB = DatabaseHelper(this)
+    private var inList = true
+    val itemId: String = MyList.itemId.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,19 +32,18 @@ class ViewWord : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        val myDB = DatabaseHelper(this)
-        val itemId: String = MyList.itemId.toString()
+
         val itemData = myDB.getData(Integer.parseInt(itemId))
 
         // coming from Mylist, so default is filled star
-        view_star.setImageResource(R.drawable.star_filled)
-        var starFilled = true
-        view_star.setOnClickListener{
-            starFilled = !starFilled
-            if(starFilled){
-                view_star.setImageResource(R.drawable.star_filled)
+        btn_star.setImageResource(R.drawable.ic_removeword)
+
+        btn_star.setOnClickListener{
+            inList = !inList
+            if(inList){
+                btn_star.setImageResource(R.drawable.ic_removeword)
             } else {
-                view_star.setImageResource(R.drawable.star_empty)
+                btn_star.setImageResource(R.drawable.ic_addword)
             }
         }
 
@@ -64,6 +68,18 @@ class ViewWord : AppCompatActivity() {
             readExamples(kanji)
         }
 
+    }
+
+    override fun onPause(){
+        super.onPause()
+
+        if (!inList) {
+            myDB.deleteData(itemId)
+        }
+
+        //go to mainactivity
+        finish()
+        startActivity(Intent(this@ViewWord, MyList::class.java))
 
     }
 

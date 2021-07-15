@@ -6,13 +6,40 @@
 
     <TextView
         android:id="@+id/txt_aboutdescription"
-        android:layout_width="362dp"
-        android:layout_height="305dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="16dp"
         android:text="@string/AboutDescription"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_att_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Attributes:"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_aboutdescription" />
+
+    <TextView
+        android:id="@+id/txt_attrib"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:padding="16dp"
+        android:text="@string/freepik"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_att_header" />
 </androidx.constraintlayout.widget.ConstraintLayout>

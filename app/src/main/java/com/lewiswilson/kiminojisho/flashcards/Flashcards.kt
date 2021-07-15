@@ -2,17 +2,14 @@ package com.lewiswilson.kiminojisho.flashcards
 
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.MyListItem
 import com.lewiswilson.kiminojisho.R
-import com.wajahatkarim3.easyflipview.EasyFlipView
 import kotlinx.android.synthetic.main.flashcards_home.*
 import kotlinx.android.synthetic.main.flashcard_back.*
 import kotlinx.android.synthetic.main.flashcard_front.*

@@ -21,8 +21,8 @@ class ViewWordRemote : AppCompatActivity() {
     private var english: String? = ""
     private var example: String? = ""
     private var notes: String? = ""
+    private var inList: Boolean = false
     private var starFilled: Boolean = false
-    private var starFilledInitial: Boolean = false
     private val myDB = DatabaseHelper(this)
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
     private var rvAdapter: ExamplesAdapter? = null
@@ -42,8 +42,8 @@ class ViewWordRemote : AppCompatActivity() {
         english = intent.getStringExtra("english")
         example = intent.getStringExtra("example")
         notes = intent.getStringExtra("notes")
-        starFilled = intent.getBooleanExtra("star_filled", false)
-        starFilledInitial = starFilled
+        inList = intent.getBooleanExtra("star_filled", false)
+        starFilled = inList
 
         view_kanji.text = kanji
         view_kana.text = kana
@@ -51,16 +51,16 @@ class ViewWordRemote : AppCompatActivity() {
         //view_examples.text = example
         view_notes.text = notes
 
-        if(starFilled){
-            view_star.setImageResource(R.drawable.star_filled)
+        if(!inList){
+            btn_star.setImageResource(R.drawable.ic_addword)
         }
 
-        view_star.setOnClickListener{
-            starFilled = !starFilled
-            if(starFilled){
-                view_star.setImageResource(R.drawable.star_filled)
+        btn_star.setOnClickListener{
+            inList = !inList
+            if(inList){
+                btn_star.setImageResource(R.drawable.ic_removeword)
             } else {
-                view_star.setImageResource(R.drawable.star_empty)
+                btn_star.setImageResource(R.drawable.ic_addword)
             }
         }
 
@@ -75,8 +75,8 @@ class ViewWordRemote : AppCompatActivity() {
     override fun onPause(){
         super.onPause()
 
-        if(starFilled!=starFilledInitial) {
-            if (starFilled) {
+        if(inList!=starFilled) {
+            if (inList) {
                 myDB.addData(kanji!!, kana, english, example, notes)
             } else {
                 try {
@@ -86,8 +86,9 @@ class ViewWordRemote : AppCompatActivity() {
                 }
             }
             //go to mainactivity
-            startActivity(Intent(this@ViewWordRemote, MyList::class.java))
             finish()
+            startActivity(Intent(this@ViewWordRemote, MyList::class.java))
+
         }
 
 
