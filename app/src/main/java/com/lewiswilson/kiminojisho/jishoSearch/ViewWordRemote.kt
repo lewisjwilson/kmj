@@ -29,6 +29,7 @@ class ViewWordRemote : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.OverlayTurquoise, true)
         setContentView(R.layout.view_word)
 
         //implementing ads

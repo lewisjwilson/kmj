@@ -14,6 +14,7 @@ class FlashcardsHome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.OverlayTurquoise, true)
         setContentView(R.layout.flashcards_home)
         myDB = DatabaseHelper(this)
 

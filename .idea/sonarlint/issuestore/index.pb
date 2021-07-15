@@ -41,8 +41,6 @@ T
 $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1cba
 \
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
-f
-6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 h
 8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
 r
@@ -53,9 +51,3 @@ r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
-k
-;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4
-g
-7app/src/main/java/com/lewiswilson/kiminojisho/MyList.kt,4/a/4ac8a2c02229ec9c5f036b5cde18d425ca1820fa
-P
- app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e

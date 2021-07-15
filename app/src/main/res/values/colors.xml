@@ -3,8 +3,15 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
     <color name="flashcard_wrong">#ff9191</color>
     <color name="flashcard_correct">#c1ff91</color>
+
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+
+    <color name="celeste">#C4FFF9</color>
+    <color name="med_turquoise">#68D8D6</color>
+    <color name="teal">#02807B</color>
+
 </resources>

@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.home_screen.*
 class HomeScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.OverlayTurquoise, true)
         setContentView(R.layout.home_screen)
 
         item_flashcards.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }

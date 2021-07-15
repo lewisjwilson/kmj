@@ -11,10 +11,9 @@ import kotlinx.android.synthetic.main.flashcards_home.*
 
 class FlashcardsComplete : AppCompatActivity() {
 
-    private var myDB: DatabaseHelper? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.OverlayTurquoise, true)
         setContentView(R.layout.flashcards_complete)
 
         btn_back.setOnClickListener { v: View? ->
