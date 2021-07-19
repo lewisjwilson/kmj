@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho
 
+import android.app.*
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -7,8 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 import com.lewiswilson.kiminojisho.jishoSearch.SearchPage
 import kotlinx.android.synthetic.main.home_screen.*
+import java.util.*
+
 
 class HomeScreen : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         theme.applyStyle(R.style.OverlayTurquoise, true)

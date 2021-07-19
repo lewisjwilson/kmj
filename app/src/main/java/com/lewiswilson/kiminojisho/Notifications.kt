@@ -25,8 +25,7 @@ internal class Notifications(base: Context?) : ContextWrapper(base) {
         }
     val channelNotification: NotificationCompat.Builder
         get() {
-            val myDB: DatabaseHelper
-            myDB = DatabaseHelper(this)
+            val myDB: DatabaseHelper = DatabaseHelper(this)
             return NotificationCompat.Builder(applicationContext, channelID)
                     .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
                     .setContentTitle("Word of the Day")

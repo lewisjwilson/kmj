@@ -1,16 +1,10 @@
 
-n
->app/src/main/java/com/lewiswilson/kiminojisho/AlertReceiver.kt,7/9/799cf7e7835e193602f5f39302af6b38b2b5a99d
 p
 @app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
 m
 =app/src/main/java/com/lewiswilson/kiminojisho/ExamplesItem.kt,b/4/b484d6dd405764104a77392099b118d95e14a477
 k
 ;app/src/main/java/com/lewiswilson/kiminojisho/MyListItem.kt,d/b/db78fd3e13ba4174e245fb54aea5300a24bd850a
-n
->app/src/main/java/com/lewiswilson/kiminojisho/Notifications.kt,5/f/5f1895a66c060e0bd5683f0dbc9dc59992172a3c
-s
-Capp/src/main/java/com/lewiswilson/kiminojisho/TimePickerFragment.kt,c/9/c9ad57bf20deefd6ab5a06b6b93fc98b752a9147
 s
 Capp/src/main/java/com/lewiswilson/kiminojisho/json/Attribution.java,c/1/c1c222efb8cdc3dbd1f72e357c5edb6036dd9040
 m
@@ -43,11 +37,13 @@ $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
 h
 8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
 w
 Gapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchPage.kt,5/6/56d8ce51cce5c036eaec85b361e538542013bc79
 r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
+o
+?app/src/main/java/com/lewiswilson/kiminojisho/DatabaseHelper.kt,2/4/24d91834ca93895f295533269a21d01383e7cb10
+v
+Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f

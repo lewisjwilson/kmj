@@ -1,6 +1,7 @@
 package com.lewiswilson.kiminojisho
 
 import android.app.*
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -295,6 +296,14 @@ class MyList : AppCompatActivity(),
             //cancel
             PendingIntent.getBroadcast(applicationContext, 0,
                     Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+
+            // cancels popping up on device reboot
+            val receiver = ComponentName(applicationContext, ReminderBroadcast::class.java)
+            applicationContext.packageManager.setComponentEnabledSetting(
+                receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
             Toast.makeText(applicationContext, "Notifications Stopped", Toast.LENGTH_LONG).show()
         } else {
             // Get Current Time
@@ -304,16 +313,24 @@ class MyList : AppCompatActivity(),
 
             // Launch Time Picker Dialog
             val timePickerDialog = TimePickerDialog(this,
-                { view, hourOfDay, minute ->
+                { _, hourOfDay, minute ->
                     c[Calendar.HOUR_OF_DAY] = hourOfDay
                     c[Calendar.MINUTE] = minute
                     c[Calendar.SECOND] = 0
                     val intent = Intent(applicationContext, ReminderBroadcast::class.java)
                     val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-                    Toast.makeText(applicationContext, "Daily Notifications Set for " +
-                            c[Calendar.HOUR_OF_DAY] + ":" + c[Calendar.MINUTE], Toast.LENGTH_LONG).show()
+                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent)
+
+                    // enables notification even after reboot
+                    val receiver = ComponentName(applicationContext, ReminderBroadcast::class.java)
+                    applicationContext.packageManager.setComponentEnabledSetting(
+                        receiver,
+                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                        PackageManager.DONT_KILL_APP
+                    )
+
+                    Toast.makeText(applicationContext, "Daily Notifications Set", Toast.LENGTH_LONG).show()
                 }, currenthour, currentminute, true)
             timePickerDialog.show()
         }

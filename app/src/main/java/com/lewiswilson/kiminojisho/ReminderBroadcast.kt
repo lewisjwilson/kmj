@@ -10,16 +10,22 @@ import androidx.core.app.NotificationManagerCompat
 class ReminderBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val myDB = DatabaseHelper(context)
-        val notificationIntent = Intent(context, MyList::class.java)
-        notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val notificationIntent = Intent(context, HomeScreen::class.java)
+        notificationIntent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val builder = NotificationCompat.Builder(context, "wotd")
-                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentTitle("Word of the Day")
-                .setContentText(myDB.random(1))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
+            .setContentTitle("Word of the Day")
+            .setContentText(myDB.random(1))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(100, builder.build())
     }
