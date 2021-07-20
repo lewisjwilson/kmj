@@ -176,10 +176,6 @@ class MyList : AppCompatActivity(),
                 true
             }
 
-            R.id.action_alarm -> {
-                setupNotifications()
-                true
-            }
             R.id.action_import -> {
                 val diaBox = importWarning()
                 diaBox.show()
@@ -271,68 +267,6 @@ class MyList : AppCompatActivity(),
                 fileUri = data.data
             }
                 importDatabase()
-        }
-    }
-
-    private fun setupNotifications() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence = "Daily Notifications"
-            val description = "Word of the day"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("wotd", name, importance)
-            channel.description = description
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
-        timePicker()
-    }
-
-    private fun timePicker() {
-
-        //boolean to check if alarm is active currently
-        val alarmUp = PendingIntent.getBroadcast(applicationContext, 0,
-                Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_NO_CREATE) != null
-        if (alarmUp) {
-            //cancel
-            PendingIntent.getBroadcast(applicationContext, 0,
-                    Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_UPDATE_CURRENT).cancel()
-
-            // cancels popping up on device reboot
-            val receiver = ComponentName(applicationContext, ReminderBroadcast::class.java)
-            applicationContext.packageManager.setComponentEnabledSetting(
-                receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP
-            )
-            Toast.makeText(applicationContext, "Notifications Stopped", Toast.LENGTH_LONG).show()
-        } else {
-            // Get Current Time
-            val c = Calendar.getInstance()
-            val currenthour = c[Calendar.HOUR_OF_DAY]
-            val currentminute = c[Calendar.MINUTE]
-
-            // Launch Time Picker Dialog
-            val timePickerDialog = TimePickerDialog(this,
-                { _, hourOfDay, minute ->
-                    c[Calendar.HOUR_OF_DAY] = hourOfDay
-                    c[Calendar.MINUTE] = minute
-                    c[Calendar.SECOND] = 0
-                    val intent = Intent(applicationContext, ReminderBroadcast::class.java)
-                    val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                    val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent)
-
-                    // enables notification even after reboot
-                    val receiver = ComponentName(applicationContext, ReminderBroadcast::class.java)
-                    applicationContext.packageManager.setComponentEnabledSetting(
-                        receiver,
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                        PackageManager.DONT_KILL_APP
-                    )
-
-                    Toast.makeText(applicationContext, "Daily Notifications Set", Toast.LENGTH_LONG).show()
-                }, currenthour, currentminute, true)
-            timePickerDialog.show()
         }
     }
 

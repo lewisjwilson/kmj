@@ -24,10 +24,6 @@
 
     </item>
     <item
-        android:id="@+id/action_alarm"
-        android:title="@string/ActionAlarm"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_import"
         android:title="@string/ActionImport"
         app:showAsAction="never" />
