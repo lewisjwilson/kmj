@@ -1,6 +1,7 @@
 package com.lewiswilson.kiminojisho
 
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
@@ -13,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
+import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 
 class ReminderBroadcast : BroadcastReceiver() {
 
@@ -46,7 +48,15 @@ class ReminderBroadcast : BroadcastReceiver() {
         } else {
 
             val myDB = DatabaseHelper(context)
-            val notificationIntent = Intent(context, HomeScreen::class.java)
+
+            val wordArr = myDB.random()
+            val kanji = wordArr[0]
+            val kana = wordArr[1]
+            val english = wordArr[2]
+
+            val reviewsDue = myDB.flashcardCount()
+
+            val notificationIntent = Intent(context, FlashcardsHome::class.java)
             notificationIntent.flags =
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             val pendingIntent = PendingIntent.getActivity(
@@ -57,8 +67,11 @@ class ReminderBroadcast : BroadcastReceiver() {
             )
             val builder = NotificationCompat.Builder(context, "wotd")
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
-                .setContentTitle("Word of the Day")
-                .setContentText(myDB.random(1))
+                .setContentTitle("KimiNoJisho")
+                .setSubText("Word of the Day")
+                .setContentText(kanji)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText("${kanji}\n${kana}\n${english}\n\n$reviewsDue reviews remaining!"))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)

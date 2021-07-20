@@ -15,6 +15,7 @@ import java.io.OutputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 10) {
@@ -195,33 +196,25 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 "COLLATE NOCASE ASC", null)
     }
 
-    fun random(flag: Int): String {
-        var randWord = ""
+    fun random(): ArrayList<String> {
+
         val cursor = readableDatabase.rawQuery("SELECT WORD, KANA, MEANING FROM jisho_data " +
                 "WHERE ID IN (SELECT ID FROM jisho_data ORDER BY RANDOM() LIMIT 1)", null)
-        val str = COL1
-        if (flag == 0) {
-            if (cursor.moveToFirst()) {
-                randWord = cursor.getString(cursor.getColumnIndex(str))
-            }
-        } else if (cursor.moveToFirst()) {
-            val sb = StringBuilder()
-            sb.append(cursor.getString(cursor.getColumnIndex(str)))
-            sb.append(" ; ")
 
-            //check case where WORD == KANA (in case of 'no kanji' mode)
-            if (cursor.getString(cursor.getColumnIndex(str)) != cursor.getString(cursor.getColumnIndex(COL2))) {
-                sb.append(cursor.getString(cursor.getColumnIndex(COL2)))
-                sb.append(" ; ")
-            }
-            sb.append(cursor.getString(cursor.getColumnIndex(COL3)))
-            randWord = sb.toString()
+        var kanji = ""
+        var kana = ""
+        var english = ""
+
+        if (cursor.moveToFirst()) {
+            kanji = cursor.getString(0)
+            kana = cursor.getString(1)
+            english = cursor.getString(2)
         }
         cursor.close()
-        return randWord
+        return arrayListOf(kanji, kana, english)
     }
 
-    fun dueFlashcards(): ArrayList<MyListItem>? {
+    fun dueFlashcards(): ArrayList<MyListItem> {
 
         val flashcardList: ArrayList<MyListItem> = ArrayList()
 

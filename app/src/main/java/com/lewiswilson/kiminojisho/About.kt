@@ -41,7 +41,7 @@ class About : AppCompatActivity() {
             c.timeInMillis = millis
             timepicker1.hour = c[Calendar.HOUR_OF_DAY]
             timepicker1.minute = c[Calendar.MINUTE]
-            Log.d(TAG, "onCreate: ${c.time}")
+            Log.d(TAG, "Notifications set for: ${c.time} daily.")
         }
 
         timepicker1.setIs24HourView(true)
@@ -80,9 +80,19 @@ class About : AppCompatActivity() {
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
         val c = Calendar.getInstance()
+
+        val currentTime = c.timeInMillis
+
         c[Calendar.HOUR_OF_DAY] = hour
         c[Calendar.MINUTE] = min
         c[Calendar.SECOND] = 0
+
+        val notifyTime = c.timeInMillis
+
+        // if time is in the past, add a day to prevent notification being shown instantly
+        if(notifyTime<currentTime){
+            c[Calendar.DAY_OF_MONTH] += 1
+        }
 
         val intent = Intent(applicationContext, ReminderBroadcast::class.java)
         val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)

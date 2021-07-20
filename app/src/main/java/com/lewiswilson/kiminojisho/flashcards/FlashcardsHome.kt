@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.DatabaseHelper
+import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.flashcards_home.*
 
@@ -29,5 +30,11 @@ class FlashcardsHome : AppCompatActivity() {
             finish()
             startActivity(Intent(this@FlashcardsHome, Flashcards::class.java)) }
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        startActivity(Intent(this@FlashcardsHome, HomeScreen::class.java))
     }
 }

@@ -43,11 +43,7 @@ r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
-o
-?app/src/main/java/com/lewiswilson/kiminojisho/DatabaseHelper.kt,2/4/24d91834ca93895f295533269a21d01383e7cb10
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
-z
-Japp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsHome.kt,1/7/174151eb8a95a5182ab6fcd347f568699ac79472
 ~
 Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
