@@ -9,20 +9,20 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.CompoundButton
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.about.*
 import java.text.DecimalFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.time.hours
 
-class About : AppCompatActivity() {
+class About : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.OverlayTurquoise, true)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.about)
 
         val prefsName = "MyPrefs"
@@ -34,7 +34,7 @@ class About : AppCompatActivity() {
         //sets enabled status based on if alarm exists
         switch_notifications.isChecked = alarmUp
         if(switch_notifications.isChecked) {
-            txt_status.text = "ON"
+            txt_status.text = getString(R.string.ON)
             //setting time to value in sharedprefs
             val millis = prefs.getLong("daily_notifications", 0)
             val c = Calendar.getInstance()
@@ -49,17 +49,23 @@ class About : AppCompatActivity() {
         switch_notifications.setOnClickListener {
 
             if(switch_notifications.isChecked) {
-                txt_status.text = "ON"
+                txt_status.text = getString(R.string.ON)
                 val hour = timepicker1.hour
                 val min = timepicker1.minute
                 createChannel()
                 setNotifications(hour, min)
 
             } else {
-                txt_status.text = "OFF"
+                txt_status.text = getString(R.string.OFF)
                 cancelNotifications()
             }
         }
+
+        spn_theme!!.onItemSelectedListener
+        val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.themes))
+        spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spn_theme!!.adapter = spnAdapter
+
     }
 
     private fun createChannel() {
@@ -74,6 +80,7 @@ class About : AppCompatActivity() {
         }
     }
 
+    // notification functions
     private fun setNotifications(hour: Int, min: Int) {
 
         val prefsName = "MyPrefs"
@@ -131,6 +138,16 @@ class About : AppCompatActivity() {
         )
         Toast.makeText(applicationContext, "Notifications stopped", Toast.LENGTH_LONG).show()
     }
+
+    // spinner functions
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        TODO("Not yet implemented")
+    }
+
 
 }
 

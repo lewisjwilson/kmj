@@ -41,7 +41,8 @@
         app:layout_constraintStart_toEndOf="@+id/timepicker1"
         app:layout_constraintTop_toBottomOf="@+id/txt_notif_header"
         app:layout_constraintVertical_bias="0.45"
-        tools:checked="false" />
+        tools:checked="false"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <TextView
         android:id="@+id/txt_status"
@@ -63,6 +64,42 @@
         app:layout_constraintTop_toBottomOf="@+id/timepicker1" />
 
     <TextView
+        android:id="@+id/txt_theme_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Theme"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator1" />
+
+    <Spinner
+        android:id="@+id/spn_theme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_theme_header"
+        app:layout_constraintTop_toBottomOf="@+id/separator1" />
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spn_theme" />
+
+    <TextView
         android:id="@+id/txt_about"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,7 +111,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator1" />
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
 
     <TextView
         android:id="@+id/txt_aboutdescription"

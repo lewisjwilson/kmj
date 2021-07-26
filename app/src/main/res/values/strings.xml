@@ -12,9 +12,9 @@
     <string name="Delete_Entry">DELETE</string>
     <string name="Update_Entry">Update</string>
     <string name="View_Edit">View/Edit</string>
-    <string name="ActionExport">Export</string>
+    <string name="ActionExport">Export Database</string>
     <string name="ActionAlarm">Notifications On/Off</string>
-    <string name="ActionImport">Import</string>
+    <string name="ActionImport">Import Database</string>
     <string name="ActionAbout">About</string>
     <string name="About">About</string>
     <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier.</string>
@@ -29,4 +29,7 @@
     <string name="required">(Required)</string>
     <string name="optional">(Optional)</string>
     <string name="freepik">Icons made by: Freepik (<a href="https://www.freepik.com">www.freepik.com</a>) from <a href="https://www.flaticon.com">www.flaticon.com</a></string>
+    <string name="ON">ON</string>
+    <string name="OFF">OFF</string>
+    <string name="no_results">No results found</string>
 </resources>

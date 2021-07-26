@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.NullPointerException
-import kotlin.coroutines.CoroutineContext
 
 class SearchPage() : AppCompatActivity(), CoroutineScope {
 
@@ -42,6 +41,7 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.search_page)
         sp = this
 
@@ -107,7 +107,7 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
                 //if no data was found, try a call assuming romaji style
                 if (data.isEmpty()) {
                     tv_info.visibility = View.VISIBLE
-                    tv_info.text = "No results found"
+                    tv_info.text = getString(R.string.no_results)
                 }
 
                 //try to retrieve data from jishoAPI
@@ -116,7 +116,6 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
                     var kanji: String?
                     var kana: String?
                     var english: String
-                    var notes: String? = null
                     for (i in data.indices) {
                         japanese = data[i].japanese
                         kanji = japanese[0].word
@@ -131,12 +130,6 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
                         val sense = data[i].senses
                         val noOfDefinitions = sense[0].englishDefinitions.size
                         english = sense[0].englishDefinitions[0]
-
-                        //get first tag in entry
-                        val noOfTags = sense[0].tags.size
-                        if (noOfTags > 0) {
-                            notes = "[ " + sense[0].tags[0] + " ]"
-                        }
 
                         //If there is more than one definition, also display the second definition
                         if (noOfDefinitions > 1) {

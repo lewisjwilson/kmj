@@ -35,15 +35,7 @@ T
 $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1cba
 \
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
-h
-8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
-w
-Gapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchPage.kt,5/6/56d8ce51cce5c036eaec85b361e538542013bc79
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/misc/SplashScreen.kt,f/f/ff8712dd1551380efaa2f2974e8e65aec6dc5245
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
-v
-Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
-~
-Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
+r
+Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56

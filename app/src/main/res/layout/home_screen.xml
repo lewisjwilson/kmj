@@ -8,13 +8,13 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:columnOrderPreserved="false"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_weight="8"
         android:alignmentMode="alignMargins"
         android:columnCount="2"
-        android:rowCount="2"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp">
+        android:columnOrderPreserved="false"
+        android:rowCount="2">
 
         <!-- Row 1 , Column 1 -->
         <androidx.cardview.widget.CardView
@@ -32,8 +32,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/circle_lightblue">
+                android:background="@drawable/circle_lightblue"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -42,15 +42,16 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="flashcardicon"
                     android:scaleX="1.5"
                     android:scaleY="1.5"
                     android:src="@drawable/ic_baseline_crop_square_24"
-                    android:textAlignment="center"></ImageView>
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -72,8 +73,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/circle_pink">
+                android:background="@drawable/circle_pink"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -82,15 +83,16 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="searchicon"
                     android:scaleX="1.5"
                     android:scaleY="1.5"
                     android:src="@drawable/ic_search_black_24dp"
-                    android:textAlignment="center"></ImageView>
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -112,8 +114,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/circle_orange">
+                android:background="@drawable/circle_orange"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -122,15 +124,16 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="listicon"
                     android:scaleX="1.5"
                     android:scaleY="1.5"
                     android:src="@drawable/ic_baseline_format_list_bulleted_24"
-                    android:textAlignment="center"></ImageView>
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
@@ -151,8 +154,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:orientation="vertical"
-                android:background="@drawable/circle_green">
+                android:background="@drawable/circle_green"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -161,22 +164,20 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:contentDescription="settingsicon"
                     android:scaleX="1.2"
                     android:scaleY="1.2"
                     android:src="@drawable/ic_baseline_settings_24"
-                    android:textAlignment="center"></ImageView>
-
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
-
 
     </GridLayout>
 

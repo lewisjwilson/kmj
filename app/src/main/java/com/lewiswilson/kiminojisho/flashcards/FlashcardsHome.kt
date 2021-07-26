@@ -15,12 +15,13 @@ class FlashcardsHome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.OverlayTurquoise, true)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.flashcards_home)
         myDB = DatabaseHelper(this)
 
         val reviewsDue = myDB?.flashcardCount()
-        fc_no.text = "Reviews: $reviewsDue"
+        val noOfFlashcards = "Reviews: $reviewsDue"
+        fc_no.text = noOfFlashcards
 
         if(reviewsDue!! <= 0){
             btn_start.isEnabled = false

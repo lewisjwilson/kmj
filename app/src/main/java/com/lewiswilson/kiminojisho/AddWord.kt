@@ -18,6 +18,7 @@ class AddWord : AppCompatActivity() {
     /* access modifiers changed from: protected */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 

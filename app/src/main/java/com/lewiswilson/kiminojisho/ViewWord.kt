@@ -2,7 +2,6 @@ package com.lewiswilson.kiminojisho
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -21,11 +20,11 @@ class ViewWord : AppCompatActivity() {
     private var rvAdapter: ExamplesAdapter? = null
     private val myDB = DatabaseHelper(this)
     private var inList = true
-    val itemId: String = MyList.itemId.toString()
+    val itemId: String = MyList.clickedItemId.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.OverlayTurquoise, true)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.view_word)
 
         //implementing ads
@@ -78,7 +77,7 @@ class ViewWord : AppCompatActivity() {
             myDB.deleteData(itemId)
         }
 
-        //go to mainactivity
+        //go to MyList
         finish()
         startActivity(Intent(this@ViewWord, MyList::class.java))
 

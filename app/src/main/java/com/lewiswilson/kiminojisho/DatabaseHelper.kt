@@ -3,7 +3,6 @@ package com.lewiswilson.kiminojisho
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import android.database.DatabaseUtils.dumpCursorToString
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -233,8 +232,31 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             )
         }
 
+        cur.close()
         db?.close()
         return flashcardList
+    }
+
+    fun randomThreeWrong(correctKanji: String): ArrayList<MyListItem> {
+
+        val wrongItems: ArrayList<MyListItem> = ArrayList()
+        val cur = readableDatabase.rawQuery("SELECT DISTINCT * FROM " + TABLE1_NAME +
+                " WHERE " + COL1 + " NOT IN (SELECT " + COL1 + " FROM " + TABLE1_NAME + " WHERE " + COL1 + " = ?)" +
+                " ORDER BY RANDOM() LIMIT 3", arrayOf(correctKanji))
+
+        while (cur.moveToNext()) {
+            wrongItems.add(MyListItem(cur.getInt(0), //id
+                cur.getString(1), //kanji
+                cur.getString(2), //kana
+                cur.getString(3), //meaning
+                cur.getString(5) //english
+            )
+            )
+        }
+
+        cur.close()
+        db?.close()
+        return wrongItems
     }
 
     // number of flashcards due
@@ -242,7 +264,9 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         val cur = readableDatabase.rawQuery("SELECT COUNT(*) FROM " + TABLE1_NAME +
                 " WHERE " + COL8 + "<= date('now')", null)
         cur.moveToFirst()
-        return cur.getInt(0)
+        val count = cur.getInt(0)
+        cur.close()
+        return count
     }
 
     fun updateFlashcard(id: Int, correct: Boolean, seen: Boolean) {
@@ -253,41 +277,44 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 " WHERE $COL0 = $idString", null)
         cur.moveToFirst()
         var box = cur.getInt(6) //flashcard_box
-        var times_seen = cur.getInt(9)
-        var times_correct = cur.getInt(10)
+        var timesSeen = cur.getInt(9)
+        var timesCorrect = cur.getInt(10)
+        cur.close()
 
-        if (correct && box < 5 && !seen) {
+        if (correct && box < 9 && !seen) {
             box++
         } else if (!correct && box > 1 && seen) { //prevents moving down many boxes in 1 session
             box--
         } //otherwise, no change in box
 
-        // days interval for reviews
-        val interval: Int
-        interval = when(box){
+        // days interval (fibonacci from n=2)
+        val interval: Int = when(box){
             1 -> 1
-            2 -> 3
-            3 -> 7
-            4 -> 20
-            5 -> 55
+            2 -> 2
+            3 -> 3
+            4 -> 5
+            5 -> 8
+            6 -> 13
+            7 -> 21
+            8 -> 34
+            9 -> 55
             else -> 55
         }
-        var newDateStr = ""
-        newDateStr = if(interval == 1){
+        var newDateStr: String = if(interval == 1){
             "+$interval day"
         } else {
             "+$interval days"
         }
 
-        times_seen++
+        timesSeen++
 
         writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL6 = $box WHERE $COL0 = $idString")
-        writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL9 = $times_seen WHERE $COL0 = $idString")
+        writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL9 = $timesSeen WHERE $COL0 = $idString")
         if(correct) {
-            times_correct++
+            timesCorrect++
             writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL7 = date('now') WHERE $COL0 = $idString")
             writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL8 = date('now', '$newDateStr') WHERE $COL0 = $idString")
-            writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL10 = $times_correct WHERE $COL0 = $idString")
+            writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL10 = $timesCorrect WHERE $COL0 = $idString")
         }
         writableDatabase.close()
     }

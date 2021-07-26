@@ -16,22 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:clickable="true"
-        android:focusable="true"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/AppTheme"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextColor="#FFFFFF"
-        app:title="My List"
-        app:titleTextColor="@android:color/background_light" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flbtn_add"
@@ -40,6 +25,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:clickable="true"
+        android:contentDescription="addwordbutton"
         android:focusable="true"
         android:foreground="@drawable/ic_add_black_24dp"
         android:foregroundGravity="fill"

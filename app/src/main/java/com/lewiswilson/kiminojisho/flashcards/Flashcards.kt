@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho.flashcards
 
+import android.animation.ObjectAnimator
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -22,31 +23,43 @@ class Flashcards : AppCompatActivity() {
     private var myDB: DatabaseHelper? = null
     var flashcardList: ArrayList<MyListItem>? = null
     var seen: ArrayList<Int>? = ArrayList()
-    var completeReviews: Int = 0
+    private var completeReviews: Int = 0
     private var totalReviews: Int = 0
+    private var totalCorrect: Int = 0
+    private var totalTries: Int = 0
+    private var correctBtn: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.OverlayTurquoise, true)
+        theme.applyStyle(R.style.Turquoise, true)
         setContentView(R.layout.flashcards)
         myDB = DatabaseHelper(this)
 
         flashcardList = myDB!!.dueFlashcards()
         totalReviews = flashcardList?.size!!
-
-        txt_noreviews.text = "$completeReviews/$totalReviews"
+        progressBar.progress = 0
 
         flashcardSort()
 
-        btn_correct.setOnClickListener { redirect(true) }
-        btn_wrong.setOnClickListener{ redirect(false) }
+        option1.setOnClickListener{ redirect(1) }
+        option2.setOnClickListener{ redirect(2) }
+        option3.setOnClickListener{ redirect(3) }
+        option4.setOnClickListener{ redirect(4) }
 
     }
 
-    private fun redirect(correct: Boolean) {
+    private fun redirect(selectedBtn: Int) {
+        var correct = false
 
-        btn_correct.isEnabled = false
-        btn_wrong.isEnabled = false
+        //if the button selected is the correct value, set the boolean to true
+        when(selectedBtn){correctBtn -> correct = true}
+
+        option1.isEnabled = false
+        option2.isEnabled = false
+        option3.isEnabled = false
+        option4.isEnabled = false
+
+        totalTries += 1
 
         val dbid = flashcardList!!.first().id
         var color = getColor(R.color.flashcard_correct)
@@ -68,6 +81,7 @@ class Flashcards : AppCompatActivity() {
             }
 
         } else {
+            totalCorrect += 1
             //if the seen arraylist contains current word
             if( seen?.isNotEmpty() == true && seen?.contains(flashcardList?.first()?.id) == true ) {
                 Log.d(TAG, "${flashcardList?.first()?.kanji} correct, seen")
@@ -79,7 +93,8 @@ class Flashcards : AppCompatActivity() {
 
             flashcardList?.removeAt(0)
             completeReviews++
-            txt_noreviews.text = "$completeReviews/$totalReviews"
+            val progress = ((completeReviews/totalReviews.toDouble())*100).toInt()
+            setProgressBar(progress)
         }
 
         cv_back.setCardBackgroundColor(color)
@@ -99,13 +114,18 @@ class Flashcards : AppCompatActivity() {
             cv_front.setCardBackgroundColor(getColor(R.color.white))
             if(flashcardList?.isEmpty() == true) {
                 //finished
+                val percentCorrect = (totalCorrect.toDouble()/totalTries)*100
                 finish()
-                startActivity(Intent(this@Flashcards, FlashcardsComplete::class.java))
+                val intent = Intent(this@Flashcards, FlashcardsComplete::class.java)
+                intent.putExtra("percent", percentCorrect)
+                startActivity(intent)
             } else {
                 flashcardSort()
             }
-            btn_correct.isEnabled = true
-            btn_wrong.isEnabled = true
+            option1.isEnabled = true
+            option2.isEnabled = true
+            option3.isEnabled = true
+            option4.isEnabled = true
         }, 1200)
     }
 
@@ -114,9 +134,80 @@ class Flashcards : AppCompatActivity() {
         //randomise the order of the reviews
         flashcardList?.shuffle()
 
+        //populating flashcard
         fc_japanese.text = flashcardList?.first()?.kanji
         fc_english.text = flashcardList?.first()?.english
         fc_kana.text = flashcardList?.first()?.kana
+
+
+        val validateArray = listOf(1, 0, 0, 0).shuffled()
+
+        for (item in validateArray){
+            if(item==1){
+                correctBtn = validateArray.indexOf(item) + 1 //assigns the correct button
+                Log.d(TAG, "correct item: $item , index: ${validateArray.indexOf(item) + 1}") //correct
+            }
+        }
+
+        val incorrectItems = myDB?.randomThreeWrong(flashcardList?.first()?.kanji!!)
+
+        var correctItemText: String
+        var wrongItemText1: String
+        var wrongItemText2: String
+        var wrongItemText3: String
+
+        // if entry has no kanji
+        if((flashcardList?.first()?.kana).equals(flashcardList?.first()?.kanji)){
+            correctItemText = "${flashcardList?.first()?.english}"
+            wrongItemText1 = "${incorrectItems?.elementAt(0)?.english}"
+            wrongItemText2 = "${incorrectItems?.elementAt(1)?.english}"
+            wrongItemText3 = "${incorrectItems?.elementAt(2)?.english}"
+        } else {
+            correctItemText = "${flashcardList?.first()?.kana}\n${flashcardList?.first()?.english}"
+            wrongItemText1 = "${incorrectItems?.elementAt(0)?.kana}\n${incorrectItems?.elementAt(0)?.english}"
+            wrongItemText2 = "${incorrectItems?.elementAt(1)?.kana}\n${incorrectItems?.elementAt(1)?.english}"
+            wrongItemText3 = "${incorrectItems?.elementAt(2)?.kana}\n${incorrectItems?.elementAt(2)?.english}"
+        }
+
+
+        Log.d(TAG, "wrongitemtext1: $wrongItemText1")
+        Log.d(TAG, "wrongitemtext2: $wrongItemText2")
+        Log.d(TAG, "wrongitemtext3: $wrongItemText3")
+
+
+        when (correctBtn) {
+            1 -> {
+                txt_option1.text = correctItemText
+                txt_option2.text = wrongItemText1
+                txt_option3.text = wrongItemText2
+                txt_option4.text = wrongItemText3
+            }
+            2 -> {
+                txt_option1.text = wrongItemText1
+                txt_option2.text = correctItemText
+                txt_option3.text = wrongItemText2
+                txt_option4.text = wrongItemText3
+            }
+            3 -> {
+                txt_option1.text = wrongItemText1
+                txt_option2.text = wrongItemText2
+                txt_option3.text = correctItemText
+                txt_option4.text = wrongItemText3
+            }
+            4 -> {
+                txt_option1.text = wrongItemText1
+                txt_option2.text = wrongItemText2
+                txt_option3.text = wrongItemText3
+                txt_option4.text = correctItemText
+            }
+        }
+
+    }
+
+    private fun setProgressBar(progress: Int) {
+        ObjectAnimator.ofInt(progressBar, "progress", progress)
+            .setDuration(300)
+            .start()
     }
 
 }
