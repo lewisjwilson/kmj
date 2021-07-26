@@ -6,11 +6,9 @@ KimiNoJisho is the ultimate Japanese dictionary and custom flashcard app solutio
 
 
 Features include:
-- Your own personal list/dictionary
+- Your own personal list of words/dictionary
+- A SRS Flashcard style game using your personal list
+- Daily Flashcard Notifications
 - Japanese word searching via the Jisho API
 - Manual Entry in case of adding phrases or words not avaliable in the API. (e.g. slang words)
-- A SRS Flashcard style game using your personal list
 - An easy to use interface
-
-Upcoming Features:
-- Daily Flashcard Notifications
