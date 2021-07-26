@@ -276,35 +276,12 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         val cur = readableDatabase.rawQuery("SELECT * FROM $TABLE1_NAME" +
                 " WHERE $COL0 = $idString", null)
         cur.moveToFirst()
-        var box = cur.getInt(6) //flashcard_box
+        val box = cur.getInt(6) //flashcard_box
         var timesSeen = cur.getInt(9)
         var timesCorrect = cur.getInt(10)
         cur.close()
 
-        if (correct && box < 9 && !seen) {
-            box++
-        } else if (!correct && box > 1 && seen) { //prevents moving down many boxes in 1 session
-            box--
-        } //otherwise, no change in box
-
-        // days interval (fibonacci from n=2)
-        val interval: Int = when(box){
-            1 -> 1
-            2 -> 2
-            3 -> 3
-            4 -> 5
-            5 -> 8
-            6 -> 13
-            7 -> 21
-            8 -> 34
-            9 -> 55
-            else -> 55
-        }
-        var newDateStr: String = if(interval == 1){
-            "+$interval day"
-        } else {
-            "+$interval days"
-        }
+        val newDateStr = boxProcess(box, correct, seen)
 
         timesSeen++
 
@@ -317,6 +294,35 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
             writableDatabase.execSQL("UPDATE $TABLE1_NAME SET $COL10 = $timesCorrect WHERE $COL0 = $idString")
         }
         writableDatabase.close()
+    }
+
+    private fun boxProcess(box: Int, correct: Boolean, seen: Boolean): String {
+
+        var newBox = box
+        if (correct && newBox < 9 && !seen) {
+            newBox++
+        } else if (!correct && newBox > 1 && seen) { //prevents moving down many boxes in 1 session
+            newBox--
+        } //otherwise, no change in box
+
+        // days interval (fibonacci from n=2)
+        val interval: Int = when (newBox) {
+            1 -> 1
+            2 -> 2
+            3 -> 3
+            4 -> 5
+            5 -> 8
+            6 -> 13
+            7 -> 21
+            8 -> 34
+            9 -> 55
+            else -> 55
+        }
+        return if (interval == 1) {
+            "+$interval day"
+        } else {
+            "+$interval days"
+        }
     }
 
         companion object {
