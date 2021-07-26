@@ -93,7 +93,7 @@ class Flashcards : AppCompatActivity() {
 
             flashcardList?.removeAt(0)
             completeReviews++
-            val progress = ((completeReviews/totalReviews.toDouble())*100).toInt()
+            val progress = (completeReviews/totalReviews.toDouble()*100).toInt()
             setProgressBar(progress)
         }
 
@@ -114,7 +114,7 @@ class Flashcards : AppCompatActivity() {
             cv_front.setCardBackgroundColor(getColor(R.color.white))
             if(flashcardList?.isEmpty() == true) {
                 //finished
-                val percentCorrect = (totalCorrect.toDouble()/totalTries)*100
+                val percentCorrect = totalCorrect.toDouble()/totalTries*100
                 finish()
                 val intent = Intent(this@Flashcards, FlashcardsComplete::class.java)
                 intent.putExtra("percent", percentCorrect)
@@ -157,7 +157,7 @@ class Flashcards : AppCompatActivity() {
         var wrongItemText3: String
 
         // if entry has no kanji
-        if((flashcardList?.first()?.kana).equals(flashcardList?.first()?.kanji)){
+        if(flashcardList?.first()?.kana.equals(flashcardList?.first()?.kanji)){
             correctItemText = "${flashcardList?.first()?.english}"
             wrongItemText1 = "${incorrectItems?.elementAt(0)?.english}"
             wrongItemText2 = "${incorrectItems?.elementAt(1)?.english}"
