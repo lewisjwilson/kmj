@@ -24,14 +24,13 @@ class ViewWord : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.view_word)
 
         //implementing ads
         MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
-
 
         val itemData = myDB.getData(Integer.parseInt(itemId))
 
@@ -48,15 +47,16 @@ class ViewWord : AppCompatActivity() {
         }
 
         //parsing from hashmap in DatabaseHelper.kt
+        val list = itemData["list"]
         val kanji = itemData["kanji"]
         val kana = itemData["kana"]
         val english = itemData["english"]
+        val pos = itemData["pos"]
         val notes = itemData["notes"]
 
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        //view_examples.text = example
         view_notes.text = notes
 
         //initiate recyclerview and set parameters

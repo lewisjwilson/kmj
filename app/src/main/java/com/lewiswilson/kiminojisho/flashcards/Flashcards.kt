@@ -31,7 +31,7 @@ class Flashcards : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.flashcards)
         myDB = DatabaseHelper(this)
 

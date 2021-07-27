@@ -18,21 +18,22 @@ class AddWord : AppCompatActivity() {
     /* access modifiers changed from: protected */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 
         val add = View.OnClickListener { v: View? ->
-            val newEntryWord = RemoveSemicolon(edit_word.text.toString().trim { it <= ' ' })
+            val list = 0
+            val newEntryKanji = RemoveSemicolon(edit_word.text.toString().trim { it <= ' ' })
             val newEntryKana = RemoveSemicolon(view_kana.text.toString().trim { it <= ' ' })
             val newEntryMeaning = RemoveSemicolon(view_english.text.toString().trim { it <= ' ' })
-            val newEntryExample = RemoveSemicolon(view_examples.text.toString().trim { it <= ' ' })
+            val pos = ""
             val newEntryNotes =  RemoveSemicolon(view_notes.text.toString().trim { it <= ' ' })
 
-            if (newEntryWord.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
+            if (newEntryKanji.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
                 Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
             } else {
-                AddData(newEntryWord, newEntryKana, newEntryMeaning, newEntryExample, newEntryNotes)
+                addData(list, newEntryKanji, newEntryKana, newEntryMeaning, pos, newEntryNotes)
                 val addWord = this@AddWord
                 addWord.startActivity(Intent(addWord, MyList::class.java))
                 finish()
@@ -43,8 +44,8 @@ class AddWord : AppCompatActivity() {
         btn_add.setOnClickListener(add)
     }
 
-    private fun AddData(word: String, kana: String, meaning: String, example: String, notes: String) {
-        if (myDB!!.addData(word, kana, meaning, example, notes)) {
+    private fun addData(list: Int, kanji: String, kana: String, english: String, pos: String, notes: String) {
+        if (myDB!!.addData(list, kanji, kana, english, pos, notes)) {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "This word is already in your list!", Toast.LENGTH_SHORT).show()

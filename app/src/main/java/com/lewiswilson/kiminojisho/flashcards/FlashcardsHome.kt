@@ -1,6 +1,7 @@
 package com.lewiswilson.kiminojisho.flashcards
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,7 @@ class FlashcardsHome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.flashcards_home)
         myDB = DatabaseHelper(this)
 
@@ -23,8 +24,13 @@ class FlashcardsHome : AppCompatActivity() {
         val noOfFlashcards = "Reviews: $reviewsDue"
         fc_no.text = noOfFlashcards
 
+        // itemcount < 4 prevents any issues regarding multiple choice in Flashcards.kt
         if(reviewsDue!! <= 0){
             btn_start.isEnabled = false
+        }
+        if(myDB!!.itemCount() < 4){
+            btn_start.isEnabled = false
+            txt_not_enough_items.visibility = View.VISIBLE
         }
 
         btn_start.setOnClickListener { v: View? ->

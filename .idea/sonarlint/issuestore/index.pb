@@ -3,8 +3,6 @@ p
 @app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
 m
 =app/src/main/java/com/lewiswilson/kiminojisho/ExamplesItem.kt,b/4/b484d6dd405764104a77392099b118d95e14a477
-k
-;app/src/main/java/com/lewiswilson/kiminojisho/MyListItem.kt,d/b/db78fd3e13ba4174e245fb54aea5300a24bd850a
 s
 Capp/src/main/java/com/lewiswilson/kiminojisho/json/Attribution.java,c/1/c1c222efb8cdc3dbd1f72e357c5edb6036dd9040
 m
@@ -19,8 +17,6 @@ l
 <app/src/main/java/com/lewiswilson/kiminojisho/json/Link.java,c/d/cd616ed1d5bf29e754b466da8b65178a0ff334d8
 l
 <app/src/main/java/com/lewiswilson/kiminojisho/json/Meta.java,a/f/af1a6aa0053a897f205926bab8027941a7bd5d14
-n
->app/src/main/java/com/lewiswilson/kiminojisho/MyListAdapter.kt,5/3/5324018e22ef3d54055139398af290ee2b61368a
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/json/RetrofitClient.java,9/0/90ff20a7a2a1cbcf9da8d9fdd707cbd188065983
 ~
@@ -39,3 +35,5 @@ $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
 r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e

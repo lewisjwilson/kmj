@@ -29,7 +29,7 @@ class ViewWordRemote : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.view_word)
 
         //implementing ads
@@ -49,7 +49,6 @@ class ViewWordRemote : AppCompatActivity() {
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        //view_examples.text = example
         view_notes.text = notes
 
         if(!inList){
@@ -76,12 +75,15 @@ class ViewWordRemote : AppCompatActivity() {
     override fun onPause(){
         super.onPause()
 
+        val list = 0
+        val pos = ""
+
         if(inList!=starFilled) {
             if (inList) {
-                myDB.addData(kanji!!, kana, english, example, notes)
+                myDB.addData(list, kanji!!, kana, english, pos, notes)
             } else {
                 try {
-                    myDB.deleteFromRemote(kanji!!)
+                    myDB.deleteFromRemote(kanji!!, english!!)
                 } catch (e: NullPointerException) {
                     Log.d("Item Not Found", "Item not in dictionary. (Normal)")
                 }

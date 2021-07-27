@@ -33,9 +33,9 @@ class MyList : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.my_list)
-        ma = this
+        myDB = DatabaseHelper(this)
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
         //Check if it is a first time launch
@@ -43,11 +43,11 @@ class MyList : AppCompatActivity(),
             firstLaunch()
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
-            prefs.edit().putString("sortby_col", "MEANING").apply()
+            prefs.edit().putString("sortby_col", "english").apply()
         }
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
-        myDB = DatabaseHelper(this)
+
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)
@@ -66,31 +66,22 @@ class MyList : AppCompatActivity(),
     //populate recyclerview with data
     private fun populateRV() {
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val column = prefs.getString("sortby_col", "MEANING")
+        val column = prefs.getString("sortby_col", "english")
         val data = myDB!!.listContents(column!!)
 
         //Checks if database is empty and lists entries if not
         while (data.moveToNext()) {
+
             //ListView Data Layout
-            if (data.getString(1) == data.getString(2)) {
-                jishoList!!.add(
-                    MyListItem(data.getInt(0),
-                        data.getString(1),
-                        data.getString(1),
-                        data.getString(3),
-                        ""
-                    )
+            jishoList!!.add(
+                MyListItem(data.getInt(0), //id
+                    data.getString(1), //kanji
+                    data.getString(2), //kana
+                    data.getString(3), //english
+                    data.getString(4) //notes
                 )
-            } else {
-               jishoList!!.add(
-                    MyListItem(data.getInt(0),
-                        data.getString(1),
-                        data.getString(2),
-                        data.getString(3),
-                        data.getString(5)
-                    )
-                )
-            }
+            )
+
             rvAdapter = jishoList?.let { it -> MyListAdapter(this@MyList, it, this) }
             rv_mylist.adapter = rvAdapter
 
@@ -155,15 +146,15 @@ class MyList : AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         return when (item.itemId) {
-            R.id.meaning -> {
-                prefs.edit().putString("sortby_col", "MEANING").apply()
+            R.id.english -> {
+                prefs.edit().putString("sortby_col", "english").apply()
                 prefs.edit().putString("sort_style", "ASC").apply()
                 clearData()
                 true
             }
 
             R.id.kana -> {
-                prefs.edit().putString("sortby_col", "KANA").apply()
+                prefs.edit().putString("sortby_col", "kana").apply()
                 prefs.edit().putString("sort_style", "ASC").apply()
                 clearData()
                 true
@@ -189,7 +180,11 @@ class MyList : AppCompatActivity(),
         var ma: AppCompatActivity? = null
     }
 
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        startActivity(Intent(this, HomeScreen::class.java))
+    }
 
     private fun firstLaunch() {
         val color = "#DD008577"

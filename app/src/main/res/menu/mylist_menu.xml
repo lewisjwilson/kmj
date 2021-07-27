@@ -13,7 +13,7 @@
 
         <menu>
             <item
-                android:id="@+id/meaning"
+                android:id="@+id/english"
                 android:title="English">
             </item>
             <item

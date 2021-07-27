@@ -8,12 +8,10 @@ import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.lewiswilson.kiminojisho.AddWord
-import com.lewiswilson.kiminojisho.DatabaseHelper
+import com.lewiswilson.kiminojisho.*
 import com.lewiswilson.kiminojisho.json.Japanese
 import com.lewiswilson.kiminojisho.json.JishoData
 import com.lewiswilson.kiminojisho.json.RetrofitClient
-import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.search_data_item.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,7 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.NullPointerException
 
-class SearchPage() : AppCompatActivity(), CoroutineScope {
+class SearchPage : AppCompatActivity(), CoroutineScope {
 
     private var mSearchList: ArrayList<SearchDataItem>? = ArrayList()
     private var mSearchDataAdapter: SearchDataAdapter? = null
@@ -41,7 +39,7 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Turquoise, true)
+        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.search_page)
         sp = this
 
@@ -136,7 +134,7 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
                             english = english + ", " + sense[0].englishDefinitions[1]
                         }
 
-                       val  starFilled = myDB.checkStarred(kanji)
+                       val starFilled = myDB.checkStarred(kanji, english)
 
                         mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
 
@@ -167,6 +165,12 @@ class SearchPage() : AppCompatActivity(), CoroutineScope {
 
     companion object {
         var sp: AppCompatActivity? = null
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        startActivity(Intent(this, MyList::class.java))
     }
 }
 
