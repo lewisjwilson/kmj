@@ -1,6 +1,4 @@
 
-p
-@app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
 m
 =app/src/main/java/com/lewiswilson/kiminojisho/ExamplesItem.kt,b/4/b484d6dd405764104a77392099b118d95e14a477
 s
@@ -19,10 +17,6 @@ l
 <app/src/main/java/com/lewiswilson/kiminojisho/json/Meta.java,a/f/af1a6aa0053a897f205926bab8027941a7bd5d14
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/json/RetrofitClient.java,9/0/90ff20a7a2a1cbcf9da8d9fdd707cbd188065983
-~
-Napp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchDataAdapter.kt,a/7/a7ae6f1ee7774044941b6e44de844460920ee303
-{
-Kapp/src/main/java/com/lewiswilson/kiminojisho/jishoSearch/SearchDataItem.kt,0/c/0cf8e39c67fbe7ac876888d47fd3e54e01ba9748
 m
 =app/src/main/java/com/lewiswilson/kiminojisho/json/Sense.java,5/8/5825a6b5f45bdd3b03b584ddbc787d829ff2620d
 b
@@ -37,3 +31,19 @@ r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
 P
  app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
+k
+;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4
+n
+>app/src/main/java/com/lewiswilson/kiminojisho/MyListAdapter.kt,5/3/5324018e22ef3d54055139398af290ee2b61368a
+f
+6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
+z
+Japp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsHome.kt,1/7/174151eb8a95a5182ab6fcd347f568699ac79472
+v
+Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
+h
+8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
+~
+Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
+p
+@app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894

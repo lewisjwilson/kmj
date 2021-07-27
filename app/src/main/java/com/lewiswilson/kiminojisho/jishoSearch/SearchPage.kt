@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.NullPointerException
+import kotlin.collections.ArrayList
 
 class SearchPage : AppCompatActivity(), CoroutineScope {
 
@@ -134,14 +135,28 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                             english = english + ", " + sense[0].englishDefinitions[1]
                         }
 
-                       val starFilled = myDB.checkStarred(kanji, english)
+                        val posArray = sense[0].partsOfSpeech
+                        var pos = ""
+                        for (item in posArray) {
+                            pos += "$item, "
+                        }
+                        pos = pos.replace(", $".toRegex(), "")
 
-                        mSearchList!!.add(SearchDataItem(kanji, kana, english, "", "", starFilled))
+                        var notes = ""
+                        if (sense[0].tags.size > 0){
+                            notes = sense[0].tags[0]
+                        }
+
+                        val starFilled = myDB.checkStarred(kanji, english)
+
+                        // items to view in searchpage activity
+                        mSearchList!!.add(SearchDataItem(kanji, kana, english, starFilled))
+
+                        // refer to this arraylist in viewwordremote (id is index of recycler)
+                        dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes))
 
                         mSearchDataAdapter = mSearchList?.let { it ->
-                            SearchDataAdapter(
-                                this@SearchPage, it
-                            )
+                            SearchDataAdapter(this@SearchPage, it)
                         }
                         rv_searchdata.adapter = mSearchDataAdapter
                     }
@@ -159,12 +174,15 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
     }
 
     fun clearData() {
+        dataItems!!.clear()
         mSearchList!!.clear() // clear list
         mSearchDataAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
     }
 
     companion object {
         var sp: AppCompatActivity? = null
+        //items for carrying over to viewwordremote
+        var dataItems: ArrayList<MyListItem>? = ArrayList()
     }
 
     override fun onBackPressed() {

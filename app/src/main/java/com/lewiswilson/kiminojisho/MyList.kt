@@ -78,7 +78,8 @@ class MyList : AppCompatActivity(),
                     data.getString(1), //kanji
                     data.getString(2), //kana
                     data.getString(3), //english
-                    data.getString(4) //notes
+                    "", //pos - must not be null
+                    data.getString(5) //notes
                 )
             )
 
@@ -90,8 +91,8 @@ class MyList : AppCompatActivity(),
     }
 
     // recyclerview item click
-    override fun onItemClick(id: Int) {
-        clickedItemId = id
+    override fun onItemClick(itemId: Int) {
+        clickedItemId = itemId
         finish()
         startActivity(Intent(this@MyList, ViewWord::class.java))
     }

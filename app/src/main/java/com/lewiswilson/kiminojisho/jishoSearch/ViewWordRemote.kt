@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho.jishoSearch
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,11 +17,12 @@ import java.util.ArrayList
 
 class ViewWordRemote : AppCompatActivity() {
 
-    private var kanji: String? = ""
-    private var kana: String? = ""
-    private var english: String? = ""
-    private var example: String? = ""
-    private var notes: String? = ""
+    private var kanji = ""
+    private var kana = ""
+    private var english = ""
+    private var pos = ""
+    private var notes = ""
+
     private var inList: Boolean = false
     private var starFilled: Boolean = false
     private val myDB = DatabaseHelper(this)
@@ -37,19 +39,22 @@ class ViewWordRemote : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        //parsing from hashmap in DatabaseHelper.kt
-        kanji = intent.getStringExtra("kanji")
-        kana = intent.getStringExtra("kana")
-        english = intent.getStringExtra("english")
-        example = intent.getStringExtra("example")
-        notes = intent.getStringExtra("notes")
+        val adapterPos = intent.getIntExtra("adapterPos", 0)
+        Log.d(TAG, "position: $adapterPos")
         inList = intent.getBooleanExtra("star_filled", false)
         starFilled = inList
+
+        kanji = SearchPage.dataItems!![adapterPos].kanji
+        kana = SearchPage.dataItems!![adapterPos].kana
+        english = SearchPage.dataItems!![adapterPos].english
+        pos = SearchPage.dataItems!![adapterPos].pos
+        notes = SearchPage.dataItems!![adapterPos].notes.toString()
 
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
         view_notes.text = notes
+        view_pos.text = pos
 
         if(!inList){
             btn_star.setImageResource(R.drawable.ic_addword)
@@ -69,21 +74,20 @@ class ViewWordRemote : AppCompatActivity() {
         rv_examples.setLayoutManager(LinearLayoutManager(this))
 
         // search word and add matching examples to recycler
-        kanji?.let { readExamples(it) }
+        readExamples(kanji)
     }
 
     override fun onPause(){
         super.onPause()
 
         val list = 0
-        val pos = ""
 
         if(inList!=starFilled) {
             if (inList) {
-                myDB.addData(list, kanji!!, kana, english, pos, notes)
+                myDB.addData(list, kanji, kana, english, pos, notes)
             } else {
                 try {
-                    myDB.deleteFromRemote(kanji!!, english!!)
+                    myDB.deleteFromRemote(kanji, english)
                 } catch (e: NullPointerException) {
                     Log.d("Item Not Found", "Item not in dictionary. (Normal)")
                 }

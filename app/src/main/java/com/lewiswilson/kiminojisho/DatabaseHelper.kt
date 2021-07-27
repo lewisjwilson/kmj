@@ -17,7 +17,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 13) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 14) {
 
     private var db: SQLiteDatabase? = null
 
@@ -49,8 +49,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
 
-        if (oldVersion < 13) {
-            db.execSQL("DROP TABLE to_be_removed")
+        if (oldVersion < 14) {
+            db.execSQL("UPDATE $TABLE_NAME SET $colList = 0")
         }
     }
 
@@ -195,14 +195,14 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     fun listContents(column: String): Cursor {
-        return writableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colNotes FROM $TABLE_NAME " +
+        return writableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME " +
                 "ORDER BY $column " +
                 "COLLATE NOCASE ASC", null)
     }
 
     fun random(): ArrayList<String> {
 
-        val cursor = readableDatabase.rawQuery("SELECT $colKanji, $colKana, $colEnglish FROM $TABLE_NAME " +
+        val cursor = readableDatabase.rawQuery("SELECT $colKanji, $colKana, $colPos, $colEnglish FROM $TABLE_NAME " +
                 "WHERE $colId IN (SELECT $colId FROM $TABLE_NAME ORDER BY RANDOM() LIMIT 1)", null)
 
         var kanji = ""
@@ -224,7 +224,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         val reviewNo = 25
 
-        val cur = readableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colNotes FROM $TABLE_NAME" +
+        val cur = readableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME" +
                     " WHERE $colNextReview <= date('now') LIMIT ?", arrayOf(reviewNo.toString())) //next_review < date now
 
         while (cur.moveToNext()) {
@@ -232,7 +232,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                     cur.getString(1), //kanji
                     cur.getString(2), //kana
                     cur.getString(3), //english
-                    cur.getString(4) //notes
+                    "", //pos
+                    cur.getString(5) //notes
                 )
             )
         }
@@ -245,7 +246,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     fun randomThreeWrong(correctKanji: String): ArrayList<MyListItem> {
 
         val wrongItems: ArrayList<MyListItem> = ArrayList()
-        val cur = readableDatabase.rawQuery("SELECT DISTINCT $colId, $colKanji, $colKana, $colEnglish, $colNotes FROM " + TABLE_NAME +
+        val cur = readableDatabase.rawQuery("SELECT DISTINCT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM " + TABLE_NAME +
                 " WHERE $colKanji NOT IN (SELECT $colKanji FROM $TABLE_NAME WHERE $colKanji = ?)" +
                 " ORDER BY RANDOM() LIMIT 3", arrayOf(correctKanji))
 
@@ -254,7 +255,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 cur.getString(1), //kanji
                 cur.getString(2), //kana
                 cur.getString(3), //english
-                cur.getString(4) //notes
+                "", //pos
+                cur.getString(5) //notes
             )
             )
         }

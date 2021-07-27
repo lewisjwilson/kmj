@@ -27,14 +27,10 @@ class SearchDataAdapter(
         val kanji = currentItem.kanji
         val kana = currentItem.kana
         val english = currentItem.english
-        val example = currentItem.example
-        val notes = currentItem.notes
         val starFilled = currentItem.starFilled
         holder.mKanjiView.text = kanji
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
-        holder.mExampleView.text = example
-        holder.mNotesView.text = notes
         if(!starFilled){
             holder.mStar.visibility = GONE
         }
@@ -46,44 +42,27 @@ class SearchDataAdapter(
 
     inner class SearchDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var mKanjiView: TextView
-        var mKanaView: TextView
-        var mEnglishView: TextView
-        var mExampleView: TextView
-        var mNotesView: TextView
-        var mStar: ImageView
+        var mKanjiView: TextView = itemView.findViewById(R.id.kanjiview)
+        var mKanaView: TextView = itemView.findViewById(R.id.kanaview)
+        var mEnglishView: TextView = itemView.findViewById(R.id.englishview)
+        var mStar: ImageView = itemView.findViewById(R.id.star)
+
         override fun onClick(view: View) {
             //get data from the clicked item and add to my list
-            val kanji = mKanjiView.text.toString()
-            val kana = mKanaView.text.toString()
-            val english = mEnglishView.text.toString()
-            val example = mExampleView.text.toString()
-            val notes = mNotesView.text.toString()
             var starFilled = false
 
             if(mStar.visibility != GONE) {
                 starFilled = true
             }
 
-            //no examples currently supported on jisho API
             val intent = Intent(mContext, ViewWordRemote::class.java)
-            intent.putExtra("kanji", kanji)
-            intent.putExtra("kana", kana)
-            intent.putExtra("english",english)
-            intent.putExtra("example", example)
-            intent.putExtra("notes", notes)
+            intent.putExtra("adapterPos", adapterPosition)
             intent.putExtra("star_filled", starFilled)
             mContext.startActivity(intent)
         }
 
         init {
             itemView.setOnClickListener(this)
-            mKanjiView = itemView.findViewById(R.id.kanjiview)
-            mKanaView = itemView.findViewById(R.id.kanaview)
-            mEnglishView = itemView.findViewById(R.id.englishview)
-            mExampleView = itemView.findViewById(R.id.examples)
-            mNotesView = itemView.findViewById(R.id.notes)
-            mStar = itemView.findViewById(R.id.star)
         }
     }
 }

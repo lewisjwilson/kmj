@@ -15,24 +15,6 @@
         app:layout_constraintTop_toBottomOf="@+id/kanaview">
 
         <TextView
-            android:id="@+id/notes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="notes"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/examples"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="examples"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/kanjiview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
