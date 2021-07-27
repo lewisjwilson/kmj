@@ -15,8 +15,8 @@ class FlashcardsComplete : AppCompatActivity() {
         theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.flashcards_complete)
 
-        val percent = intent.getDoubleExtra("percent", 0.0)
-        val statsText = "You got ${percent}% correct."
+        val percent = String.format("%.2f", intent.getDoubleExtra("percent", 0.0))
+        val statsText = "Review Accuracy: ${percent}%"
         txt_stats.text = statsText
 
         btn_back.setOnClickListener { v: View? ->
