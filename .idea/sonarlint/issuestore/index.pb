@@ -33,8 +33,6 @@ P
  app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
 k
 ;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4
-n
->app/src/main/java/com/lewiswilson/kiminojisho/MyListAdapter.kt,5/3/5324018e22ef3d54055139398af290ee2b61368a
 f
 6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 z

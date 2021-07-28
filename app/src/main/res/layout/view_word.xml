@@ -5,136 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ViewWord">
+    tools:context=".searchAndViewWords.ViewWord">
 
-    <TextView
-        android:id="@+id/view_kanji"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:text="漢字"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/btn_star"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pos" />
-
-    <TextView
-        android:id="@+id/view_kana"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:hint="@string/blank"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:textColor="@color/colorAccent"
-        android:textSize="18sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/btn_star"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_kanji"
-        tools:text="かたかな" />
-
-    <TextView
-        android:id="@+id/view_english"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:ems="10"
-        android:hint="English"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="visible"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/word_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_kana" />
-
-    <TextView
-        android:id="@+id/view_pos"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="20dp"
-        android:text="Part of Speech"
-        android:textSize="15sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/btn_star"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txt_notes_viewword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        android:text="Notes:"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        android:visibility="visible"
-        app:layout_constraintEnd_toStartOf="@+id/btn_save_notes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_english" />
-
-    <Button
-        android:id="@+id/btn_save_notes"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="30dp"
-        android:text="Save"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_english" />
-
-    <EditText
-        android:id="@+id/view_edit_notes"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:clickable="true"
-        android:ems="8"
-        android:focusable="true"
-        android:gravity="top"
-        android:hint="Click to add a note"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        android:selectAllOnFocus="false"
-        android:singleLine="false"
-        android:textSize="16sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_notes_viewword" />
-
-    <View
-        android:id="@+id/viewword_spacer2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_edit_notes" />
 
     <TextView
         android:id="@+id/txt_examples"
@@ -148,7 +27,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewword_spacer2" />
+        app:layout_constraintTop_toBottomOf="@+id/word_recycler" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_examples"
@@ -165,20 +44,6 @@
         app:layout_constraintVertical_bias="0.0" >
 
     </androidx.recyclerview.widget.RecyclerView>
-
-    <ImageButton
-        android:id="@+id/btn_star"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:backgroundTint="?attr/colorButtonNormal"
-        android:scaleX="1.25"
-        android:scaleY="1.25"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_removeword" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

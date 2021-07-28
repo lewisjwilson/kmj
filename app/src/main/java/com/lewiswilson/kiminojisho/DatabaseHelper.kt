@@ -138,6 +138,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         val hashMap = HashMap<String, String>()
 
+
         hashMap["id"] = itemId.toString()
 
         if (cur?.moveToFirst() == true) {
