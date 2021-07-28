@@ -2,6 +2,9 @@ package com.lewiswilson.kiminojisho
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -47,25 +50,43 @@ class ViewWord : AppCompatActivity() {
         }
 
         //parsing from hashmap in DatabaseHelper.kt
-        val list = itemData["list"]
+        val id = itemData["id"]
         val kanji = itemData["kanji"]
         val kana = itemData["kana"]
         val english = itemData["english"]
         val pos = itemData["pos"]
         val notes = itemData["notes"]
 
+
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        view_notes.text = notes
+        view_pos.text = pos
+        view_edit_notes.setText(notes)
 
         //initiate recyclerview and set parameters
         rv_examples.setHasFixedSize(true)
         rv_examples.setLayoutManager(LinearLayoutManager(this))
 
+
+        view_edit_notes.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                btn_save_notes.visibility = View.VISIBLE
+            }
+        }
+
+        btn_save_notes.setOnClickListener {
+            btn_save_notes.visibility = View.GONE
+            view_edit_notes.clearFocus()
+            val notesText = view_edit_notes.text.toString()
+            myDB.editNotes(id!!, notesText)
+        }
+
         // search word and add matching examples to recycler
         if (kanji != null) {
             readExamples(kanji)
+        } else {
+            if (kana != null) readExamples(kana)
         }
 
     }

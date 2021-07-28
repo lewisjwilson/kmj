@@ -78,7 +78,7 @@ class MyList : AppCompatActivity(),
                     data.getString(1), //kanji
                     data.getString(2), //kana
                     data.getString(3), //english
-                    "", //pos - must not be null
+                    data.getString(4), //pos
                     data.getString(5) //notes
                 )
             )
@@ -181,9 +181,13 @@ class MyList : AppCompatActivity(),
         var ma: AppCompatActivity? = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        clearData()
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
-        finish()
         startActivity(Intent(this, HomeScreen::class.java))
     }
 

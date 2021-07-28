@@ -38,6 +38,13 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         super.onDestroy()
     }
 
+    override fun onResume() {
+        super.onResume()
+        dataItems!!.clear()
+        mSearchList!!.clear() // clear list
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         theme.applyStyle(R.style.Nature, true)
@@ -185,10 +192,5 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         var dataItems: ArrayList<MyListItem>? = ArrayList()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        startActivity(Intent(this, MyList::class.java))
-    }
 }
 

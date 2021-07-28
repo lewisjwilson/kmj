@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -50,10 +51,13 @@ class ViewWordRemote : AppCompatActivity() {
         pos = SearchPage.dataItems!![adapterPos].pos
         notes = SearchPage.dataItems!![adapterPos].notes.toString()
 
+        view_edit_notes.hint = "None"
+        view_edit_notes.isEnabled = false
+
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english
-        view_notes.text = notes
+        view_edit_notes.setText(notes)
         view_pos.text = pos
 
         if(!inList){
@@ -94,10 +98,9 @@ class ViewWordRemote : AppCompatActivity() {
             }
             //go to mainactivity
             finish()
-            startActivity(Intent(this@ViewWordRemote, MyList::class.java))
+            startActivity(Intent(this@ViewWordRemote, HomeScreen::class.java))
 
         }
-
 
     }
 

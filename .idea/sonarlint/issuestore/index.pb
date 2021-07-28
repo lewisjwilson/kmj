@@ -41,9 +41,9 @@ z
 Japp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsHome.kt,1/7/174151eb8a95a5182ab6fcd347f568699ac79472
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
-h
-8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
 ~
 Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
 p
 @app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
+k
+;app/src/main/java/com/lewiswilson/kiminojisho/MyListItem.kt,d/b/db78fd3e13ba4174e245fb54aea5300a24bd850a

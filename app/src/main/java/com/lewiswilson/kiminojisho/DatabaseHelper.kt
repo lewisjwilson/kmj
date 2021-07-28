@@ -7,6 +7,7 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import com.lewiswilson.MyApplication
 import java.io.FileOutputStream
 import java.io.IOException
@@ -137,13 +138,15 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         val hashMap = HashMap<String, String>()
 
+        hashMap["id"] = itemId.toString()
+
         if (cur?.moveToFirst() == true) {
-            hashMap.put("list", cur.getString(cur.getColumnIndex(colKanji)))
-            hashMap.put("kanji", cur.getString(cur.getColumnIndex(colKanji)))
-            hashMap.put("kana", cur.getString(cur.getColumnIndex(colKana)))
-            hashMap.put("english", cur.getString(cur.getColumnIndex(colEnglish)))
-            hashMap.put("pos", cur.getString(cur.getColumnIndex(colPos)))
-            hashMap.put("notes", cur.getString(cur.getColumnIndex(colNotes)))
+            hashMap["list"] = cur.getString(cur.getColumnIndex(colList))
+            hashMap["kanji"] = cur.getString(cur.getColumnIndex(colKanji))
+            hashMap["kana"] = cur.getString(cur.getColumnIndex(colKana))
+            hashMap["english"] = cur.getString(cur.getColumnIndex(colEnglish))
+            hashMap["pos"] = cur.getString(cur.getColumnIndex(colPos))
+            hashMap["notes"] = cur.getString(cur.getColumnIndex(colNotes))
         }
         cur?.close()
         return hashMap
@@ -192,6 +195,23 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 str
         Log.d(TAG, sb)
         return db?.insert(str, null, contentValues) != -1L
+    }
+
+    fun editNotes(id: String, notes: String){
+        db = writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(colNotes, notes)
+        val where = "$colId = ?"
+        val whereArgs = arrayOf(id)
+
+        try {
+            db?.update(TABLE_NAME, contentValues, where, whereArgs)
+            Toast.makeText(myContext, "Notes Saved", Toast.LENGTH_LONG).show()
+        } catch (e: SQLException) {
+            Log.d(TAG, "ERROR (editNotes): ${e.printStackTrace()}")
+            Toast.makeText(myContext, "Error Saving Notes", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun listContents(column: String): Cursor {

@@ -9,6 +9,7 @@
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="grey">#dbdbdb</color>
 
     <color name="celeste">#C4FFF9</color>
     <color name="med_turquoise">#68D8D6</color>
