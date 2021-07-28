@@ -57,7 +57,6 @@ class ViewWord : AppCompatActivity() {
         val pos = itemData["pos"]
         val notes = itemData["notes"]
 
-
         view_kanji.text = kanji
         view_kana.text = kana
         view_english.text = english

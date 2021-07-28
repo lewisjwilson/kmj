@@ -154,7 +154,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                             notes = sense[0].tags[0]
                         }
 
-                        val starFilled = myDB.checkStarred(kanji, english)
+                        starFilled = myDB.checkStarred(kanji, english)
 
                         // items to view in searchpage activity
                         mSearchList!!.add(SearchDataItem(kanji, kana, english, starFilled))
@@ -190,6 +190,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         var sp: AppCompatActivity? = null
         //items for carrying over to viewwordremote
         var dataItems: ArrayList<MyListItem>? = ArrayList()
+        var starFilled: Boolean = false
     }
 
 }
