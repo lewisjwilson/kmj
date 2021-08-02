@@ -1,10 +1,8 @@
-package com.lewiswilson.kiminojisho.jishoSearch
+package com.lewiswilson.kiminojisho.searchAndViewWords
 
 import android.content.ContentValues.TAG
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,9 +12,8 @@ import com.lewiswilson.kiminojisho.*
 import kotlinx.android.synthetic.main.search_data_item.*
 import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.android.synthetic.main.view_word.*
-import kotlinx.android.synthetic.main.view_word.adView
-import kotlinx.android.synthetic.main.view_word.rv_examples
-import kotlinx.android.synthetic.main.view_word_remote.*
+import kotlinx.android.synthetic.main.view_word.vw_adView
+import kotlinx.android.synthetic.main.view_word.vw_rv_examples
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.ArrayList
@@ -29,30 +26,32 @@ class ViewWordRemote : AppCompatActivity() {
     private var pos = ""
     private var notes = ""
 
-    // testing recycler
-    private var mRemoteItemList: ArrayList<ViewWordRemoteItem>? = ArrayList()
-    private var mRemoteItemAdapter: ViewWordRemoteItemAdapter? = null
+    private var mItemList: ArrayList<ViewWordItem>? = ArrayList()
+    private var mItemAdapter: ViewWordItemAdapter? = null
 
-    private var inList: Boolean = false
-    private var starFilled: Boolean = false
-    private val myDB = DatabaseHelper(this)
+    private var starred: Boolean = false
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
     private var rvAdapter: ExamplesAdapter? = null
+
+    private val myDB = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         theme.applyStyle(R.style.Nature, true)
-        setContentView(R.layout.view_word_remote)
+        setContentView(R.layout.view_word)
 
         //implementing ads
         MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        vw_adView.loadAd(adRequest)
 
         val adapterPos = intent.getIntExtra("adapterPos", 0)
         Log.d(TAG, "position: $adapterPos")
-        inList = intent.getBooleanExtra("star_filled", false)
-        starFilled = inList
+        starred = intent.getBooleanExtra("star_filled", false)
+
+        if(!starred) {
+            vw_btn_star.setImageResource(R.drawable.ic_addword)
+        }
 
         kanji = SearchPage.dataItems!![adapterPos].kanji
         kana = SearchPage.dataItems!![adapterPos].kana
@@ -60,26 +59,55 @@ class ViewWordRemote : AppCompatActivity() {
         pos = SearchPage.dataItems!![adapterPos].pos
         notes = SearchPage.dataItems!![adapterPos].notes.toString()
 
+        vw_kanji.text = kanji
+        vw_kana.text = kana
+
+        val defArray = english.split("@@@").toTypedArray()
+        val posArray = pos.split("@@@").toTypedArray()
+        val notesArray = notes.split("@@@").toTypedArray()
+
+        var defCount = 1
+        for (i in defArray.indices) {
+            // items to view in searchpage activity
+            val engText = "$defCount. ${defArray[i]}"
+            mItemList!!.add(ViewWordItem("not_required", kanji, kana, engText, posArray[i], notesArray[i], starred))
+            defCount++
+        }
 
         // initialte word_recycler
-        word_recycler.setHasFixedSize(true)
-        word_recycler.setLayoutManager(LinearLayoutManager(this))
+        vw_rv_definitions.setHasFixedSize(true)
+        vw_rv_definitions.setLayoutManager(LinearLayoutManager(this))
 
-        // items to view in searchpage activity
-        mRemoteItemList!!.add(ViewWordRemoteItem(kanji, kana, english, pos, notes, starFilled))
 
-        //Toast.makeText(this, "WORD LIST SIZE: ${mRemoteItemList!!.size}", Toast.LENGTH_LONG).show()
-
-        mRemoteItemAdapter = mRemoteItemList?.let { it ->
-            ViewWordRemoteItemAdapter(this@ViewWordRemote, it)
+        mItemAdapter = mItemList?.let { it ->
+            ViewWordItemAdapter(this@ViewWordRemote, it)
         }
-        word_recycler.adapter = mRemoteItemAdapter
-        mRemoteItemAdapter?.notifyDataSetChanged()
+        vw_rv_definitions.adapter = mItemAdapter
+        mItemAdapter?.notifyDataSetChanged()
+
+
+        vw_btn_star.setOnClickListener{
+            starred = !starred
+            if (!starred) {
+                vw_btn_star.setImageResource(R.drawable.ic_addword)
+                try {
+                    Toast.makeText(this, "Removed from My List", Toast.LENGTH_SHORT)
+                        .show()
+                    myDB.deleteFromRemote(kanji, english)
+                } catch (e: NullPointerException) {
+                    Log.d("Item Not Found", "Item not in dictionary. (Normal)")
+                }
+            } else {
+                Toast.makeText(this, "Added to My List", Toast.LENGTH_SHORT).show()
+                vw_btn_star.setImageResource(R.drawable.ic_removeword)
+                myDB.addData(0, kanji, kana, english, pos, notes)
+            }
+        }
 
 
         //initiate recyclerview and set parameters
-        rv_examples.setHasFixedSize(true)
-        rv_examples.setLayoutManager(LinearLayoutManager(this))
+        vw_rv_examples.setHasFixedSize(true)
+        vw_rv_examples.setLayoutManager(LinearLayoutManager(this))
 
         // search word and add matching examples to recycler
         readExamples(kanji)
@@ -88,7 +116,6 @@ class ViewWordRemote : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-        startActivity(Intent(this@ViewWordRemote, HomeScreen::class.java))
     }
 
     fun readExamples(filter: String) {
@@ -115,7 +142,7 @@ class ViewWordRemote : AppCompatActivity() {
 
         }
         rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWordRemote, it) }
-        rv_examples.adapter = rvAdapter
+        vw_rv_examples.adapter = rvAdapter
 
     }
 

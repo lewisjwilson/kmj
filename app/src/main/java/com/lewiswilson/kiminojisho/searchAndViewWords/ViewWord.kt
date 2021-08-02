@@ -1,14 +1,15 @@
-package com.lewiswilson.kiminojisho
+package com.lewiswilson.kiminojisho.searchAndViewWords
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.View.OnFocusChangeListener
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.lewiswilson.kiminojisho.*
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.view_word.*
 import java.io.BufferedReader
@@ -19,11 +20,12 @@ import kotlin.collections.*
 
 class ViewWord : AppCompatActivity() {
 
+    private var mItemList: ArrayList<ViewWordItem>? = ArrayList()
+    private var mItemAdapter: ViewWordItemAdapter? = null
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
     private var rvAdapter: ExamplesAdapter? = null
     private val myDB = DatabaseHelper(this)
-    private var inList = true
-    val itemId: String = MyList.clickedItemId.toString()
+    private var starred = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,69 +35,69 @@ class ViewWord : AppCompatActivity() {
         //implementing ads
         MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        vw_adView.loadAd(adRequest)
 
+        val itemId = MyList.clickedItemId.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
 
-        // coming from Mylist, so default is filled star
-        btn_star.setImageResource(R.drawable.ic_removeword)
-
-        btn_star.setOnClickListener{
-            inList = !inList
-            if(inList){
-                btn_star.setImageResource(R.drawable.ic_removeword)
-            } else {
-                btn_star.setImageResource(R.drawable.ic_addword)
-            }
-        }
+        Log.d(TAG, "ITEM: $itemId")
 
         //parsing from hashmap in DatabaseHelper.kt
-        val id = itemData["id"]
         val kanji = itemData["kanji"]
         val kana = itemData["kana"]
         val english = itemData["english"]
         val pos = itemData["pos"]
         val notes = itemData["notes"]
 
-        view_kanji.text = kanji
-        view_kana.text = kana
-        view_english.text = english
-        view_pos.text = pos
-        view_edit_notes.setText(notes)
+        vw_kanji.text = kanji
+        vw_kana.text = kana
 
-        //initiate recyclerview and set parameters
-        rv_examples.setHasFixedSize(true)
-        rv_examples.setLayoutManager(LinearLayoutManager(this))
+        // initialte word_recycler
+        vw_rv_definitions.setHasFixedSize(true)
+        vw_rv_definitions.setLayoutManager(LinearLayoutManager(this))
 
+        val defArray = english!!.split("@@@").toTypedArray()
+        val posArray = pos?.split("@@@")?.toTypedArray()
+        val notesArray = notes?.split("@@@")?.toTypedArray()
 
-        view_edit_notes.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                btn_save_notes.visibility = View.VISIBLE
+        var defCount = 1
+        for (i in defArray.indices) {
+            // items to view in searchpage activity
+            val engText = "$defCount. ${defArray[i]}"
+            mItemList!!.add(ViewWordItem("not_required", kanji!!, kana!!, engText, posArray!![i], notesArray!![i], starred))
+            defCount++
+        }
+
+        mItemAdapter = mItemList?.let { it ->
+            ViewWordItemAdapter(this@ViewWord, it)
+        }
+        vw_rv_definitions.adapter = mItemAdapter
+        mItemAdapter?.notifyDataSetChanged()
+
+        vw_btn_star.setOnClickListener{
+            starred = !starred
+            if (!starred ) {
+                Toast.makeText(this, "Removed from My List", Toast.LENGTH_SHORT).show()
+                vw_btn_star.setImageResource(R.drawable.ic_addword)
+                myDB.deleteData(itemId)
+            } else{
+                Toast.makeText(this, "Added to My List", Toast.LENGTH_SHORT).show()
+                vw_btn_star.setImageResource(R.drawable.ic_removeword)
+                myDB.addData(0, kanji!!, kana, english, pos, notes)
             }
         }
 
-        btn_save_notes.setOnClickListener {
-            btn_save_notes.visibility = View.GONE
-            view_edit_notes.clearFocus()
-            val notesText = view_edit_notes.text.toString()
-            myDB.editNotes(id!!, notesText)
-        }
+        //initiate recyclerview and set parameters
+        vw_rv_examples.setHasFixedSize(true)
+        vw_rv_examples.setLayoutManager(LinearLayoutManager(this))
 
         // search word and add matching examples to recycler
-        if (kanji != null) {
-            readExamples(kanji)
-        } else {
-            if (kana != null) readExamples(kana)
-        }
+        readExamples(kanji!!)
 
     }
 
-    override fun onPause(){
-        super.onPause()
-
-        if (!inList) {
-            myDB.deleteData(itemId)
-        }
+    override fun onBackPressed() {
+        super.onBackPressed()
 
         //go to MyList
         finish()
@@ -127,7 +129,7 @@ class ViewWord : AppCompatActivity() {
 
         }
         rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWord, it) }
-        rv_examples.adapter = rvAdapter
+        vw_rv_examples.adapter = rvAdapter
 
     }
 

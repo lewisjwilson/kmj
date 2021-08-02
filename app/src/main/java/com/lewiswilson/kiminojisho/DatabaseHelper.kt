@@ -254,7 +254,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                     cur.getString(2), //kana
                     cur.getString(3), //english
                     "", //pos
-                    cur.getString(5) //notes
+                    cur.getString(5), //notes
+                    false // unimportant here
                 )
             )
         }
@@ -277,7 +278,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 cur.getString(2), //kana
                 cur.getString(3), //english
                 "", //pos
-                cur.getString(5) //notes
+                cur.getString(5), //notes
+                false // unimportant here
             )
             )
         }

@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.jishoSearch
+package com.lewiswilson.kiminojisho.searchAndViewWords
 
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -121,7 +121,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                     var japanese: List<Japanese>
                     var kanji: String?
                     var kana: String?
-                    var english: String
+                    var english: String?
                     for (i in data.indices) {
                         japanese = data[i].japanese
                         kanji = japanese[0].word
@@ -133,34 +133,33 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         }
 
                         //get english definitions
-                        val sense = data[i].senses
-                        val noOfDefinitions = sense[0].englishDefinitions.size
-                        english = sense[0].englishDefinitions[0]
+                        val senses = data[i].senses
 
-                        //If there is more than one definition, also display the second definition
-                        if (noOfDefinitions > 1) {
-                            english = english + ", " + sense[0].englishDefinitions[1]
-                        }
-
-                        val posArray = sense[0].partsOfSpeech
+                        english = ""
                         var pos = ""
-                        for (item in posArray) {
-                            pos += "$item, "
-                        }
-                        pos = pos.replace(", $".toRegex(), "")
-
                         var notes = ""
-                        if (sense[0].tags.size > 0){
-                            notes = sense[0].tags[0]
-                        }
+                        for (item in senses) {
+                            val currentDef = item.englishDefinitions.toString().replace("[", "").replace("]", "")
+                            english += "$currentDef@@@"
 
-                        starFilled = myDB.checkStarred(kanji, english)
+                            val currentPos = item.partsOfSpeech.toString().replace("[", "").replace("]", "")
+                            pos += "$currentPos@@@"
+
+                            val currentNotes = item.tags.toString().replace("[", "").replace("]", "")
+                            notes += "$currentNotes@@@"
+
+                        }
+                        english = removeAts(english)
+                        pos = removeAts(pos)
+                        notes = removeAts(notes)
+
+                        starFilled = myDB.checkStarred(kanji, english.split("@@@")[0])
 
                         // items to view in searchpage activity
-                        mSearchList!!.add(SearchDataItem(kanji, kana, english, starFilled))
+                        mSearchList!!.add(SearchDataItem(kanji, kana, english.split("@@@")[0], starFilled))
 
-                        // refer to this arraylist in viewwordremote (id is index of recycler)
-                        dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes))
+                        // items to view in viewwordremote and viewword
+                        dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes, starFilled))
 
                         mSearchDataAdapter = mSearchList?.let { it ->
                             SearchDataAdapter(this@SearchPage, it)
@@ -184,6 +183,10 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         dataItems!!.clear()
         mSearchList!!.clear() // clear list
         mSearchDataAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
+    }
+
+    fun removeAts(input: String): String {
+        return input.substring(0, input.length - 3)
     }
 
     companion object {

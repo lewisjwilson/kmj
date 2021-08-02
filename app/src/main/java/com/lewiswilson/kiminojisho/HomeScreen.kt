@@ -16,7 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
-import com.lewiswilson.kiminojisho.jishoSearch.SearchPage
+import com.lewiswilson.kiminojisho.searchAndViewWords.SearchPage
 import kotlinx.android.synthetic.main.home_screen.*
 import java.io.File
 import java.io.FileInputStream

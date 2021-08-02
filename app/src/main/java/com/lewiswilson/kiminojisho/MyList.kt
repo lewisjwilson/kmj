@@ -14,7 +14,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.lewiswilson.kiminojisho.jishoSearch.SearchPage
+import com.lewiswilson.kiminojisho.searchAndViewWords.SearchPage
+import com.lewiswilson.kiminojisho.searchAndViewWords.ViewWord
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
@@ -77,9 +78,10 @@ class MyList : AppCompatActivity(),
                 MyListItem(data.getInt(0), //id
                     data.getString(1), //kanji
                     data.getString(2), //kana
-                    data.getString(3), //english
+                    data.getString(3).split("@@@")[0], //english
                     data.getString(4), //pos
-                    data.getString(5) //notes
+                    data.getString(5), //notes
+                    false // unimportant here
                 )
             )
 
