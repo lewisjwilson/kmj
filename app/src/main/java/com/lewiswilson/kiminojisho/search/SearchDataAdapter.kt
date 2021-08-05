@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.searchAndViewWords
+package com.lewiswilson.kiminojisho.search
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.*
-import com.lewiswilson.kiminojisho.searchAndViewWords.SearchDataAdapter.SearchDataViewHolder
+import com.lewiswilson.kiminojisho.search.SearchDataAdapter.SearchDataViewHolder
 import java.util.*
 
 class SearchDataAdapter(

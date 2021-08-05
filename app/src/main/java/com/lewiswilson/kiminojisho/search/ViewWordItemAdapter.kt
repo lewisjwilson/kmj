@@ -1,21 +1,18 @@
-package com.lewiswilson.kiminojisho.searchAndViewWords
+package com.lewiswilson.kiminojisho.search
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.*
-import kotlinx.android.synthetic.main.view_word_item.view.*
 import java.util.*
 
 class ViewWordItemAdapter(
     private val mContext: Context,
     private val mViewWordList: ArrayList<ViewWordItem>
 ) : RecyclerView.Adapter<ViewWordItemAdapter.ViewWordRemoteViewHolder>() {
-    private var remote: Boolean = false
     private var id: String = ""
     private var kanji: String = ""
     private var kana: String = ""

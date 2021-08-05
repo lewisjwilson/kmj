@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho.searchAndViewWords
+package com.lewiswilson.kiminojisho.search
 
 import android.content.ContentValues.TAG
 import android.content.Intent

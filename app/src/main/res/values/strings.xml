@@ -10,6 +10,7 @@
     <string name="Example">Example:</string>
     <string name="Word_Contents">word_contents</string>
     <string name="Delete_Entry">DELETE</string>
+    <string name="Cancel">Cancel</string>
     <string name="Update_Entry">Update</string>
     <string name="View_Edit">View/Edit</string>
     <string name="ActionExport">Export Database</string>

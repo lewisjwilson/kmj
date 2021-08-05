@@ -14,8 +14,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.lewiswilson.kiminojisho.searchAndViewWords.SearchPage
-import com.lewiswilson.kiminojisho.searchAndViewWords.ViewWord
+import com.lewiswilson.kiminojisho.search.SearchPage
+import com.lewiswilson.kiminojisho.search.ViewWord
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
@@ -48,7 +48,6 @@ class MyList : AppCompatActivity(),
         }
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
-
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)
@@ -183,10 +182,6 @@ class MyList : AppCompatActivity(),
         var ma: AppCompatActivity? = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        clearData()
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()

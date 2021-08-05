@@ -1,9 +1,10 @@
-package com.lewiswilson.kiminojisho.searchAndViewWords
+package com.lewiswilson.kiminojisho.search
 
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.view_word.vw_adView
 import kotlinx.android.synthetic.main.view_word.vw_rv_examples
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.util.ArrayList
 
 class ViewWordRemote : AppCompatActivity() {
@@ -89,14 +91,7 @@ class ViewWordRemote : AppCompatActivity() {
         vw_btn_star.setOnClickListener{
             starred = !starred
             if (!starred) {
-                vw_btn_star.setImageResource(R.drawable.ic_addword)
-                try {
-                    Toast.makeText(this, "Removed from My List", Toast.LENGTH_SHORT)
-                        .show()
-                    myDB.deleteFromRemote(kanji, english)
-                } catch (e: NullPointerException) {
-                    Log.d("Item Not Found", "Item not in dictionary. (Normal)")
-                }
+                warningDialog(kanji, english)
             } else {
                 Toast.makeText(this, "Added to My List", Toast.LENGTH_SHORT).show()
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
@@ -113,11 +108,6 @@ class ViewWordRemote : AppCompatActivity() {
         readExamples(kanji)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-    }
-
     fun readExamples(filter: String) {
 
         val minput = InputStreamReader(assets.open("examples.tsv"))
@@ -125,7 +115,7 @@ class ViewWordRemote : AppCompatActivity() {
 
         var line : String?
 
-        val examplesNo = 10
+        val examplesNo = 5
         var count = 0
 
         while (reader.readLine().also { line = it } != null){
@@ -146,6 +136,33 @@ class ViewWordRemote : AppCompatActivity() {
 
     }
 
+    private fun warningDialog(kanji: String, english: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete entry")
+            .setMessage("Removing this word from your list will also reset any flashcard progress for this word. Are you sure you want to remove the item?")
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton(
+                getString(R.string.Delete_Entry)
+            ) { _, _ ->
+                try {
+                    Toast.makeText(this, "Delete Successful", Toast.LENGTH_SHORT)
+                        .show()
+                    myDB.deleteFromRemote(kanji, english)
+                    vw_btn_star.setImageResource(R.drawable.ic_addword)
+                } catch (e: NullPointerException) {
+                    Log.d(TAG, "Could not delete item from list (normal): ${e.printStackTrace()}")
+                }
+            } // A null listener allows the button to dismiss the dialog and take no further action.
+            .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
+                starred = !starred //if cancelled, the starred status reverts
+            }
+            .setIcon(getDrawable(R.drawable.ic_info))
+            .show()
+    }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
 
 }

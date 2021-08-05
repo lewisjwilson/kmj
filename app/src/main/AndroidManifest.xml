@@ -53,11 +53,11 @@
             </intent-filter>
         </receiver>
         <activity
-            android:name=".searchAndViewWords.ViewWord"
+            android:name=".search.ViewWord"
             android:label="View Word"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".searchAndViewWords.ViewWordRemote"
+            android:name=".search.ViewWordRemote"
             android:label="View Word"
             android:windowSoftInputMode="adjustPan"/>
         <activity
@@ -69,7 +69,7 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".searchAndViewWords.SearchPage"
+            android:name=".search.SearchPage"
             android:label="Search"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize" />
