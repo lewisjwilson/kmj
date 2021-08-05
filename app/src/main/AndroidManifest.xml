@@ -41,8 +41,13 @@
             android:theme="@style/AppTheme">
         </activity>
         <activity
-            android:name=".MyList"
-            android:label="My List"
+            android:name=".mylists.MyList"
+            android:label="My Lists"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
+            android:name=".mylists.ListSelection"
+            android:label="My Lists"
             android:theme="@style/AppTheme">
         </activity>
         <receiver

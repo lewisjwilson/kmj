@@ -12,6 +12,7 @@ import com.lewiswilson.kiminojisho.*
 import com.lewiswilson.kiminojisho.json.Japanese
 import com.lewiswilson.kiminojisho.json.JishoData
 import com.lewiswilson.kiminojisho.json.RetrofitClient
+import com.lewiswilson.kiminojisho.mylists.MyListItem
 import kotlinx.android.synthetic.main.search_data_item.*
 import retrofit2.Call
 import retrofit2.Callback

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
+import com.lewiswilson.kiminojisho.mylists.ListSelection
+import com.lewiswilson.kiminojisho.mylists.MyList
 import com.lewiswilson.kiminojisho.search.SearchPage
 import kotlinx.android.synthetic.main.home_screen.*
 import java.io.File
@@ -49,7 +51,6 @@ class HomeScreen : AppCompatActivity() {
 
     //Toolbar Menu Option Activities
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         return when (item.itemId) {
 
             R.id.action_help -> {

@@ -9,7 +9,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.MyListItem
+import com.lewiswilson.kiminojisho.mylists.MyListItem
 import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.flashcards_home.*
 import kotlinx.android.synthetic.main.flashcard_back.*

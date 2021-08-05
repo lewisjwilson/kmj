@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import android.widget.Toast
 import com.lewiswilson.MyApplication
+import com.lewiswilson.kiminojisho.mylists.MyList
+import com.lewiswilson.kiminojisho.mylists.MyListItem
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
@@ -249,7 +251,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                     " WHERE $colNextReview <= date('now') LIMIT ?", arrayOf(reviewNo.toString())) //next_review < date now
 
         while (cur.moveToNext()) {
-            flashcardList.add(MyListItem(cur.getInt(0), //id
+            flashcardList.add(
+                MyListItem(cur.getInt(0), //id
                     cur.getString(1), //kanji
                     cur.getString(2), //kana
                     cur.getString(3), //english
@@ -273,7 +276,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                 " ORDER BY RANDOM() LIMIT 3", arrayOf(correctKanji))
 
         while (cur.moveToNext()) {
-            wrongItems.add(MyListItem(cur.getInt(0), //id
+            wrongItems.add(
+                MyListItem(cur.getInt(0), //id
                 cur.getString(1), //kanji
                 cur.getString(2), //kana
                 cur.getString(3), //english

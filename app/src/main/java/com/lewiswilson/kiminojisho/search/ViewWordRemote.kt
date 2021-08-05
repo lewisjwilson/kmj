@@ -93,9 +93,7 @@ class ViewWordRemote : AppCompatActivity() {
             if (!starred) {
                 warningDialog(kanji, english)
             } else {
-                Toast.makeText(this, "Added to My List", Toast.LENGTH_SHORT).show()
-                vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(0, kanji, kana, english, pos, notes)
+               listSelectDialog()
             }
         }
 
@@ -157,6 +155,19 @@ class ViewWordRemote : AppCompatActivity() {
                 starred = !starred //if cancelled, the starred status reverts
             }
             .setIcon(getDrawable(R.drawable.ic_info))
+            .show()
+    }
+
+    private fun listSelectDialog() {
+        val lists = arrayOf("examplelist1", "examplelist2")
+        AlertDialog.Builder(this)
+            .setTitle("Select List to Add To")
+            .setItems(lists) { _, which ->
+                val selected = lists[which]
+                vw_btn_star.setImageResource(R.drawable.ic_removeword)
+                myDB.addData(0, kanji, kana, english, pos, notes)
+                Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
+            }
             .show()
     }
 

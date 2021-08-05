@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.lewiswilson.kiminojisho.mylists.MyList
 import kotlinx.android.synthetic.main.add_word.*
 import kotlinx.android.synthetic.main.add_word.view_english
 import kotlinx.android.synthetic.main.add_word.view_kana
@@ -23,13 +24,13 @@ class AddWord : AppCompatActivity() {
 
         val add = View.OnClickListener { v: View? ->
             val list = 0
-            val newEntryKanji = RemoveSemicolon(edit_word.text.toString().trim { it <= ' ' })
-            val newEntryKana = RemoveSemicolon(view_kana.text.toString().trim { it <= ' ' })
-            val newEntryMeaning = RemoveSemicolon(view_english.text.toString().trim { it <= ' ' })
+            val newEntryKanji = edit_word.text.toString()
+            val newEntryKana = view_kana.text.toString()
+            val newEntryMeaning = view_english.text.toString()
             val pos = ""
-            val newEntryNotes =  RemoveSemicolon(view_edit_notes.text.toString().trim { it <= ' ' })
+            val newEntryNotes =  view_edit_notes.text.toString()
 
-            if (newEntryKanji.length == 0 || newEntryKana.length == 0 || newEntryMeaning.length == 0) {
+            if (newEntryKanji.isEmpty() || newEntryKana.isEmpty() || newEntryMeaning.isEmpty()) {
                 Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
             } else {
                 addData(list, newEntryKanji, newEntryKana, newEntryMeaning, pos, newEntryNotes)
@@ -48,14 +49,6 @@ class AddWord : AppCompatActivity() {
             Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "This word is already in your list!", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun RemoveSemicolon(input: String): String {
-        return if (input.contains(";")) {
-            input.replace(";", ",")
-        } else {
-            input
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.lewiswilson.kiminojisho.search
 
 import android.content.ContentValues.TAG
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.*
+import com.lewiswilson.kiminojisho.mylists.MyList
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.view_word.*
 import java.io.BufferedReader
@@ -30,6 +30,11 @@ class ViewWord : AppCompatActivity() {
     private var rvAdapter: ExamplesAdapter? = null
     private val myDB = DatabaseHelper(this)
     private var starred = true
+    var kanji = ""
+    var kana = ""
+    var english = ""
+    var pos = ""
+    var notes = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +42,7 @@ class ViewWord : AppCompatActivity() {
         setContentView(R.layout.view_word)
 
         //implementing ads
-        MobileAds.initialize(this) {}
+        MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
         vw_adView.loadAd(adRequest)
 
@@ -47,11 +52,11 @@ class ViewWord : AppCompatActivity() {
         Log.d(TAG, "ITEM: $itemId")
 
         //parsing from hashmap in DatabaseHelper.kt
-        val kanji = itemData["kanji"]
-        val kana = itemData["kana"]
-        val english = itemData["english"]
-        val pos = itemData["pos"]
-        val notes = itemData["notes"]
+        kanji = itemData["kanji"].toString()
+        kana = itemData["kana"].toString()
+        english = itemData["english"].toString()
+        pos = itemData["pos"].toString()
+        notes = itemData["notes"].toString()
 
         vw_kanji.text = kanji
         vw_kana.text = kana
@@ -60,19 +65,16 @@ class ViewWord : AppCompatActivity() {
         vw_rv_definitions.setHasFixedSize(true)
         vw_rv_definitions.setLayoutManager(LinearLayoutManager(this))
 
-        val defArray = english!!.split("@@@").toTypedArray()
-        val posArray = pos?.split("@@@")?.toTypedArray()
-        val notesArray = notes?.split("@@@")?.toTypedArray()
+        val defArray = english.split("@@@").toTypedArray()
+        val posArray = pos.split("@@@").toTypedArray()
+        val notesArray = notes.split("@@@").toTypedArray()
 
         var defCount = 1
         for (i in defArray.indices) {
             // items to view in searchpage activity
             val engText = "$defCount. ${defArray[i]}"
             mItemList!!.add(
-                ViewWordItem(
-                    "not_required", kanji!!, kana!!, engText,
-                    posArray?.get(i).toString(), notesArray?.get(i).toString(), starred
-                )
+                ViewWordItem("not_required", kanji, kana, engText, posArray[i], notesArray[i], starred)
             )
             defCount++
         }
@@ -88,9 +90,7 @@ class ViewWord : AppCompatActivity() {
             if (!starred) {
                 warningDialog(itemId)
             } else {
-                Toast.makeText(this, "Added to My List", Toast.LENGTH_SHORT).show()
-                vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(0, kanji!!, kana, english, pos, notes)
+                listSelectDialog()
             }
         }
 
@@ -99,7 +99,7 @@ class ViewWord : AppCompatActivity() {
         vw_rv_examples.setLayoutManager(LinearLayoutManager(this))
 
         // search word and add matching examples to recycler
-        readExamples(kanji!!)
+        readExamples(kanji)
 
     }
 
@@ -150,6 +150,19 @@ class ViewWord : AppCompatActivity() {
                 starred = !starred //if cancelled, the starred status reverts
             }
             .setIcon(getDrawable(R.drawable.ic_info))
+            .show()
+    }
+
+    private fun listSelectDialog() {
+        val lists = arrayOf("examplelist1", "examplelist2")
+        AlertDialog.Builder(this)
+            .setTitle("Select List to Add To")
+            .setItems(lists) { _, which ->
+                val selected = lists[which]
+                vw_btn_star.setImageResource(R.drawable.ic_removeword)
+                myDB.addData(0, kanji, kana, english, pos, notes)
+                Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
+            }
             .show()
     }
 

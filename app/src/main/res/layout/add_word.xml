@@ -80,26 +80,6 @@
                 android:inputType="textMultiLine" />
 
             <TextView
-                android:id="@+id/txt_example"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/Example" />
-
-            <EditText
-                android:id="@+id/view_examples"
-                android:layout_width="350dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:ems="10"
-                android:hint="@string/optional"
-                android:importantForAutofill="no"
-                android:inputType="textMultiLine" />
-
-            <TextView
                 android:id="@+id/txt_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

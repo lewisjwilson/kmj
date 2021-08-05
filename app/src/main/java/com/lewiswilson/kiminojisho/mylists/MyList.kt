@@ -1,4 +1,4 @@
-package com.lewiswilson.kiminojisho
+package com.lewiswilson.kiminojisho.mylists
 
 import android.app.*
 import android.content.Context
@@ -14,6 +14,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.lewiswilson.kiminojisho.DatabaseHelper
+import com.lewiswilson.kiminojisho.HomeScreen
+import com.lewiswilson.kiminojisho.R
 import com.lewiswilson.kiminojisho.search.SearchPage
 import com.lewiswilson.kiminojisho.search.ViewWord
 import kotlinx.android.synthetic.main.my_list.*
