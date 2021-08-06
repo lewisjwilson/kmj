@@ -1,10 +1,12 @@
 package com.lewiswilson.kiminojisho.mylists
 
 import android.app.*
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.list_selection.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
@@ -12,8 +14,7 @@ import kotlinx.android.synthetic.main.search_page.*
 import java.util.*
 
 
-class ListSelection : AppCompatActivity(),
-    ListSelectionAdapter.OnItemClickListener {
+class ListSelection : AppCompatActivity() {
     private var listOfLists: ArrayList<ListSelectionItem>? = ArrayList()
     private var rvAdapter: ListSelectionAdapter? = null
 
@@ -28,22 +29,40 @@ class ListSelection : AppCompatActivity(),
 
         populateRV()
 
+        rv_list_selection.adapter = rvAdapter
+
+        rvAdapter?.setOnItemClickListener(object: ListSelectionAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                Toast.makeText(applicationContext, "you clicked $position", Toast.LENGTH_SHORT).show()
+                val intent = Intent(applicationContext, MyList::class.java)
+                intent.putExtra("adapterPos", position)
+                startActivity(intent)
+            }
+        }
+        )
+
     }
 
     //populate recyclerview with data
     private fun populateRV() {
-        val lists = arrayOf("examplelist1", "examplelist2")
 
-        for (list in lists) {
+        val listsArr = resources.getStringArray(R.array.my_lists)
+        for (list in listsArr) {
             listOfLists!!.add(ListSelectionItem(list))
-            rvAdapter = listOfLists?.let { it -> ListSelectionAdapter(this@ListSelection, it, this) }
-            rv_list_selection.adapter = rvAdapter
+            rvAdapter = listOfLists?.let { it -> ListSelectionAdapter(this@ListSelection, it) }
         }
 
     }
 
-    override fun onItemClick(itemId: Int) {
-        //TODO("Not yet implemented")
+    override fun onPause() {
+        super.onPause()
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        startActivity(Intent(this@ListSelection, HomeScreen::class.java))
     }
 
 }

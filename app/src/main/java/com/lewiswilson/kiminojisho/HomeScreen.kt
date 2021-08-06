@@ -37,7 +37,7 @@ class HomeScreen : AppCompatActivity() {
 
         item_flashcards.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
         item_search.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
-        item_mylists.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, MyList::class.java)) }
+        item_mylists.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
         item_settings.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, About::class.java)) }
 
     }
@@ -147,4 +147,5 @@ class HomeScreen : AppCompatActivity() {
             importDatabase()
         }
     }
+
 }

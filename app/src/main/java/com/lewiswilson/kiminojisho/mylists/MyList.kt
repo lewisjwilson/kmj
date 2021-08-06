@@ -27,13 +27,14 @@ import me.toptas.fancyshowcase.FancyShowCaseView
 import java.util.*
 
 
-class MyList : AppCompatActivity(),
-    MyListAdapter.OnItemClickListener {
+class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAdapter.OnItemLongClickListener {
     private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = null
     private var jishoList: ArrayList<MyListItem>? = ArrayList()
     private var searchList: ArrayList<MyListItem>? = ArrayList()
     private var rvAdapter: MyListAdapter? = null
+    private var selectedList = 0
+    private var multiSelectList = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,8 @@ class MyList : AppCompatActivity(),
         }
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
+
+        selectedList = intent.getIntExtra("adapterPos", 0)
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)
@@ -70,7 +73,7 @@ class MyList : AppCompatActivity(),
     private fun populateRV() {
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
         val column = prefs.getString("sortby_col", "english")
-        val data = myDB!!.listContents(column!!)
+        val data = myDB!!.listContents(selectedList, column!!)
 
         //Checks if database is empty and lists entries if not
         while (data.moveToNext()) {
@@ -87,18 +90,11 @@ class MyList : AppCompatActivity(),
                 )
             )
 
-            rvAdapter = jishoList?.let { it -> MyListAdapter(this@MyList, it, this) }
+            rvAdapter = jishoList?.let { it -> MyListAdapter(this@MyList, it, this, this) }
             rv_mylist.adapter = rvAdapter
 
         }
 
-    }
-
-    // recyclerview item click
-    override fun onItemClick(itemId: Int) {
-        clickedItemId = itemId
-        finish()
-        startActivity(Intent(this@MyList, ViewWord::class.java))
     }
 
     fun clearData() {
@@ -188,7 +184,8 @@ class MyList : AppCompatActivity(),
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(this, HomeScreen::class.java))
+        finish()
+        startActivity(Intent(this, ListSelection::class.java))
     }
 
     private fun firstLaunch() {
@@ -216,4 +213,15 @@ class MyList : AppCompatActivity(),
         fscvQueue.show()
     }
 
+    // recyclerview item click handling
+    override fun onItemClick(itemId: Int) {
+        clickedItemId = itemId
+        finish()
+        startActivity(Intent(this@MyList, ViewWord::class.java))
+    }
+
+    override fun onItemLongClick(itemId: Int) {
+        clickedItemId = itemId
+        Toast.makeText(this, "long pressed dbID: $clickedItemId", Toast.LENGTH_SHORT).show()
+    }
 }

@@ -217,10 +217,12 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         }
     }
 
-    fun listContents(column: String): Cursor {
+    fun listContents(list: Int, column: String): Cursor {
+        val args = arrayOf(list.toString())
         return writableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME " +
+                "WHERE $colList = ? " +
                 "ORDER BY $column " +
-                "COLLATE NOCASE ASC", null)
+                "COLLATE NOCASE ASC", args)
     }
 
     fun random(): ArrayList<String> {

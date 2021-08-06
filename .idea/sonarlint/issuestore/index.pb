@@ -21,8 +21,6 @@ $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
 r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
-f
-6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 z
 Japp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsHome.kt,1/7/174151eb8a95a5182ab6fcd347f568699ac79472
 ~
@@ -35,11 +33,23 @@ q
 Aapp/src/main/java/com/lewiswilson/kiminojisho/json/JishoData.java,4/8/48a0643c916afe67e0dcf3b3e8796d8bf710bcd6
 p
 @app/src/main/java/com/lewiswilson/kiminojisho/json/JishoAPI.java,4/1/413ed51d7c91dffb56ae35d32faacc5c12b330f8
-y
-Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/f98b174cd45021f59092cd5ab84eba9c035030df
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataItem.kt,2/3/234ad48c571e177114184b507fa9efc7117a5085
 t
 Dapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItem.kt,4/6/46b4f42f02c4e9c89686af190a6e8cc53be62bc0
+v
+Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
+s
+Capp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListItem.kt,8/e/8ec813edfe85683213e6b92b9a9d69ecbd138988
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
+z
+Japp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionItem.kt,8/4/840870bfd542235121eafa6c884bbc296cf93dd6
 {
 Kapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItemAdapter.kt,5/c/5cae915aebf8d2767eef65fab82d472059c052fe
+f
+6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
+r
+Bapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchPage.kt,4/1/41d3b8c123d5d60df2743775aebaa222e7c6863e
+y
+Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/f98b174cd45021f59092cd5ab84eba9c035030df

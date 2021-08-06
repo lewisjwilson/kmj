@@ -3,9 +3,11 @@ package com.lewiswilson.kiminojisho
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.mylists.MyList
+import kotlinx.android.synthetic.main.about.*
 import kotlinx.android.synthetic.main.add_word.*
 import kotlinx.android.synthetic.main.add_word.view_english
 import kotlinx.android.synthetic.main.add_word.view_kana
@@ -22,26 +24,40 @@ class AddWord : AppCompatActivity() {
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 
+        val listsArr = resources.getStringArray(R.array.my_lists)
+        val listsHashMap = HashMap<String, Int>()
+        var listNo = 0
+        for (list in listsArr) {
+            listsHashMap[list] = listNo
+            listNo++
+        }
+
+        spn_addword_lists!!.onItemSelectedListener
+        val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listsArr)
+        spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spn_addword_lists!!.adapter = spnAdapter
+
         val add = View.OnClickListener { v: View? ->
-            val list = 0
+            val newEntryList = listsHashMap[spn_addword_lists.selectedItem]
             val newEntryKanji = edit_word.text.toString()
             val newEntryKana = view_kana.text.toString()
             val newEntryMeaning = view_english.text.toString()
-            val pos = ""
+            val newEntryPos = view_addword_pos.text.toString()
             val newEntryNotes =  view_edit_notes.text.toString()
 
             if (newEntryKanji.isEmpty() || newEntryKana.isEmpty() || newEntryMeaning.isEmpty()) {
                 Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
             } else {
-                addData(list, newEntryKanji, newEntryKana, newEntryMeaning, pos, newEntryNotes)
+                addData(newEntryList!!, newEntryKanji, newEntryKana, newEntryMeaning, newEntryPos, newEntryNotes)
                 val addWord = this@AddWord
                 addWord.startActivity(Intent(addWord, MyList::class.java))
                 finish()
-                MyList.ma!!.finish()
+                MyList.ma?.finish()
             }
 
         }
         btn_add.setOnClickListener(add)
+
     }
 
     private fun addData(list: Int, kanji: String, kana: String, english: String, pos: String, notes: String) {

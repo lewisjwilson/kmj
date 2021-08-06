@@ -159,13 +159,13 @@ class ViewWordRemote : AppCompatActivity() {
     }
 
     private fun listSelectDialog() {
-        val lists = arrayOf("examplelist1", "examplelist2")
+        val listsArr = resources.getStringArray(R.array.my_lists)
         AlertDialog.Builder(this)
             .setTitle("Select List to Add To")
-            .setItems(lists) { _, which ->
-                val selected = lists[which]
+            .setItems(listsArr) { _, which ->
+                val selected = listsArr[which]
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(0, kanji, kana, english, pos, notes)
+                myDB.addData(listsArr.indexOf(selected), kanji, kana, english, pos, notes)
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }
             .show()

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.*
+import com.lewiswilson.kiminojisho.mylists.ListSelectionAdapter
 import com.lewiswilson.kiminojisho.mylists.MyList
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.view_word.*
@@ -154,26 +155,20 @@ class ViewWord : AppCompatActivity() {
     }
 
     private fun listSelectDialog() {
-        val lists = arrayOf("examplelist1", "examplelist2")
+
+        val listsArr = resources.getStringArray(R.array.my_lists)
+
         AlertDialog.Builder(this)
             .setTitle("Select List to Add To")
-            .setItems(lists) { _, which ->
-                val selected = lists[which]
+            .setItems(listsArr) { _, which ->
+                val selected = listsArr[which]
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(0, kanji, kana, english, pos, notes)
+                myDB.addData(listsArr.indexOf(selected), kanji, kana, english, pos, notes)
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }
             .show()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        //go to MyList
-        finish()
-        startActivity(Intent(this@ViewWord, MyList::class.java))
-
-    }
 }
 
 

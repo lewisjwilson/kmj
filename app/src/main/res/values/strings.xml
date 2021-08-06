@@ -5,7 +5,7 @@
     <string name="Add_New_Word">Add New Word</string>
     <string name="Kanji">Kanji*:</string>
     <string name="Add">Add</string>
-    <string name="Kana">Kana/Romaji*:</string>
+    <string name="Kana">Kana*:</string>
     <string name="Meaning">Meaning*:</string>
     <string name="Example">Example:</string>
     <string name="Word_Contents">word_contents</string>
