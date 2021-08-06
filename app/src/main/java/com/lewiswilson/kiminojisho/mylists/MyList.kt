@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
@@ -12,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.DatabaseHelper
@@ -34,7 +36,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     private var searchList: ArrayList<MyListItem>? = ArrayList()
     private var rvAdapter: MyListAdapter? = null
     private var selectedList = 0
-    private var multiSelectList = emptyList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -214,14 +215,30 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     }
 
     // recyclerview item click handling
-    override fun onItemClick(itemId: Int) {
-        clickedItemId = itemId
-        finish()
-        startActivity(Intent(this@MyList, ViewWord::class.java))
+    override fun onItemClick(itemId: Int, ready: Boolean) {
+        toolbarChanger()
+        if (ready) {
+            clickedItemId = itemId
+            finish()
+            startActivity(Intent(this@MyList, ViewWord::class.java))
+        }
     }
 
     override fun onItemLongClick(itemId: Int) {
+        toolbarChanger()
         clickedItemId = itemId
-        Toast.makeText(this, "long pressed dbID: $clickedItemId", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, "long pressed dbID: $clickedItemId", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun toolbarChanger() {
+        if (MyListAdapter.multiSelectMode) {
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.grey)))
+            val noSelected = MyListAdapter.selectedIds.size
+            supportActionBar?.title = "$noSelected selected"
+
+        } else {
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.granny_smith)))
+            supportActionBar?.title = "My Lists"
+        }
     }
 }

@@ -1,14 +1,11 @@
 package com.lewiswilson.kiminojisho.mylists
 
 import android.content.Context
-import android.util.Log
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.R
 import java.util.*
@@ -20,6 +17,11 @@ class MyListAdapter(
     private val listener: OnItemClickListener,
     private val longListener: OnItemLongClickListener
 ) : RecyclerView.Adapter<MyListAdapter.MyListViewHolder>() {
+
+    companion object {
+        var multiSelectMode = false
+        var selectedIds = arrayListOf<Int>()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyListViewHolder {
         val v = LayoutInflater.from(mContext).inflate(R.layout.my_list_item, parent, false)
@@ -37,6 +39,13 @@ class MyListAdapter(
         holder.mKanaView.text = kana
         holder.mEnglishView.text = english
 
+        //changes the background color for items when they come into view in rv
+        if (selectedIds.contains(id)) {
+            holder.itemView.setBackgroundColor(mContext.getColor(R.color.magic_mint))
+        } else {
+            holder.itemView.setBackgroundColor(Color.WHITE)
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -44,7 +53,6 @@ class MyListAdapter(
     }
 
     inner class MyListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
-        var mConstraintLayout: ConstraintLayout = itemView.findViewById(R.id.list_item_constraintLayout)
         var mId: TextView = itemView.findViewById(R.id.itemid)
         var mKanjiView: TextView = itemView.findViewById(R.id.kanjiview)
         var mKanaView: TextView = itemView.findViewById(R.id.kanaview)
@@ -59,12 +67,18 @@ class MyListAdapter(
 
         override fun onClick(v: View?) {
             val id = Integer.parseInt(mId.text.toString())
-            Log.d("ID: ", id.toString())
-            listener.onItemClick(id)
+            if (multiSelectMode) {
+                selectMultiple(itemView, id)
+                listener.onItemClick(id, false)
+            } else {
+                listener.onItemClick(id, true)
+            }
         }
 
         override fun onLongClick(v: View?): Boolean {
+            multiSelectMode = true
             val id = Integer.parseInt(mId.text.toString())
+            selectMultiple(itemView, id)
             longListener.onItemLongClick(id)
             return true
         }
@@ -72,11 +86,24 @@ class MyListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(itemId: Int)
+        fun onItemClick(itemId: Int, ready: Boolean)
     }
 
     interface OnItemLongClickListener {
         fun onItemLongClick(itemId: Int)
+    }
+
+    fun selectMultiple(itemView: View, id: Int) {
+        if(selectedIds.contains(id)) {
+            itemView.setBackgroundColor(Color.WHITE)
+            selectedIds.remove(id)
+        } else {
+            itemView.setBackgroundColor(mContext.getColor(R.color.magic_mint))
+            selectedIds.add(id)
+        }
+        if(selectedIds.isEmpty()) {
+            multiSelectMode = false
+        }
     }
 
 }
