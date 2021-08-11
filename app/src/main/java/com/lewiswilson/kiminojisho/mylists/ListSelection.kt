@@ -33,7 +33,6 @@ class ListSelection : AppCompatActivity() {
 
         rvAdapter?.setOnItemClickListener(object: ListSelectionAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                Toast.makeText(applicationContext, "you clicked $position", Toast.LENGTH_SHORT).show()
                 val intent = Intent(applicationContext, MyList::class.java)
                 intent.putExtra("adapterPos", position)
                 startActivity(intent)
@@ -41,6 +40,12 @@ class ListSelection : AppCompatActivity() {
         }
         )
 
+        btn_newlist.setOnClickListener { createList() }
+
+    }
+
+    private fun createList() {
+        TODO("Not yet implemented")
     }
 
     //populate recyclerview with data
@@ -51,7 +56,6 @@ class ListSelection : AppCompatActivity() {
             listOfLists!!.add(ListSelectionItem(list))
             rvAdapter = listOfLists?.let { it -> ListSelectionAdapter(this@ListSelection, it) }
         }
-
     }
 
     override fun onPause() {

@@ -1,32 +1,34 @@
 package com.lewiswilson.kiminojisho.mylists
 
 import android.app.*
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
 import com.lewiswilson.kiminojisho.search.SearchPage
 import com.lewiswilson.kiminojisho.search.ViewWord
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
+import kotlinx.android.synthetic.main.view_word.*
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
 import java.util.*
+import kotlin.collections.HashSet
 
 
 class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAdapter.OnItemLongClickListener {
@@ -50,6 +52,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
             prefs.edit().putString("sortby_col", "english").apply()
+            prefs.edit().putStringSet("list_names", hashSetOf("Main List")).apply()
         }
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
@@ -63,6 +66,8 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         populateRV()
         //displaylist shows when searching in searchview
         searchList!!.addAll(jishoList!!)
+
+        multiSelectMenuSetup()
 
         flbtnAdd.setOnClickListener { v: View? ->
             finish()
@@ -102,6 +107,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         jishoList!!.clear() // clear list
         rvAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
         populateRV()
+
     }
 
     // Menu icons are inflated just as they were with actionbar
@@ -171,22 +177,79 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         }
     }
 
-    companion object {
-        const val REQUEST_CODE = 10
-        @JvmField
-        var clickedItemId //use item_id to get and display database data
-                : Int? = null
-        @JvmField
-        var fileUri: Uri? = null
-        @JvmField
-        var ma: AppCompatActivity? = null
+    fun multiSelectMenuSetup() {
+        btn_delete.setOnClickListener{
+            warningDialog()
+        }
+        btn_selectall.setOnClickListener{
+            rvAdapter?.selectAll()
+            clearData()
+            if (!MyListAdapter.allSelected) {
+                multiselectmenu_mylist.visibility = View.GONE
+            }
+        }
+        btn_move.setOnClickListener{
+            listSelectDialog()
+        }
     }
 
+    private fun warningDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Delete entry")
+            .setMessage("Removing these words will also reset any flashcard progress for this word. Are you sure you want to delete them?")
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton(
+                getString(R.string.Delete_Entry)
+            ) { _, _ ->
+                val idList = MyListAdapter.selectedIds
+                for (id in idList) {
+                    try {
+                        myDB?.deleteData(id.toString())
+                        Log.d(TAG, "Delete Successful")
+                    } catch (e: java.lang.Exception) {
+                        Log.d(TAG, "Could not delete item from list: ${e.printStackTrace()}")
+                    }
+                }
+                MyListAdapter.selectedIds.clear()
+                MyListAdapter.multiSelectMode = false
+                multiselectmenu_mylist.visibility = View.GONE
+                clearData()
+                Toast.makeText(this, "Items deleted", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
+            }
+            .setIcon(getDrawable(R.drawable.ic_info))
+            .show()
+    }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        startActivity(Intent(this, ListSelection::class.java))
+    private fun listSelectDialog() {
+
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+        val listsSet: HashSet<String> =  hashSetOf("Main List")
+
+
+        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("default"))
+
+        val listArray = retrievedSet?.toTypedArray()
+
+
+        AlertDialog.Builder(this)
+            .setTitle("Select List to Move To")
+            .setItems(listArray) { _, list ->
+                val idList = MyListAdapter.selectedIds
+                try {
+                    myDB?.changeList(idList, list)
+                } catch (e: Exception) {
+                    Log.d(TAG, "multiSelectMenuSetup: Could not move items to list #$list")
+                    Log.d(TAG, e.printStackTrace().toString())
+                }
+                MyListAdapter.selectedIds.clear()
+                MyListAdapter.multiSelectMode = false
+                multiselectmenu_mylist.visibility = View.GONE
+                clearData()
+                Toast.makeText(this, "Items moved to list: ${listArray?.get(list)}", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun firstLaunch() {
@@ -216,29 +279,47 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     // recyclerview item click handling
     override fun onItemClick(itemId: Int, ready: Boolean) {
-        toolbarChanger()
         if (ready) {
             clickedItemId = itemId
             finish()
             startActivity(Intent(this@MyList, ViewWord::class.java))
         }
+
+        if(MyListAdapter.multiSelectMode) {
+            multiselectmenu_mylist.visibility = View.VISIBLE
+        } else {
+            multiselectmenu_mylist.visibility = View.GONE
+        }
+
     }
 
     override fun onItemLongClick(itemId: Int) {
-        toolbarChanger()
         clickedItemId = itemId
+        if(MyListAdapter.multiSelectMode) {
+            multiselectmenu_mylist.visibility = View.VISIBLE
+        } else {
+            multiselectmenu_mylist.visibility = View.GONE
+        }
+
         //Toast.makeText(this, "long pressed dbID: $clickedItemId", Toast.LENGTH_SHORT).show()
     }
 
-    private fun toolbarChanger() {
-        if (MyListAdapter.multiSelectMode) {
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.grey)))
-            val noSelected = MyListAdapter.selectedIds.size
-            supportActionBar?.title = "$noSelected selected"
-
-        } else {
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.granny_smith)))
-            supportActionBar?.title = "My Lists"
-        }
+    companion object {
+        const val REQUEST_CODE = 10
+        @JvmField
+        var clickedItemId //use item_id to get and display database data
+                : Int? = null
+        @JvmField
+        var fileUri: Uri? = null
+        @JvmField
+        var ma: AppCompatActivity? = null
     }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        startActivity(Intent(this, ListSelection::class.java))
+    }
+
 }

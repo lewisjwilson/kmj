@@ -21,6 +21,7 @@ class MyListAdapter(
     companion object {
         var multiSelectMode = false
         var selectedIds = arrayListOf<Int>()
+        var allSelected = false
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyListViewHolder {
@@ -97,12 +98,30 @@ class MyListAdapter(
         if(selectedIds.contains(id)) {
             itemView.setBackgroundColor(Color.WHITE)
             selectedIds.remove(id)
+            allSelected = false
         } else {
             itemView.setBackgroundColor(mContext.getColor(R.color.magic_mint))
             selectedIds.add(id)
+            if (selectedIds.size == mDataList.size) {
+                allSelected = true
+            }
         }
         if(selectedIds.isEmpty()) {
             multiSelectMode = false
+        }
+    }
+
+    fun selectAll() {
+
+        selectedIds.clear()
+
+        allSelected = if (!allSelected) {
+            for (item in mDataList) {
+                selectedIds.add(item.id)
+            }
+            true
+        } else {
+            false
         }
     }
 

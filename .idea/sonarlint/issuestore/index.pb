@@ -53,3 +53,5 @@ r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchPage.kt,4/1/41d3b8c123d5d60df2743775aebaa222e7c6863e
 y
 Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/f98b174cd45021f59092cd5ab84eba9c035030df
+}
+Mapp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionAdapter.kt,1/7/171094b16fead4eeaba441e790be79c3e1f9b8cb

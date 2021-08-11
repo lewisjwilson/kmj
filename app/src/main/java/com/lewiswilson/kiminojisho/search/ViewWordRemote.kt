@@ -89,8 +89,7 @@ class ViewWordRemote : AppCompatActivity() {
 
 
         vw_btn_star.setOnClickListener{
-            starred = !starred
-            if (!starred) {
+            if (starred) {
                 warningDialog(kanji, english)
             } else {
                listSelectDialog()
@@ -147,12 +146,12 @@ class ViewWordRemote : AppCompatActivity() {
                         .show()
                     myDB.deleteFromRemote(kanji, english)
                     vw_btn_star.setImageResource(R.drawable.ic_addword)
+                    starred = !starred
                 } catch (e: NullPointerException) {
                     Log.d(TAG, "Could not delete item from list (normal): ${e.printStackTrace()}")
                 }
             } // A null listener allows the button to dismiss the dialog and take no further action.
             .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
-                starred = !starred //if cancelled, the starred status reverts
             }
             .setIcon(getDrawable(R.drawable.ic_info))
             .show()
@@ -166,6 +165,7 @@ class ViewWordRemote : AppCompatActivity() {
                 val selected = listsArr[which]
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
                 myDB.addData(listsArr.indexOf(selected), kanji, kana, english, pos, notes)
+                starred = !starred
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }
             .show()

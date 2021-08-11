@@ -14,10 +14,11 @@
         <entry key="app/src/main/res/layout/examples_item.xml" value="0.21354166666666666" />
         <entry key="app/src/main/res/layout/home_screen.xml" value="0.203125" />
         <entry key="app/src/main/res/layout/list_name_item.xml" value="0.203125" />
-        <entry key="app/src/main/res/layout/list_selection.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/list_selection.xml" value="0.25" />
         <entry key="app/src/main/res/layout/list_selection_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/my_list.xml" value="0.21354166666666666" />
         <entry key="app/src/main/res/layout/my_list_item.xml" value="0.21666666666666667" />
+        <entry key="app/src/main/res/layout/search_page.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/view_word.xml" value="0.33" />
         <entry key="app/src/main/res/layout/view_word_item.xml" value="0.25" />
         <entry key="app/src/main/res/menu/home_screen_menu.xml" value="0.19583333333333333" />

@@ -200,6 +200,24 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return db?.insert(str, null, contentValues) != -1L
     }
 
+    fun changeList(idList: ArrayList<Int>, list: Int) {
+        db = writableDatabase
+
+        for (id in idList) {
+            val contentValues = ContentValues()
+            contentValues.put(colList, list)
+            val where = "$colId = ?"
+            val whereArgs = arrayOf(id.toString())
+
+            try {
+                db?.update(TABLE_NAME, contentValues, where, whereArgs)
+                Log.d(TAG, "List Updated")
+            } catch (e: SQLException) {
+                Log.d(TAG, "Could not change list: ${e.printStackTrace()}")
+            }
+        }
+    }
+
     fun editNotes(id: String, notes: String){
         db = writableDatabase
 

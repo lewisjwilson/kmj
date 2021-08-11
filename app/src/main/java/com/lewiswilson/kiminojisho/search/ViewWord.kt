@@ -87,8 +87,7 @@ class ViewWord : AppCompatActivity() {
         mItemAdapter?.notifyDataSetChanged()
 
         vw_btn_star.setOnClickListener {
-            starred = !starred
-            if (!starred) {
+            if (starred) {
                 warningDialog(itemId)
             } else {
                 listSelectDialog()
@@ -146,9 +145,9 @@ class ViewWord : AppCompatActivity() {
                 } catch (e: Exception) {
                     Log.d(TAG, "Could not delete item from list: ${e.printStackTrace()}")
                 }
+                starred = !starred
             } // A null listener allows the button to dismiss the dialog and take no further action.
             .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
-                starred = !starred //if cancelled, the starred status reverts
             }
             .setIcon(getDrawable(R.drawable.ic_info))
             .show()
