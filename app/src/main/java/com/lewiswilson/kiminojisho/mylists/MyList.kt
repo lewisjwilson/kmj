@@ -44,16 +44,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.my_list)
         myDB = DatabaseHelper(this)
-        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-
-        //Check if it is a first time launch
-        if (prefs.getBoolean("first_launch", true)) {
-            firstLaunch()
-            prefs.edit().putBoolean("first_launch", false).apply()
-            prefs.edit().putBoolean("notifications_on", false).apply()
-            prefs.edit().putString("sortby_col", "english").apply()
-            prefs.edit().putStringSet("list_names", hashSetOf("Main List")).apply()
-        }
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
 
@@ -169,7 +159,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
             }
 
             R.id.action_help -> {
-                firstLaunch()
                 true
             }
 
@@ -225,12 +214,8 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     private fun listSelectDialog() {
 
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val listsSet: HashSet<String> =  hashSetOf("Main List")
-
-
-        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("default"))
-
-        val listArray = retrievedSet?.toTypedArray()
+        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
+        val listArray = retrievedSet!!.toTypedArray()
 
 
         AlertDialog.Builder(this)
@@ -250,31 +235,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
                 Toast.makeText(this, "Items moved to list: ${listArray?.get(list)}", Toast.LENGTH_SHORT).show()
             }
             .show()
-    }
-
-    private fun firstLaunch() {
-        val color = "#DD008577"
-        val fscv1 = FancyShowCaseView.Builder(this)
-            .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
-            .backgroundColor(Color.parseColor(color))
-            .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
-            .build()
-        val fscv2 = FancyShowCaseView.Builder(this)
-            .title("This is the main screen. This shows you dictionary entries.")
-            .backgroundColor(Color.parseColor(color))
-            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-            .build()
-        val fscv3 = FancyShowCaseView.Builder(this)
-            .title("To create your first dictionary entry, use this button.")
-            .focusOn(findViewById(R.id.flbtn_add))
-            .backgroundColor(Color.parseColor(color))
-            .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-            .build()
-        val fscvQueue = FancyShowCaseQueue()
-            .add(fscv1)
-            .add(fscv2)
-            .add(fscv3)
-        fscvQueue.show()
     }
 
     // recyclerview item click handling

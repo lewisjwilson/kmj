@@ -1,6 +1,7 @@
 package com.lewiswilson.kiminojisho.search
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -21,6 +22,8 @@ import java.lang.Exception
 import java.util.ArrayList
 
 class ViewWordRemote : AppCompatActivity() {
+
+    private val prefsName = "MyPrefs"
 
     private var kanji = ""
     private var kana = ""
@@ -158,13 +161,17 @@ class ViewWordRemote : AppCompatActivity() {
     }
 
     private fun listSelectDialog() {
-        val listsArr = resources.getStringArray(R.array.my_lists)
+
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
+        val listArray = retrievedSet!!.toTypedArray()
+
         AlertDialog.Builder(this)
             .setTitle("Select List to Add To")
-            .setItems(listsArr) { _, which ->
-                val selected = listsArr[which]
+            .setItems(listArray) { _, which ->
+                val selected = listArray[which]
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(listsArr.indexOf(selected), kanji, kana, english, pos, notes)
+                myDB.addData(listArray.indexOf(selected), kanji, kana, english, pos, notes)
                 starred = !starred
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }

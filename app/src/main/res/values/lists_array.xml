@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="my_lists">
-        <item>Vocabulary</item>
-        <item>Grammar</item>
-    </string-array>
-</resources>

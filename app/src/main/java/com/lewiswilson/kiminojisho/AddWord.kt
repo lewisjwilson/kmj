@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.add_word.view_edit_notes
 import kotlinx.android.synthetic.main.view_word.*
 
 class AddWord : AppCompatActivity() {
+    private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = null
 
     /* access modifiers changed from: protected */
@@ -24,21 +26,17 @@ class AddWord : AppCompatActivity() {
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 
-        val listsArr = resources.getStringArray(R.array.my_lists)
-        val listsHashMap = HashMap<String, Int>()
-        var listNo = 0
-        for (list in listsArr) {
-            listsHashMap[list] = listNo
-            listNo++
-        }
+        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
+        val listArray = retrievedSet!!.toTypedArray()
 
         spn_addword_lists!!.onItemSelectedListener
-        val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listsArr)
+        val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listArray)
         spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spn_addword_lists!!.adapter = spnAdapter
 
         val add = View.OnClickListener { v: View? ->
-            val newEntryList = listsHashMap[spn_addword_lists.selectedItem]
+            val newEntryList = spn_addword_lists.selectedItemPosition
             val newEntryKanji = edit_word.text.toString()
             val newEntryKana = view_kana.text.toString()
             val newEntryMeaning = view_english.text.toString()
@@ -48,7 +46,7 @@ class AddWord : AppCompatActivity() {
             if (newEntryKanji.isEmpty() || newEntryKana.isEmpty() || newEntryMeaning.isEmpty()) {
                 Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
             } else {
-                addData(newEntryList!!, newEntryKanji, newEntryKana, newEntryMeaning, newEntryPos, newEntryNotes)
+                addData(newEntryList, newEntryKanji, newEntryKana, newEntryMeaning, newEntryPos, newEntryNotes)
                 val addWord = this@AddWord
                 addWord.startActivity(Intent(addWord, MyList::class.java))
                 finish()
