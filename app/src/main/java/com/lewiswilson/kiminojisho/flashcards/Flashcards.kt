@@ -100,15 +100,7 @@ class Flashcards : AppCompatActivity() {
         cv_back.setCardBackgroundColor(color)
         cv_front.setCardBackgroundColor(color)
 
-
-        //flip view back to front
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (flipview.isBackSide) {
-                flipview.flipTheView(true)
-            }
-        }, 1000)
-
-        //delay running by extra 200ms so that answer doesnt show on flip back
+         //delay running by extra 200ms so that answer doesnt show on flip back
         Handler(Looper.getMainLooper()).postDelayed({
             cv_back.setCardBackgroundColor(getColor(R.color.white))
             cv_front.setCardBackgroundColor(getColor(R.color.white))
@@ -151,24 +143,27 @@ class Flashcards : AppCompatActivity() {
 
         val incorrectItems = myDB?.randomThreeWrong(flashcardList?.first()?.kanji!!)
 
-        var correctItemText: String
-        var wrongItemText1: String
-        var wrongItemText2: String
-        var wrongItemText3: String
+        val correctItemText: String
+        val wrongItemText1: String
+        val wrongItemText2: String
+        val wrongItemText3: String
 
         // if entry has no kanji
         if(flashcardList?.first()?.kana.equals(flashcardList?.first()?.kanji)){
-            correctItemText = "${flashcardList?.first()?.english}"
-            wrongItemText1 = "${incorrectItems?.elementAt(0)?.english}"
-            wrongItemText2 = "${incorrectItems?.elementAt(1)?.english}"
-            wrongItemText3 = "${incorrectItems?.elementAt(2)?.english}"
+            correctItemText = randomDefinition(flashcardList?.first()?.english.toString())
+            wrongItemText1 = randomDefinition(incorrectItems?.elementAt(0)?.english.toString())
+            wrongItemText2 = randomDefinition(incorrectItems?.elementAt(1)?.english.toString())
+            wrongItemText3 = randomDefinition(incorrectItems?.elementAt(2)?.english.toString())
         } else {
-            correctItemText = "${flashcardList?.first()?.kana}\n${flashcardList?.first()?.english}"
-            wrongItemText1 = "${incorrectItems?.elementAt(0)?.kana}\n${incorrectItems?.elementAt(0)?.english}"
-            wrongItemText2 = "${incorrectItems?.elementAt(1)?.kana}\n${incorrectItems?.elementAt(1)?.english}"
-            wrongItemText3 = "${incorrectItems?.elementAt(2)?.kana}\n${incorrectItems?.elementAt(2)?.english}"
+            correctItemText = "${flashcardList?.first()?.kana}\n" +
+                    randomDefinition(flashcardList?.first()?.english.toString())
+            wrongItemText1 = "${incorrectItems?.elementAt(0)?.kana}\n" +
+                    randomDefinition(incorrectItems?.elementAt(0)?.english.toString())
+            wrongItemText2 = "${incorrectItems?.elementAt(1)?.kana}\n" +
+                    randomDefinition(incorrectItems?.elementAt(1)?.english.toString())
+            wrongItemText3 = "${incorrectItems?.elementAt(2)?.kana}\n" +
+                    randomDefinition(incorrectItems?.elementAt(2)?.english.toString())
         }
-
 
         Log.d(TAG, "wrongitemtext1: $wrongItemText1")
         Log.d(TAG, "wrongitemtext2: $wrongItemText2")
@@ -203,6 +198,8 @@ class Flashcards : AppCompatActivity() {
         }
 
     }
+
+    private fun randomDefinition(unformatted: String) = unformatted.split("@@@").random()
 
     private fun setProgressBar(progress: Int) {
         ObjectAnimator.ofInt(progressBar, "progress", progress)

@@ -37,8 +37,6 @@ v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataItem.kt,2/3/234ad48c571e177114184b507fa9efc7117a5085
 t
 Dapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItem.kt,4/6/46b4f42f02c4e9c89686af190a6e8cc53be62bc0
-v
-Fapp/src/main/java/com/lewiswilson/kiminojisho/flashcards/Flashcards.kt,9/a/9a4bf5de6d3cf5d1e69407e55749f6187271b64f
 P
  app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
 f
