@@ -52,6 +52,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/flbtn_add"
+        style="@style/accentedButton"
+        android:foregroundTint="@color/white"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="20dp"
@@ -61,9 +63,6 @@
         android:focusable="true"
         android:foreground="@drawable/ic_add_black_24dp"
         android:foregroundGravity="fill"
-        android:foregroundTint="#FFFFFF"
-        android:tint="#FFFFFF"
-        app:backgroundTint="@android:color/holo_green_light"
         app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

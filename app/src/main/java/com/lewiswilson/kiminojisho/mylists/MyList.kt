@@ -41,7 +41,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.my_list)
         myDB = DatabaseHelper(this)
 
@@ -238,7 +237,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     override fun onItemClick(itemId: Int, ready: Boolean) {
         if (ready) {
             clickedItemId = itemId
-            finish()
             startActivity(Intent(this@MyList, ViewWord::class.java))
         }
 
@@ -275,11 +273,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     override fun onBackPressed() {
         super.onBackPressed()
-        finish()
         MyListAdapter.selectedIds.clear()
         MyListAdapter.multiSelectMode = false
         jishoList?.clear() // clear list
-        startActivity(Intent(this, ListSelection::class.java))
     }
 
 }

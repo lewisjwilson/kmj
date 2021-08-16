@@ -33,12 +33,12 @@
 
         <TextView
             android:id="@+id/kanaview"
+            style="@style/accentedText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="1dp"
             android:text="かたかな"
-            android:textColor="@color/colorAccent"
             android:textSize="14dp"
             app:layout_constraintBottom_toTopOf="@+id/englishview"
             app:layout_constraintEnd_toStartOf="@+id/star"

@@ -25,7 +25,6 @@ import kotlin.collections.*
 
 
 class ViewWord : AppCompatActivity() {
-    private val prefsName = "MyPrefs"
     private var mItemList: ArrayList<ViewWordItem>? = ArrayList()
     private var mItemAdapter: ViewWordItemAdapter? = null
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
@@ -40,7 +39,6 @@ class ViewWord : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.view_word)
 
         //implementing ads

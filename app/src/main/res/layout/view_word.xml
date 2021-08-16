@@ -36,6 +36,7 @@
 
     <TextView
         android:id="@+id/vw_kana"
+        style="@style/accentedText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -46,7 +47,6 @@
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:text="ひらがな"
-        android:textColor="@color/colorAccent"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/vw_btn_star"
         app:layout_constraintStart_toStartOf="parent"

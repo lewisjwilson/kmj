@@ -199,6 +199,8 @@
 
             <Button
                 android:id="@+id/btn_add"
+                style="@style/accentedButton"
+                android:background="@drawable/pill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

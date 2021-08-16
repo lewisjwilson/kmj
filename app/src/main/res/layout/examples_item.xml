@@ -31,13 +31,13 @@
 
         <TextView
             android:id="@+id/ex_english"
+            style="@style/accentedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
             android:text="English Sentence"
-            android:textColor="@color/colorAccent"
             android:textSize="14sp"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"

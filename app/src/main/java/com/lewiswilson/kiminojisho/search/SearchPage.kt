@@ -48,7 +48,6 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.search_page)
         sp = this
 

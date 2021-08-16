@@ -12,7 +12,6 @@ class FlashcardsComplete : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.flashcards_complete)
 
         val percent = String.format("%.2f", intent.getDoubleExtra("percent", 0.0))

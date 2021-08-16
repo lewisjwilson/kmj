@@ -24,14 +24,12 @@ import kotlin.collections.HashSet
 
 
 class ListSelection : AppCompatActivity() {
-    private val prefsName = "MyPrefs"
     private var listOfLists: ArrayList<ListSelectionItem>? = ArrayList()
     private var rvAdapter: ListSelectionAdapter? = null
     private var myDB: DatabaseHelper? = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.list_selection)
 
         //initiate recyclerview and set parameters
@@ -85,17 +83,6 @@ class ListSelection : AppCompatActivity() {
             listOfLists!!.add(ListSelectionItem(list))
             rvAdapter = listOfLists?.let { it -> ListSelectionAdapter(this@ListSelection, it) }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        finish()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        startActivity(Intent(this@ListSelection, HomeScreen::class.java))
     }
 
 }

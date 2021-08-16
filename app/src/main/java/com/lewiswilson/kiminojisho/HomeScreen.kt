@@ -36,7 +36,6 @@ class HomeScreen : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.home_screen)
 
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
@@ -50,10 +49,10 @@ class HomeScreen : AppCompatActivity() {
             prefs.edit().putStringSet("list_names", hashSetOf("Main List")).apply()
         }
 
-        item_flashcards.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
-        item_search.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
-        item_mylists.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
-        item_settings.setOnClickListener { v: View? -> startActivity(Intent(this@HomeScreen, About::class.java)) }
+        item_flashcards.setOnClickListener { startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
+        item_search.setOnClickListener { startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
+        item_mylists.setOnClickListener { startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
+        item_settings.setOnClickListener { startActivity(Intent(this@HomeScreen, About::class.java)) }
 
     }
 

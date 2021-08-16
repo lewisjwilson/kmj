@@ -16,7 +16,6 @@ class FlashcardsHome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        theme.applyStyle(R.style.Nature, true)
         setContentView(R.layout.flashcards_home)
         myDB = DatabaseHelper(this)
 
@@ -36,12 +35,5 @@ class FlashcardsHome : AppCompatActivity() {
         btn_start.setOnClickListener { v: View? ->
             finish()
             startActivity(Intent(this@FlashcardsHome, Flashcards::class.java)) }
-
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        startActivity(Intent(this@FlashcardsHome, HomeScreen::class.java))
     }
 }
