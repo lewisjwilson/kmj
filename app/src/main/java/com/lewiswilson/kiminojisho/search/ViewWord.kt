@@ -156,9 +156,7 @@ class ViewWord : AppCompatActivity() {
 
     private fun listSelectDialog() {
 
-        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
-        val listArray = retrievedSet!!.toTypedArray()
+        val listArray = myDB.getLists().toTypedArray()
 
         AlertDialog.Builder(this)
             .setTitle("Select List to Add To")

@@ -20,7 +20,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 14) {
+class DatabaseHelper internal constructor(private val myContext: Context) : SQLiteOpenHelper(myContext, DATABASE_NAME, null, 16) {
 
     private var db: SQLiteDatabase? = null
 
@@ -47,6 +47,12 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
                     "$colNextReview TEXT, " +
                     "$colTimesSeen INTEGER, " +
                     "$colTimesCorrect INTEGER)")
+
+        db.execSQL(
+                "CREATE TABLE IF NOT EXISTS lists ($listsColId INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "$listsColName TEXT NOT NULL)")
+
+        db.execSQL("INSERT INTO lists (list_name) VALUES (\'Main List\')")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -54,6 +60,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         if (oldVersion < 14) {
             db.execSQL("UPDATE $TABLE_NAME SET $colList = 0")
+        }
+        if (oldVersion < 16) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS lists ($listsColId INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "$listsColName TEXT NOT NULL)")
+
+            db.execSQL("INSERT INTO lists (list_name) VALUES (\'Main List\')")
         }
     }
 
@@ -140,7 +153,6 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         val hashMap = HashMap<String, String>()
 
-
         hashMap["id"] = itemId.toString()
 
         if (cur?.moveToFirst() == true) {
@@ -153,6 +165,26 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         }
         cur?.close()
         return hashMap
+    }
+
+    fun getLists(): List<String> {
+        val cur = readableDatabase.rawQuery("SELECT $listsColName FROM $LISTS_TABLE_NAME", null)
+        val listsArr = mutableListOf<String>()
+        while (cur.moveToNext()) {
+            listsArr.add(cur.getString(cur.getColumnIndex(listsColName)))
+        }
+        cur?.close()
+        return listsArr
+    }
+
+    fun addList(name: String): Boolean {
+        db = writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(listsColName, name)
+        val str = LISTS_TABLE_NAME
+        val sb = "addList: Adding list $name"
+        Log.d(TAG, sb)
+        return db?.insert(str, null, contentValues) != -1L
     }
 
     fun checkStarred(kanji: String, english: String): Boolean {
@@ -395,6 +427,9 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         private const val DATABASE_NAME = "kiminojisho.db"
         private val DATABASE_PATH = MyApplication.appContext?.getDatabasePath(DATABASE_NAME)//"/data/data/com.lewiswilson.kiminojisho/databases/"
         private const val TABLE_NAME = "jisho_data"
+        private const val LISTS_TABLE_NAME = "lists"
+        private const val listsColId = "ID"
+        private const val listsColName = "list_name"
         private const val TAG = "DatabaseHelper"
     }
 

@@ -213,10 +213,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     private fun listSelectDialog() {
 
-        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
-        val listArray = retrievedSet!!.toTypedArray()
-
+        val listArray = myDB!!.getLists().toTypedArray()
 
         AlertDialog.Builder(this)
             .setTitle("Select List to Move To")
@@ -232,7 +229,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
                 MyListAdapter.multiSelectMode = false
                 multiselectmenu_mylist.visibility = View.GONE
                 clearData()
-                Toast.makeText(this, "Items moved to list: ${listArray?.get(list)}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Items moved to list: ${listArray.get(list)}", Toast.LENGTH_SHORT).show()
             }
             .show()
     }
@@ -279,6 +276,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+        MyListAdapter.selectedIds.clear()
+        MyListAdapter.multiSelectMode = false
+        jishoList?.clear() // clear list
         startActivity(Intent(this, ListSelection::class.java))
     }
 

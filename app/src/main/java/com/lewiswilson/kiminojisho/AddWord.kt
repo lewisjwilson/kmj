@@ -26,9 +26,7 @@ class AddWord : AppCompatActivity() {
         setContentView(R.layout.add_word)
         myDB = DatabaseHelper(this)
 
-        val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-        val retrievedSet = prefs.getStringSet("list_names", hashSetOf("Main List"))
-        val listArray = retrievedSet!!.toTypedArray()
+        val listArray = myDB!!.getLists()
 
         spn_addword_lists!!.onItemSelectedListener
         val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listArray)
