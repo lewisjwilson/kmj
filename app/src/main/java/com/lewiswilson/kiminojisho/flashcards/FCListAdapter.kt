@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.R
@@ -42,6 +43,14 @@ class FCListAdapter(
 
         init {
             itemView.setOnClickListener { listener.onItemClick(myDB.getListIdFromName(mNameView.text.toString())) }
+            mReviewList.setOnClickListener {
+                val listId = myDB.getListIdFromName(mNameView.text.toString())
+                if (myDB.itemCount(listId) < 4) {
+                    Toast.makeText(mContext, "Not enough words in list (min = 4)", Toast.LENGTH_LONG).show()
+                } else {
+                    listener.onButtonClick(listId)
+                }
+            }
         }
 
     }
@@ -50,6 +59,7 @@ class FCListAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(listId : Int)
+        fun onButtonClick(listId: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {

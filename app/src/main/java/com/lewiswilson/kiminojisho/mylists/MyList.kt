@@ -41,7 +41,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
 
-        selectedList = intent.getIntExtra("listID", 1)
+        selectedList = intent.getIntExtra("listID", 0)
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)

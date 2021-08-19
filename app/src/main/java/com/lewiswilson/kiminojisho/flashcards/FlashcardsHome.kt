@@ -31,20 +31,15 @@ class FlashcardsHome : AppCompatActivity() {
         val noOfFlashcards = "Total Reviews: $reviewsDue"
         fc_no.text = noOfFlashcards
 
-        // itemcount < 4 prevents any issues regarding multiple choice in Flashcards.kt
-        if(reviewsDue!! <= 0){
-            btn_start.isEnabled = false
-        }
-        if(myDB!!.itemCount() < 4){
-            btn_start.isEnabled = false
-            txt_not_enough_items.visibility = View.VISIBLE
-        }
 
         btn_start.setOnClickListener { v: View? ->
-            finish()
-            startActivity(Intent(this@FlashcardsHome, Flashcards::class.java)) }
-
-
+            if (myDB!!.itemCount(0) < 4) {
+                Toast.makeText(this, "Not enough words to start reviewing! Add some new words to get started!", Toast.LENGTH_LONG).show()
+            } else {
+                finish()
+                startActivity(Intent(this@FlashcardsHome, Flashcards::class.java))
+            }
+        }
 
         //initiate recyclerview and set parameters
         rv_flashcards_home.setHasFixedSize(true)
@@ -60,8 +55,21 @@ class FlashcardsHome : AppCompatActivity() {
                 intent.putExtra("listID", listId)
                 startActivity(intent)
             }
+
+            override fun onButtonClick(listId: Int) {
+                val intent = Intent(applicationContext, Flashcards::class.java)
+                intent.putExtra("listID", listId)
+                startActivity(intent)
+            }
         }
         )
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        listOfLists?.clear()
+        rvAdapter?.notifyDataSetChanged()
+        populateRV()
     }
 
     //populate recyclerview with data

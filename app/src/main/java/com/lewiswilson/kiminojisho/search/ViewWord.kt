@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -126,8 +127,13 @@ class ViewWord : AppCompatActivity() {
             }
 
         }
-        rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWord, it) }
-        vw_rv_examples.adapter = rvAdapter
+        if (count == 0) {
+            vw_txt_examples.visibility = View.GONE
+            vw_rv_examples.visibility = View.GONE
+        } else {
+            rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWord, it) }
+            vw_rv_examples.adapter = rvAdapter
+        }
 
     }
 

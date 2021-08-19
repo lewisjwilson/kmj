@@ -28,15 +28,16 @@ class Flashcards : AppCompatActivity() {
     private var totalCorrect: Int = 0
     private var totalTries: Int = 0
     private var correctBtn: Int = 0
+    private var selectedList = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flashcards)
         myDB = DatabaseHelper(this)
 
-        val listId = 0
+        selectedList = intent.getIntExtra("listID", 0)
 
-        flashcardList = myDB!!.dueFlashcards(listId)
+        flashcardList = myDB!!.dueFlashcards(selectedList)
         totalReviews = flashcardList?.size!!
         progressBar.progress = 0
 
@@ -142,7 +143,7 @@ class Flashcards : AppCompatActivity() {
             }
         }
 
-        val incorrectItems = myDB?.randomThreeWrong(flashcardList?.first()?.kanji!!)
+        val incorrectItems = myDB?.randomThreeWrong(flashcardList?.first()?.kanji!!, selectedList)
 
         val correctItemText: String
         val wrongItemText1: String

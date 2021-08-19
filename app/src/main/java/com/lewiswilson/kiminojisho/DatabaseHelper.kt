@@ -102,8 +102,15 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     // number of items in database
-    fun itemCount(): Int {
-        val cur = readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME", null)
+    fun itemCount(listId: Int): Int {
+
+        //list "0" denotes "all lists" as autoincrrment starts at 1 in sqlite
+        val cur: Cursor = if(listId == 0){
+            readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME", null)
+        } else {
+            readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME" +
+                    " WHERE $colList = ?", arrayOf(listId.toString()))
+        }
         cur.moveToFirst()
         val count = cur.getInt(0)
         cur.close()
@@ -330,12 +337,22 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return flashcardList
     }
 
-    fun randomThreeWrong(correctKanji: String): ArrayList<MyListItem> {
+    fun randomThreeWrong(correctKanji: String, listId: Int): ArrayList<MyListItem> {
 
         val wrongItems: ArrayList<MyListItem> = ArrayList()
-        val cur = readableDatabase.rawQuery("SELECT DISTINCT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM " + TABLE_NAME +
-                " WHERE $colKanji NOT IN (SELECT $colKanji FROM $TABLE_NAME WHERE $colKanji = ?)" +
-                " ORDER BY RANDOM() LIMIT 3", arrayOf(correctKanji))
+
+        val cur: Cursor = if(listId == 0) {
+            readableDatabase.rawQuery("SELECT DISTINCT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM " + TABLE_NAME +
+                        " WHERE $colKanji NOT IN (SELECT $colKanji FROM $TABLE_NAME WHERE $colKanji = ?)" +
+                        " ORDER BY RANDOM() LIMIT 3",
+                arrayOf(correctKanji))
+        } else {
+            readableDatabase.rawQuery("SELECT DISTINCT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM " + TABLE_NAME +
+                    " WHERE $colKanji NOT IN (SELECT $colKanji FROM $TABLE_NAME WHERE $colKanji = ?)" +
+                    " AND $colList = ?" +
+                    " ORDER BY RANDOM() LIMIT 3",
+                arrayOf(correctKanji, listId.toString()))
+        }
 
         while (cur.moveToNext()) {
             wrongItems.add(
@@ -384,6 +401,15 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         val id = cur.getInt(0)
         cur.close()
         return id
+    }
+
+    fun getListNameFromId(id: Int): String {
+        val cur = readableDatabase.rawQuery("SELECT $listsColName FROM $LISTS_TABLE_NAME" +
+                " WHERE $listsColId = ?", arrayOf(id.toString()))
+        cur.moveToFirst()
+        val name = cur.getString(0)
+        cur.close()
+        return name
     }
 
     fun updateFlashcard(id: Int, correct: Boolean, seen: Boolean) {
