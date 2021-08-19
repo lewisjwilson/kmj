@@ -57,6 +57,14 @@ class ReminderBroadcast : BroadcastReceiver() {
 
             val reviewsDue = myDB.flashcardCount(0)
 
+            var bigTextContent = "${kanji}\n${kana}\n${english}\n\n$reviewsDue reviews remaining!"
+            if (reviewsDue == 0) {
+                bigTextContent = "Start adding some words to your list!"
+            }
+
+
+
+
             val notificationIntent = Intent(context, FlashcardsHome::class.java)
             notificationIntent.flags =
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -72,7 +80,7 @@ class ReminderBroadcast : BroadcastReceiver() {
                 .setSubText("Word of the Day")
                 .setContentText(kanji)
                 .setStyle(NotificationCompat.BigTextStyle()
-                    .bigText("${kanji}\n${kana}\n${english}\n\n$reviewsDue reviews remaining!"))
+                    .bigText(bigTextContent))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)

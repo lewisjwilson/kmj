@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -157,7 +158,7 @@ class ViewWord : AppCompatActivity() {
             } // A null listener allows the button to dismiss the dialog and take no further action.
             .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
             }
-            .setIcon(getDrawable(R.drawable.ic_info))
+            .setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_info))
             .show()
     }
 

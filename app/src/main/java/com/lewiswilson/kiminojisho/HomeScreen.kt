@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -123,7 +124,7 @@ class HomeScreen : AppCompatActivity() {
                 dialog.dismiss()
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.type = "*/*"
-                startActivityForResult(intent, MyList.REQUEST_CODE)
+                startActivityForResult(intent, REQUEST_CODE)
             }
             .setNegativeButton("Cancel") { dialog: DialogInterface, which: Int -> dialog.dismiss() }
             .create()
@@ -182,12 +183,18 @@ class HomeScreen : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MyList.REQUEST_CODE && resultCode == Activity.RESULT_OK || data != null) {
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK || data != null) {
             if (data != null) {
-                MyList.fileUri = data.data
+                fileUri = data.data
             }
             importDatabase()
         }
+    }
+
+    companion object{
+        const val REQUEST_CODE = 10
+        @JvmField
+        var fileUri: Uri? = null
     }
 
 }

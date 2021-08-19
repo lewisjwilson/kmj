@@ -38,9 +38,11 @@ class ListSelectionAdapter(
     inner class ListSelectionViewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val myDB = DatabaseHelper(mContext)
         var mNameView: TextView = itemView.findViewById(R.id.list_name)
+        var mListDelete: ImageView = itemView.findViewById(R.id.list_delete)
 
         init {
             itemView.setOnClickListener { listener.onItemClick(myDB.getListIdFromName(mNameView.text.toString())) }
+            mListDelete.setOnClickListener { listener.onDeleteClick(myDB.getListIdFromName(mNameView.text.toString()), adapterPosition) }
         }
 
     }
@@ -49,6 +51,7 @@ class ListSelectionAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(listId : Int)
+        fun onDeleteClick(listId: Int, pos: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {

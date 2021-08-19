@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.DatabaseHelper
@@ -210,7 +211,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
             }
             .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
             }
-            .setIcon(getDrawable(R.drawable.ic_info))
+            .setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_info))
             .show()
     }
 
@@ -269,12 +270,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     }
 
     companion object {
-        const val REQUEST_CODE = 10
         @JvmField
         var clickedItemId //use item_id to get and display database data
                 : Int? = null
-        @JvmField
-        var fileUri: Uri? = null
         @JvmField
         var ma: AppCompatActivity? = null
 

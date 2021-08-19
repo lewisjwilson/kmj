@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import android.widget.Toast
 import com.lewiswilson.MyApplication
-import com.lewiswilson.kiminojisho.mylists.MyList
+import com.lewiswilson.kiminojisho.HomeScreen.Companion.fileUri
 import com.lewiswilson.kiminojisho.mylists.MyListItem
 import java.io.FileOutputStream
 import java.io.IOException
@@ -78,7 +78,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     @Throws(IOException::class)
     private fun copyDatabase() {
         val myInput =
-            MyList.fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
+            fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
         val outFileName = DATABASE_PATH.toString() + DATABASE_NAME
         val myOutput: OutputStream = FileOutputStream(outFileName)
         val buffer = ByteArray(10)
@@ -148,6 +148,25 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         } catch (e: SQLException) {
             Log.w("Exception:", e)
         } finally {
+            db?.endTransaction()
+        }
+    }
+
+    fun deleteList(listId: Int) {
+        //PreparedStatement (Avoiding SQL Injection & Crash)
+        val strListId = listId.toString()
+        try {
+            db = writableDatabase
+            db?.beginTransaction()
+            val sql = "DELETE FROM jisho_data WHERE $colList = ?"
+            val statement = db?.compileStatement(sql)
+            statement?.bindString(1, strListId)
+            statement?.executeUpdateDelete()
+            db?.setTransactionSuccessful()
+        } catch (e: SQLException) {
+            Log.w("Exception:", e)
+        } finally {
+            db?.execSQL("DELETE FROM $LISTS_TABLE_NAME WHERE $listsColId = ?", arrayOf(listId.toString()))
             db?.endTransaction()
         }
     }

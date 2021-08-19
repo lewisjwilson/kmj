@@ -37,11 +37,7 @@ Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/
 Kapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItemAdapter.kt,5/c/5cae915aebf8d2767eef65fab82d472059c052fe
 z
 Japp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionItem.kt,8/4/840870bfd542235121eafa6c884bbc296cf93dd6
-P
- app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
 f
 6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 ~
 Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
-k
-;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4

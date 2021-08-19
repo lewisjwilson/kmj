@@ -1,11 +1,15 @@
 package com.lewiswilson.kiminojisho.mylists
 
 import android.app.*
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lewiswilson.kiminojisho.DatabaseHelper
@@ -13,6 +17,7 @@ import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
 import kotlinx.android.synthetic.main.list_selection.*
 import kotlinx.android.synthetic.main.list_selection_item.*
+import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
 import java.util.*
@@ -42,8 +47,14 @@ class ListSelection : AppCompatActivity() {
                 intent.putExtra("listID", listId)
                 startActivity(intent)
             }
+            override fun onDeleteClick(listId: Int, adapterPos: Int) {
+                if (listOfLists?.size!! <= 1) {
+                    Toast.makeText(applicationContext, "You must have at least 1 list!", Toast.LENGTH_SHORT).show()
+                } else {
+                    warningDialog(listId, adapterPos)
+                }
             }
-        )
+        })
 
         btn_newlist.setOnClickListener { createList() }
 
@@ -78,6 +89,30 @@ class ListSelection : AppCompatActivity() {
             listOfLists!!.add(ListSelectionItem(list))
             rvAdapter = listOfLists?.let { it -> ListSelectionAdapter(this@ListSelection, it) }
         }
+    }
+
+    private fun warningDialog(listId: Int, adapterPos: Int) {
+        val listName = myDB?.getListNameFromId(listId)
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Delete List")
+            .setMessage("You are about to delete the list \'$listName\'. Removing this list will also delete ALL words in the list and any flashcard progress. Are you sure you want to delete this list?")
+            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setPositiveButton(
+                getString(R.string.Delete_Entry)
+            ) { _, _ ->
+                try {
+                    myDB?.deleteList(listId)
+                    Log.d(ContentValues.TAG, "List Deleted")
+                } catch (e: java.lang.Exception) {
+                    Log.d(ContentValues.TAG, "Could not delete list: ${e.printStackTrace()}")
+                }
+                listOfLists?.removeAt(adapterPos)
+                rvAdapter?.notifyItemRemoved(adapterPos)
+            }
+            .setNegativeButton(getString(R.string.Cancel)) { _, _ ->
+            }
+            .setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_info))
+            .show()
     }
 
 }
