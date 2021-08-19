@@ -14,8 +14,10 @@ import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.*
 import com.lewiswilson.kiminojisho.mylists.ListSelectionAdapter
 import com.lewiswilson.kiminojisho.mylists.MyList
+import kotlinx.android.synthetic.main.add_word.*
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.view_word.*
+import kotlinx.android.synthetic.main.view_word.vw_adView
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.Exception
@@ -137,9 +139,10 @@ class ViewWord : AppCompatActivity() {
             .setPositiveButton(
                 getString(R.string.Delete_Entry)
             ) { _, _ ->
-                vw_btn_star.setImageResource(R.drawable.ic_addword)
                 try {
                     myDB.deleteData(itemId)
+                    MyList.deleted = true
+                    finish()
                     Toast.makeText(this, "Delete Successful", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Log.d(TAG, "Could not delete item from list: ${e.printStackTrace()}")
@@ -160,8 +163,9 @@ class ViewWord : AppCompatActivity() {
             .setTitle("Select List to Add To")
             .setItems(listArray) { _, which ->
                 val selected = listArray[which]
+                val listId = myDB.getListIdFromName(selected)
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(listArray.indexOf(selected), kanji, kana, english, pos, notes)
+                myDB.addData(listId, kanji, kana, english, pos, notes)
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }
             .show()

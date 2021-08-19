@@ -70,9 +70,9 @@ class MyListAdapter(
             val id = Integer.parseInt(mId.text.toString())
             if (multiSelectMode) {
                 selectMultiple(itemView, id)
-                listener.onItemClick(id, false)
+                listener.onItemClick(id, adapterPosition, false)
             } else {
-                listener.onItemClick(id, true)
+                listener.onItemClick(id, adapterPosition, true)
             }
         }
 
@@ -87,7 +87,7 @@ class MyListAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(itemId: Int, ready: Boolean)
+        fun onItemClick(itemId: Int, adapterPos: Int, ready: Boolean)
     }
 
     interface OnItemLongClickListener {

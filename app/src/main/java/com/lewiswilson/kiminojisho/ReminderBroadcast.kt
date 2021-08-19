@@ -36,7 +36,8 @@ class ReminderBroadcast : BroadcastReceiver() {
 
             val intent = Intent(context, ReminderBroadcast::class.java)
             val pendingIntent =
-                PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(context, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = context.applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
             alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
@@ -54,7 +55,7 @@ class ReminderBroadcast : BroadcastReceiver() {
             val kana = wordArr[1]
             val english = wordArr[2]
 
-            val reviewsDue = myDB.flashcardCount()
+            val reviewsDue = myDB.flashcardCount(0)
 
             val notificationIntent = Intent(context, FlashcardsHome::class.java)
             notificationIntent.flags =
@@ -63,7 +64,7 @@ class ReminderBroadcast : BroadcastReceiver() {
                 context,
                 0,
                 notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val builder = NotificationCompat.Builder(context, "wotd")
                 .setSmallIcon(R.drawable.ic_check_circle_black_24dp)

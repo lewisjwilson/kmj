@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.lewiswilson.kiminojisho.*
+import kotlinx.android.synthetic.main.add_word.*
 import kotlinx.android.synthetic.main.search_data_item.*
 import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.android.synthetic.main.view_word.*
@@ -167,8 +168,9 @@ class ViewWordRemote : AppCompatActivity() {
             .setTitle("Select List to Add To")
             .setItems(listArray) { _, which ->
                 val selected = listArray[which]
+                val listId = myDB.getListIdFromName(selected)
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
-                myDB.addData(listArray.indexOf(selected), kanji, kana, english, pos, notes)
+                myDB.addData(listId, kanji, kana, english, pos, notes)
                 starred = !starred
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }

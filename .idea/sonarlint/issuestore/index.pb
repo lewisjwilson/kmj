@@ -19,8 +19,6 @@ $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
 @
 app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
 p
 @app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
 p
@@ -35,13 +33,15 @@ t
 Dapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItem.kt,4/6/46b4f42f02c4e9c89686af190a6e8cc53be62bc0
 y
 Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/f98b174cd45021f59092cd5ab84eba9c035030df
-s
-Capp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListItem.kt,8/e/8ec813edfe85683213e6b92b9a9d69ecbd138988
 {
 Kapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItemAdapter.kt,5/c/5cae915aebf8d2767eef65fab82d472059c052fe
-v
-Fapp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListAdapter.kt,1/7/1728d732ea49213ba2b974f5f78e4a5390079e57
 z
 Japp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionItem.kt,8/4/840870bfd542235121eafa6c884bbc296cf93dd6
-}
-Mapp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionAdapter.kt,1/7/171094b16fead4eeaba441e790be79c3e1f9b8cb
+P
+ app/src/main/AndroidManifest.xml,8/c/8c55c3ccc257e5907959013f99656e4c8ec3903e
+f
+6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
+~
+Napp/src/main/java/com/lewiswilson/kiminojisho/flashcards/FlashcardsComplete.kt,a/3/a3af0a669b69863b282821fa24d350c48a6f2b6b
+k
+;app/src/main/java/com/lewiswilson/kiminojisho/HomeScreen.kt,b/e/beaacdd3f317ca53fd03d40dff79f303594c92e4

@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.lewiswilson.kiminojisho.mylists.ListSelection
 import com.lewiswilson.kiminojisho.mylists.MyList
 import kotlinx.android.synthetic.main.about.*
 import kotlinx.android.synthetic.main.add_word.*
@@ -33,7 +34,7 @@ class AddWord : AppCompatActivity() {
         spn_addword_lists!!.adapter = spnAdapter
 
         val add = View.OnClickListener { v: View? ->
-            val newEntryList = spn_addword_lists.selectedItemPosition
+            val newEntryList = myDB!!.getListIdFromName(spn_addword_lists.selectedItem.toString())
             val newEntryKanji = edit_word.text.toString()
             val newEntryKana = view_kana.text.toString()
             val newEntryMeaning = view_english.text.toString()
@@ -45,7 +46,7 @@ class AddWord : AppCompatActivity() {
             } else {
                 addData(newEntryList, newEntryKanji, newEntryKana, newEntryMeaning, newEntryPos, newEntryNotes)
                 val addWord = this@AddWord
-                addWord.startActivity(Intent(addWord, MyList::class.java))
+                addWord.startActivity(Intent(addWord, ListSelection::class.java))
                 finish()
                 MyList.ma?.finish()
             }

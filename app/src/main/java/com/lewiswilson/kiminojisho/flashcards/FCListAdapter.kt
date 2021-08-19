@@ -1,43 +1,44 @@
-package com.lewiswilson.kiminojisho.mylists
+package com.lewiswilson.kiminojisho.flashcards
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.R
 import java.util.*
-import com.lewiswilson.kiminojisho.search.ViewWordRemote
 
 
-class ListSelectionAdapter(
+class FCListAdapter(
     private val mContext: Context,
-    private var mDataList: ArrayList<ListSelectionItem>
-) : RecyclerView.Adapter<ListSelectionAdapter.ListSelectionViewHolder>(){
+    private var mDataList: ArrayList<FCListItem>
+) : RecyclerView.Adapter<FCListAdapter.FCListViewHolder>(){
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListSelectionViewHolder {
-        val v = LayoutInflater.from(mContext).inflate(R.layout.list_selection_item, parent, false)
-        return ListSelectionViewHolder(v, mListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FCListViewHolder {
+        val v = LayoutInflater.from(mContext).inflate(R.layout.fc_list_item, parent, false)
+        return FCListViewHolder(v, mListener)
     }
 
-    override fun onBindViewHolder(holder: ListSelectionViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FCListViewHolder, position: Int) {
         val currentItem = mDataList[position]
         val name = currentItem.name
         holder.mNameView.text = name
+        val reviewsText = "Reviews: ${currentItem.reviews}"
+        holder.mReviewsView.text = reviewsText
     }
 
     override fun getItemCount(): Int {
         return mDataList.size
     }
 
-    inner class ListSelectionViewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
+    inner class FCListViewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val myDB = DatabaseHelper(mContext)
-        var mNameView: TextView = itemView.findViewById(R.id.list_name)
+        var mNameView: TextView = itemView.findViewById(R.id.fc_list_name)
+        var mReviewsView: TextView = itemView.findViewById(R.id.txt_list_reviews)
+        var mReviewList: Button = itemView.findViewById(R.id.btn_review_list)
 
         init {
             itemView.setOnClickListener { listener.onItemClick(myDB.getListIdFromName(mNameView.text.toString())) }

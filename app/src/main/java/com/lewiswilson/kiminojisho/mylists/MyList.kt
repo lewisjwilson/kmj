@@ -4,11 +4,9 @@ import android.app.*
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,10 +23,7 @@ import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.android.synthetic.main.view_word.*
-import me.toptas.fancyshowcase.FancyShowCaseQueue
-import me.toptas.fancyshowcase.FancyShowCaseView
 import java.util.*
-import kotlin.collections.HashSet
 
 
 class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAdapter.OnItemLongClickListener {
@@ -46,7 +41,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
 
-        selectedList = intent.getIntExtra("adapterPos", 0)
+        selectedList = intent.getIntExtra("listID", 1)
 
         //initiate recyclerview and set parameters
         rv_mylist.setHasFixedSize(true)
@@ -64,6 +59,15 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(deleted) {
+            jishoList?.removeAt(clickedItemPos!!)
+            rvAdapter?.notifyItemRemoved(clickedItemPos!!)
+            deleted = false
+        }
+    }
+
     //populate recyclerview with data
     private fun populateRV() {
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
@@ -75,13 +79,13 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
             //ListView Data Layout
             jishoList!!.add(
-                MyListItem(data.getInt(0), //id
+                MyListItem(
+                    data.getInt(0), //id
                     data.getString(1), //kanji
                     data.getString(2), //kana
                     data.getString(3).split("@@@")[0], //english
                     data.getString(4), //pos
-                    data.getString(5), //notes
-                    false // unimportant here
+                    data.getString(5) // unimportant here
                 )
             )
 
@@ -216,26 +220,31 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
         AlertDialog.Builder(this)
             .setTitle("Select List to Move To")
-            .setItems(listArray) { _, list ->
-                val idList = MyListAdapter.selectedIds
+            .setItems(listArray) { _, which ->
+                val wordIds = MyListAdapter.selectedIds
+                val selected = listArray[which]
+                val listId = myDB!!.getListIdFromName(selected)
                 try {
-                    myDB?.changeList(idList, list)
+                    myDB?.changeList(wordIds, listId)
                 } catch (e: Exception) {
-                    Log.d(TAG, "multiSelectMenuSetup: Could not move items to list #$list")
+                    Log.d(TAG, "multiSelectMenuSetup: Could not move items to list #$which")
                     Log.d(TAG, e.printStackTrace().toString())
                 }
                 MyListAdapter.selectedIds.clear()
                 MyListAdapter.multiSelectMode = false
                 multiselectmenu_mylist.visibility = View.GONE
                 clearData()
-                Toast.makeText(this, "Items moved to list: ${listArray.get(list)}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Items moved to list: ${listArray.get(which)}", Toast.LENGTH_SHORT).show()
             }
             .show()
     }
 
     // recyclerview item click handling
-    override fun onItemClick(itemId: Int, ready: Boolean) {
+    override fun onItemClick(itemId: Int, adapterPos: Int, ready: Boolean) {
         if (ready) {
+            Log.d(TAG, "onItemClick: ${adapterPos}")
+            Log.d(TAG, "onItemClick: ${jishoList?.get(adapterPos)?.kanji}")
+            clickedItemPos = adapterPos
             clickedItemId = itemId
             startActivity(Intent(this@MyList, ViewWord::class.java))
         }
@@ -268,6 +277,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         var fileUri: Uri? = null
         @JvmField
         var ma: AppCompatActivity? = null
+
+        var clickedItemPos : Int? = null
+        var deleted = false
     }
 
 

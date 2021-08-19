@@ -1,16 +1,12 @@
 package com.lewiswilson.kiminojisho.mylists
 
 import android.app.*
-import android.content.ContentValues.TAG
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.HomeScreen
@@ -34,17 +30,16 @@ class ListSelection : AppCompatActivity() {
 
         //initiate recyclerview and set parameters
         rv_list_selection.setHasFixedSize(true)
-        rv_list_selection.layoutManager = LinearLayoutManager(this)
+        rv_list_selection.layoutManager = GridLayoutManager(this, 2)
 
         populateRV()
 
         rv_list_selection.adapter = rvAdapter
 
         rvAdapter?.setOnItemClickListener(object: ListSelectionAdapter.OnItemClickListener{
-            override fun onItemClick(position: Int) {
-
+            override fun onItemClick(listId: Int) {
                 val intent = Intent(applicationContext, MyList::class.java)
-                intent.putExtra("adapterPos", position)
+                intent.putExtra("listID", listId)
                 startActivity(intent)
             }
             }

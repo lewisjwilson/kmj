@@ -34,7 +34,9 @@ class Flashcards : AppCompatActivity() {
         setContentView(R.layout.flashcards)
         myDB = DatabaseHelper(this)
 
-        flashcardList = myDB!!.dueFlashcards()
+        val listId = 0
+
+        flashcardList = myDB!!.dueFlashcards(listId)
         totalReviews = flashcardList?.size!!
         progressBar.progress = 0
 

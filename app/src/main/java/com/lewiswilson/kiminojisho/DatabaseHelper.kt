@@ -189,8 +189,9 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     fun checkStarred(kanji: String, english: String): Boolean {
         db = readableDatabase
+
         val cur = db?.rawQuery("SELECT EXISTS(SELECT 1 FROM " + TABLE_NAME +
-                " WHERE $colKanji = ? AND $colEnglish = ?)", arrayOf(kanji, english))
+                " WHERE $colKanji = ? AND $colEnglish LIKE ?)", arrayOf(kanji, "$english%"))
         var bool = false
         if (cur?.moveToFirst() == true) {
             bool = cur.getInt(0) == 1
@@ -232,10 +233,10 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         return db?.insert(str, null, contentValues) != -1L
     }
 
-    fun changeList(idList: ArrayList<Int>, list: Int) {
+    fun changeList(wordIds: ArrayList<Int>, list: Int) {
         db = writableDatabase
 
-        for (id in idList) {
+        for (id in wordIds) {
             val contentValues = ContentValues()
             contentValues.put(colList, list)
             val where = "$colId = ?"
@@ -277,7 +278,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     fun random(): ArrayList<String> {
 
-        val cursor = readableDatabase.rawQuery("SELECT $colKanji, $colKana, $colPos, $colEnglish FROM $TABLE_NAME " +
+        val cursor = readableDatabase.rawQuery("SELECT $colKanji, $colKana, $colEnglish FROM $TABLE_NAME " +
                 "WHERE $colId IN (SELECT $colId FROM $TABLE_NAME ORDER BY RANDOM() LIMIT 1)", null)
 
         var kanji = ""
@@ -285,32 +286,41 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         var english = ""
 
         if (cursor.moveToFirst()) {
-            kanji = cursor.getString(0)
-            kana = cursor.getString(1)
-            english = cursor.getString(2)
+            kanji = cursor.getString(cursor.getColumnIndex(colKanji))
+            kana = cursor.getString(cursor.getColumnIndex(colKana))
+            english = cursor.getString(cursor.getColumnIndex(colEnglish)).split("@@@")[0]
         }
         cursor.close()
         return arrayListOf(kanji, kana, english)
     }
 
-    fun dueFlashcards(): ArrayList<MyListItem> {
-
-        val flashcardList: ArrayList<MyListItem> = ArrayList()
+    fun dueFlashcards(list: Int): ArrayList<MyListItem> {
 
         val reviewNo = 25
-
-        val cur = readableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME" +
+        //list "0" denotes "all lists" as autoincrrment starts at 1 in sqlite
+        val cur: Cursor = if(list == 0){
+            //all reviews
+            readableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME" +
                     " WHERE $colNextReview <= date('now') LIMIT ?", arrayOf(reviewNo.toString())) //next_review < date now
+        } else {
+            //filter by list
+            readableDatabase.rawQuery("SELECT $colId, $colKanji, $colKana, $colEnglish, $colPos, $colNotes FROM $TABLE_NAME" +
+                    " WHERE $colNextReview <= date('now')" +
+                    " AND $colList = ?" +
+                    " LIMIT ?",
+                arrayOf(list.toString(), reviewNo.toString())) //next_review < date now
+        }
+        val flashcardList: ArrayList<MyListItem> = ArrayList()
 
         while (cur.moveToNext()) {
             flashcardList.add(
-                MyListItem(cur.getInt(0), //id
+                MyListItem(
+                    cur.getInt(0), //id
                     cur.getString(1), //kanji
                     cur.getString(2), //kana
                     cur.getString(3), //english
                     "", //pos
-                    cur.getString(5), //notes
-                    false // unimportant here
+                    cur.getString(5) // unimportant here
                 )
             )
         }
@@ -329,13 +339,13 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
         while (cur.moveToNext()) {
             wrongItems.add(
-                MyListItem(cur.getInt(0), //id
-                cur.getString(1), //kanji
-                cur.getString(2), //kana
-                cur.getString(3), //english
-                "", //pos
-                cur.getString(5), //notes
-                false // unimportant here
+                MyListItem(
+                    cur.getInt(0), //id
+                    cur.getString(1), //kanji
+                    cur.getString(2), //kana
+                    cur.getString(3), //english
+                    "", //pos
+                    cur.getString(5) // unimportant here
             )
             )
         }
@@ -346,13 +356,34 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     }
 
     // number of flashcards due
-    fun flashcardCount(): Int {
-        val cur = readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME" +
-                " WHERE $colNextReview <= date('now')", null)
+    fun flashcardCount(list: Int): Int {
+
+        val cur: Cursor = if(list == 0){
+            //all reviews
+            readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME" +
+                    " WHERE $colNextReview <= date('now')", null)
+        } else {
+            //filter by list
+            readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME" +
+                    " WHERE $colNextReview <= date('now') " +
+                    " AND $colList = ?",
+                arrayOf(list.toString())
+            )
+        }
+
         cur.moveToFirst()
         val count = cur.getInt(0)
         cur.close()
         return count
+    }
+
+    fun getListIdFromName(name: String): Int {
+        val cur = readableDatabase.rawQuery("SELECT $listsColId FROM $LISTS_TABLE_NAME" +
+                " WHERE $listsColName = ?", arrayOf(name))
+        cur.moveToFirst()
+        val id = cur.getInt(0)
+        cur.close()
+        return id
     }
 
     fun updateFlashcard(id: Int, correct: Boolean, seen: Boolean) {

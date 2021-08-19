@@ -159,7 +159,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         mSearchList!!.add(SearchDataItem(kanji, kana, english.split("@@@")[0], starFilled))
 
                         // items to view in viewwordremote and viewword
-                        dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes, starFilled))
+                        dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes))
 
                         mSearchDataAdapter = mSearchList?.let { it ->
                             SearchDataAdapter(this@SearchPage, it)
