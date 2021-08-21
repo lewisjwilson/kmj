@@ -28,6 +28,10 @@ import me.toptas.fancyshowcase.FancyShowCaseView
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
+import android.content.pm.ResolveInfo
+
+
+
 
 
 class HomeScreen : AppCompatActivity() {
@@ -120,13 +124,13 @@ class HomeScreen : AppCompatActivity() {
             .setTitle("Import")
             .setMessage("Select your previously exported 'kiminojisho.db' file. " +
                     "IMPORTANT: All data will be completely overwritten. Are you SURE you want to overwrite everything?")
-            .setPositiveButton("Import") { dialog: DialogInterface, whichButton: Int ->
+            .setPositiveButton("Import") { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.type = "*/*"
                 startActivityForResult(intent, REQUEST_CODE)
             }
-            .setNegativeButton("Cancel") { dialog: DialogInterface, which: Int -> dialog.dismiss() }
+            .setNegativeButton("Cancel") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
             .create()
     }
 
@@ -135,13 +139,14 @@ class HomeScreen : AppCompatActivity() {
             myDB!!.createDatabase()
             finish()
             startActivity(intent)
-            Log.d(TAG, "Database export sucessful.")
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     private fun exportDatabase() {
+
+        var errorThrown = false
         try {
             val fileToWrite = getDatabasePath(myDB?.databaseName).toString()
             val output = openFileOutput(myDB?.databaseName, Context.MODE_PRIVATE)
@@ -165,10 +170,30 @@ class HomeScreen : AppCompatActivity() {
             fileIntent.putExtra(Intent.EXTRA_SUBJECT, myDB?.databaseName)
             fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             fileIntent.putExtra(Intent.EXTRA_STREAM, path)
-            startActivity(Intent.createChooser(fileIntent, "Export Database"))
-            Log.d(TAG, "Database export sucessful.")
+
+            val chooser = Intent.createChooser(fileIntent, "Export Database")
+            val resInfoList = this.packageManager.queryIntentActivities(
+                chooser,
+                PackageManager.MATCH_DEFAULT_ONLY
+            )
+
+            for (resolveInfo in resInfoList) {
+                val packageName = resolveInfo.activityInfo.packageName
+                grantUriPermission(
+                    packageName,
+                    path,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            }
+
+            startActivity(chooser)
         } catch (e: Exception) {
+            errorThrown = true
             e.printStackTrace()
+        } finally {
+            if (!errorThrown) {
+                Log.d(TAG, "Database export sucessful.")
+            }
         }
 
     }

@@ -26,10 +26,16 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     fun createDatabase() {
         this.readableDatabase
+        var errorThrown = false
         try {
             copyDatabase()
         } catch (e: IOException) {
+            errorThrown = true
             throw Error("Error Importing Database")
+        } finally {
+            if (!errorThrown) {
+                Log.d("#DB", "Database Import Successful")
+            }
         }
     }
 
@@ -58,16 +64,6 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         Log.d(TAG, "DATABASE UPGRADE FROM ${oldVersion} to ${newVersion}")
 
-        if (oldVersion < 14) {
-            db.execSQL("UPDATE $TABLE_NAME SET $colList = 0")
-        }
-        if (oldVersion < 16) {
-            db.execSQL(
-                "CREATE TABLE IF NOT EXISTS lists ($listsColId INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "$listsColName TEXT NOT NULL)")
-
-            db.execSQL("INSERT INTO lists (list_name) VALUES (\'Main List\')")
-        }
     }
 
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -77,22 +73,24 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
     //Import DB from Assets folder
     @Throws(IOException::class)
     private fun copyDatabase() {
-        val myInput =
-            fileUri?.let { myContext.contentResolver.openInputStream(it) } //myContext.getAssets().open("kiminojisho.db");
-        val outFileName = DATABASE_PATH.toString() + DATABASE_NAME
-        val myOutput: OutputStream = FileOutputStream(outFileName)
-        val buffer = ByteArray(10)
-        var length: Int
-        if (BuildConfig.DEBUG && myInput == null) {
-            error("Assertion failed")
+
+        val mInput = myContext.contentResolver.openInputStream(fileUri!!)  //myContext.getAssets().open("kiminojisho.db");
+        val outFileName = DATABASE_PATH.toString()
+
+        Log.d(TAG, "copyDatabase: $outFileName")
+        val os = FileOutputStream(outFileName)
+
+        val buffer = ByteArray(1024)
+        while (mInput!!.read(buffer) > 0) {
+            os.write(buffer)
+            Log.d("#DB", "writing>>")
         }
-        while (myInput!!.read(buffer).also { length = it } > 0) {
-            myOutput.write(buffer, 0, length)
-        }
-        myOutput.flush()
-        myOutput.close()
-        myInput.close()
+
+        os.flush()
+        os.close()
+        mInput.close()
     }
+
 
     @Synchronized
     override fun close() {

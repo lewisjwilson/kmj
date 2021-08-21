@@ -79,7 +79,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                 }
 
                 queryTextChangedJob = launch(Dispatchers.Main) {
-                    delay(1000)
+                    delay(250)
                     if (newText != null) {
                         dataFromNetwork(newText)
                     }
@@ -108,10 +108,10 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
             override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
 
                 //At this point we got our word list
-                val data = response.body()!!.data
+                val data = response.body()?.data
 
                 //if no data was found, try a call assuming romaji style
-                if (data.isEmpty()) {
+                if (data?.isEmpty() == true) {
                     tv_info.visibility = View.VISIBLE
                     tv_info.text = getString(R.string.no_results)
                 }
@@ -122,7 +122,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                     var kanji: String?
                     var kana: String?
                     var english: String?
-                    for (i in data.indices) {
+                    for (i in data?.indices!!) {
                         japanese = data[i].japanese
                         kanji = japanese[0].word
                         kana = japanese[0].reading

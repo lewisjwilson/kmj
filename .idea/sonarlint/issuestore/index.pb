@@ -45,8 +45,6 @@ v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListAdapter.kt,1/7/1728d732ea49213ba2b974f5f78e4a5390079e57
 s
 Capp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListItem.kt,8/e/8ec813edfe85683213e6b92b9a9d69ecbd138988
-r
-Bapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchPage.kt,4/1/41d3b8c123d5d60df2743775aebaa222e7c6863e
 v
 Fapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordRemote.kt,0/d/0db2e8ea6534369cab5fa32bfc67d0d6f175bdba
 r
