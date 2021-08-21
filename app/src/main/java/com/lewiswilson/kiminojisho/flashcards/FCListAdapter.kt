@@ -28,7 +28,13 @@ class FCListAdapter(
         val name = currentItem.name
         holder.mNameView.text = name
         val reviewsText = "Reviews: ${currentItem.reviews}"
-        holder.mReviewsView.text = reviewsText
+        holder.mReviewsText.text = reviewsText
+
+        if (currentItem.reviews <= 0) {
+            holder.mReviewBtn.text = "Complete"
+            holder.mReviewBtn.isEnabled = false
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -38,12 +44,12 @@ class FCListAdapter(
     inner class FCListViewHolder(itemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(itemView) {
         val myDB = DatabaseHelper(mContext)
         var mNameView: TextView = itemView.findViewById(R.id.fc_list_name)
-        var mReviewsView: TextView = itemView.findViewById(R.id.txt_list_reviews)
-        var mReviewList: Button = itemView.findViewById(R.id.btn_review_list)
+        var mReviewsText: TextView = itemView.findViewById(R.id.txt_list_reviews)
+        var mReviewBtn: Button = itemView.findViewById(R.id.btn_review_list)
 
         init {
             itemView.setOnClickListener { listener.onItemClick(myDB.getListIdFromName(mNameView.text.toString())) }
-            mReviewList.setOnClickListener {
+            mReviewBtn.setOnClickListener {
                 val listId = myDB.getListIdFromName(mNameView.text.toString())
                 if (myDB.itemCount(listId) < 4) {
                     Toast.makeText(mContext, "Not enough words in list (min = 4)", Toast.LENGTH_LONG).show()

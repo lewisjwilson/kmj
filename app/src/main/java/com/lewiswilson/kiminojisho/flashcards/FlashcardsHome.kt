@@ -31,6 +31,11 @@ class FlashcardsHome : AppCompatActivity() {
         val noOfFlashcards = "Total Reviews: $reviewsDue"
         fc_no.text = noOfFlashcards
 
+        if (reviewsDue!! <= 0) {
+            btn_start.text = "Complete"
+            btn_start.isEnabled = false
+        }
+
 
         btn_start.setOnClickListener { v: View? ->
             if (myDB!!.itemCount(0) < 4) {

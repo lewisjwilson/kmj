@@ -15,6 +15,8 @@
         <entry key="app/src/main/res/layout/add_word.xml" value="0.33" />
         <entry key="app/src/main/res/layout/examples_item.xml" value="0.21354166666666666" />
         <entry key="app/src/main/res/layout/fc_list_item.xml" value="0.35435897435897434" />
+        <entry key="app/src/main/res/layout/flashcard_back.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/flashcard_front.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/flashcards.xml" value="0.35435897435897434" />
         <entry key="app/src/main/res/layout/flashcards_complete.xml" value="0.35435897435897434" />
         <entry key="app/src/main/res/layout/flashcards_home.xml" value="0.35435897435897434" />

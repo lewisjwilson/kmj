@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.mylists.MyListItem
@@ -29,10 +30,15 @@ class Flashcards : AppCompatActivity() {
     private var totalTries: Int = 0
     private var correctBtn: Int = 0
     private var selectedList = 0
+    private var wrongColor: Int = 0
+    private var correctColor: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flashcards)
+        wrongColor = getColor(R.color.flashcard_wrong)
+        correctColor = getColor(R.color.flashcard_correct)
+        flipview.flipDuration = 200 //ms
         myDB = DatabaseHelper(this)
 
         selectedList = intent.getIntExtra("listID", 0)
@@ -47,6 +53,14 @@ class Flashcards : AppCompatActivity() {
         option2.setOnClickListener{ redirect(2) }
         option3.setOnClickListener{ redirect(3) }
         option4.setOnClickListener{ redirect(4) }
+
+        fc_btn_continue.setOnClickListener {
+            flipview.flipTheView()
+            flipview.isFlipEnabled = false
+            fc_btn_continue.visibility = View.GONE
+            answer_grid.visibility = View.VISIBLE
+            flashcardSort()
+        }
 
     }
 
@@ -64,11 +78,27 @@ class Flashcards : AppCompatActivity() {
         totalTries += 1
 
         val dbid = flashcardList!!.first().id
-        var color = getColor(R.color.flashcard_correct)
 
-        if(!correct) {
-            color = getColor(R.color.flashcard_wrong)
+        if(correct) {
+            totalCorrect += 1
+            //if the seen arraylist contains current word
+            if( seen?.isNotEmpty() == true && seen?.contains(flashcardList?.first()?.id) == true ) {
+                Log.d(TAG, "${flashcardList?.first()?.kanji} correct, seen")
+                myDB?.updateFlashcard(dbid, correct, true)
+            } else {
+                Log.d(TAG, "${flashcardList?.first()?.kanji} correct, NOT seen")
+                myDB?.updateFlashcard(dbid, correct, false)
+            }
 
+            cv_back.setCardBackgroundColor(correctColor)
+            cv_front.setCardBackgroundColor(correctColor)
+
+            flashcardList?.removeAt(0)
+            completeReviews++
+            val progress = (completeReviews/totalReviews.toDouble()*100).toInt()
+            setProgressBar(progress)
+
+        } else {
             //if the seen arraylist contains the current word
             if( seen?.isNotEmpty() == true && seen?.contains(flashcardList?.first()?.id) == true ) {
 
@@ -82,39 +112,33 @@ class Flashcards : AppCompatActivity() {
                 myDB?.updateFlashcard(dbid, correct, true)
             }
 
-        } else {
-            totalCorrect += 1
-            //if the seen arraylist contains current word
-            if( seen?.isNotEmpty() == true && seen?.contains(flashcardList?.first()?.id) == true ) {
-                Log.d(TAG, "${flashcardList?.first()?.kanji} correct, seen")
-                myDB?.updateFlashcard(dbid, correct, true)
-            } else {
-                Log.d(TAG, "${flashcardList?.first()?.kanji} correct, NOT seen")
-                myDB?.updateFlashcard(dbid, correct, false)
-            }
+            cv_back.setCardBackgroundColor(wrongColor)
+            cv_front.setCardBackgroundColor(wrongColor)
 
-            flashcardList?.removeAt(0)
-            completeReviews++
-            val progress = (completeReviews/totalReviews.toDouble()*100).toInt()
-            setProgressBar(progress)
         }
 
-        cv_back.setCardBackgroundColor(color)
-        cv_front.setCardBackgroundColor(color)
+
 
          //delay running by extra 200ms so that answer doesnt show on flip back
         Handler(Looper.getMainLooper()).postDelayed({
             cv_back.setCardBackgroundColor(getColor(R.color.white))
             cv_front.setCardBackgroundColor(getColor(R.color.white))
-            if(flashcardList?.isEmpty() == true) {
-                //finished
-                val percentCorrect = totalCorrect.toDouble()/totalTries*100
-                finish()
-                val intent = Intent(this@Flashcards, FlashcardsComplete::class.java)
-                intent.putExtra("percent", percentCorrect)
-                startActivity(intent)
+            if (correct) {
+                if (flashcardList?.isEmpty() == true) {
+                    //finished
+                    val percentCorrect = totalCorrect.toDouble() / totalTries * 100
+                    finish()
+                    val intent = Intent(this@Flashcards, FlashcardsComplete::class.java)
+                    intent.putExtra("percent", percentCorrect)
+                    startActivity(intent)
+                } else {
+                    flashcardSort()
+                }
             } else {
-                flashcardSort()
+                flipview.isFlipEnabled = true
+                flipview.flipTheView(true)
+                answer_grid.visibility = View.GONE
+                fc_btn_continue.visibility = View.VISIBLE
             }
             option1.isEnabled = true
             option2.isEnabled = true
@@ -129,9 +153,10 @@ class Flashcards : AppCompatActivity() {
         flashcardList?.shuffle()
 
         //populating flashcard
-        fc_japanese.text = flashcardList?.first()?.kanji
-        fc_english.text = flashcardList?.first()?.english
-        fc_kana.text = flashcardList?.first()?.kana
+        fc_front_japanese.text = flashcardList?.first()?.kanji
+        fc_back_japanese.text = flashcardList?.first()?.kanji
+        fc_back_english.text = flashcardList?.first()?.english
+        fc_back_kana.text = flashcardList?.first()?.kana
 
 
         val validateArray = listOf(1, 0, 0, 0).shuffled()

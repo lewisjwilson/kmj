@@ -20,7 +20,9 @@ class FlashcardsComplete : AppCompatActivity() {
 
         btn_back.setOnClickListener { v: View? ->
             finish()
-            startActivity(Intent(this@FlashcardsComplete, FlashcardsHome::class.java)) }
+            startActivity(Intent(this@FlashcardsComplete, FlashcardsHome::class.java))
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
 
     }
 }
