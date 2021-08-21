@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.lewiswilson.kiminojisho.mylists.ListSelection
 import com.lewiswilson.kiminojisho.mylists.MyList
-import kotlinx.android.synthetic.main.about.*
+import kotlinx.android.synthetic.main.settings.*
 import kotlinx.android.synthetic.main.add_word.*
 import kotlinx.android.synthetic.main.add_word.view_english
 import kotlinx.android.synthetic.main.add_word.view_kana

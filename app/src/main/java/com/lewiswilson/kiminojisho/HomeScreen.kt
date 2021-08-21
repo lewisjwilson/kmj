@@ -6,32 +6,22 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 import com.lewiswilson.kiminojisho.mylists.ListSelection
-import com.lewiswilson.kiminojisho.mylists.MyList
 import com.lewiswilson.kiminojisho.search.SearchPage
 import kotlinx.android.synthetic.main.home_screen.*
-import me.toptas.fancyshowcase.FancyShowCaseQueue
-import me.toptas.fancyshowcase.FancyShowCaseView
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
-import android.content.pm.ResolveInfo
-
-
-
 
 
 class HomeScreen : AppCompatActivity() {
@@ -57,7 +47,7 @@ class HomeScreen : AppCompatActivity() {
         item_flashcards.setOnClickListener { startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
         item_search.setOnClickListener { startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
         item_mylists.setOnClickListener { startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
-        item_settings.setOnClickListener { startActivity(Intent(this@HomeScreen, About::class.java)) }
+        item_settings.setOnClickListener { startActivity(Intent(this@HomeScreen, Settings::class.java)) }
 
     }
 

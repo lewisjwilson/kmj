@@ -1,5 +1,6 @@
 package com.lewiswilson.kiminojisho
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.ComponentName
 import android.content.ContentValues.TAG
@@ -14,21 +15,26 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.about.*
+import kotlinx.android.synthetic.main.settings.*
 import java.text.DecimalFormat
 import java.util.*
 
-class About : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class Settings : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    // reason: conflicts with the alarm staying active
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.about)
+        setContentView(R.layout.settings)
 
         val prefsName = "MyPrefs"
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
 
-        val alarmUp = PendingIntent.getBroadcast(applicationContext, 0,
-            Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_NO_CREATE) != null
+        val alarmUp = PendingIntent.getBroadcast(applicationContext,
+            0,
+            Intent(applicationContext, ReminderBroadcast::class.java),
+            PendingIntent.FLAG_NO_CREATE) != null
 
         //sets enabled status based on if alarm exists
         switch_notifications.isChecked = alarmUp
@@ -40,7 +46,7 @@ class About : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             c.timeInMillis = millis
             timepicker1.hour = c[Calendar.HOUR_OF_DAY]
             timepicker1.minute = c[Calendar.MINUTE]
-            Log.d(TAG, "Notifications set for: ${c.time} daily.")
+            timepicker1.isEnabled = false
         }
 
         timepicker1.setIs24HourView(true)
@@ -53,10 +59,11 @@ class About : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 val min = timepicker1.minute
                 createChannel()
                 setNotifications(hour, min)
-
+                timepicker1.isEnabled = false
             } else {
                 txt_status.text = getString(R.string.OFF)
                 cancelNotifications()
+                timepicker1.isEnabled = true
             }
         }
 

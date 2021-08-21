@@ -66,7 +66,7 @@
             android:label="View Word"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".About"
+            android:name=".Settings"
             android:label="@string/About" />
         <activity
             android:name=".AddWord"
