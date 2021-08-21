@@ -15,6 +15,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.elconfidencial.bubbleshowcase.BubbleShowCase
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 import com.lewiswilson.kiminojisho.mylists.ListSelection
 import com.lewiswilson.kiminojisho.search.SearchPage
@@ -37,7 +41,7 @@ class HomeScreen : AppCompatActivity() {
 
         //Check if it is a first time launch
         if (prefs.getBoolean("first_launch", true)) {
-            firstLaunch()
+            helpDisplay()
             prefs.edit().putBoolean("first_launch", false).apply()
             prefs.edit().putBoolean("notifications_on", false).apply()
             prefs.edit().putString("sortby_col", "english").apply()
@@ -49,34 +53,6 @@ class HomeScreen : AppCompatActivity() {
         item_mylists.setOnClickListener { startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
         item_settings.setOnClickListener { startActivity(Intent(this@HomeScreen, Settings::class.java)) }
 
-    }
-
-    private fun firstLaunch() {
-        //run a tutorial, e.g....
-        /**
-        val color = "#DD008577"
-        val fscv1 = FancyShowCaseView.Builder(this)
-        .title("Welcome to KimiNoJisho, the custom Japanese dictionary app! This tutorial will help to get you started.")
-        .backgroundColor(Color.parseColor(color))
-        .titleStyle(R.style.HelpScreenTitle, Gravity.TOP or Gravity.CENTER)
-        .build()
-        val fscv2 = FancyShowCaseView.Builder(this)
-        .title("This is the main screen. This shows you dictionary entries.")
-        .backgroundColor(Color.parseColor(color))
-        .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-        .build()
-        val fscv3 = FancyShowCaseView.Builder(this)
-        .title("To create your first dictionary entry, use this button.")
-        .focusOn(findViewById(R.id.flbtn_add))
-        .backgroundColor(Color.parseColor(color))
-        .titleStyle(R.style.HelpScreenTitle, Gravity.CENTER)
-        .build()
-        val fscvQueue = FancyShowCaseQueue()
-        .add(fscv1)
-        .add(fscv2)
-        .add(fscv3)
-        fscvQueue.show()
-         **/
     }
 
     // Menu icons are inflated just as they were with actionbar
@@ -91,7 +67,7 @@ class HomeScreen : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.action_help -> {
-                Toast.makeText(this, "Help display", Toast.LENGTH_LONG).show()
+                helpDisplay()
                 true
             }
             R.id.action_import -> {
@@ -107,6 +83,48 @@ class HomeScreen : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun helpDisplay() {
+        val title = BubbleShowCaseBuilder(this)
+            .title("Welcome to KiminoJisho!")
+            .description("This app will help you learn Japanese by using spaced repitition (SRS) style flashcards on the Japanese words YOU choose!")
+            .targetView(homescreen_blank_view)
+
+        val flashcards = BubbleShowCaseBuilder(this)
+            .title("Flashcards")
+            .description("Here, you can test yourself using flashcards on the words in your lists. (You will need to add some words first!)")
+            .targetView(item_flashcards)
+
+        val search = BubbleShowCaseBuilder(this)
+            .title("Search")
+            .description("Search for a words to add to one of your lists.")
+            .targetView(item_search)
+
+        val myLists = BubbleShowCaseBuilder(this)
+            .title("My Lists")
+            .description("Check out and review the words you've added.")
+            .targetView(item_mylists)
+
+        val settings = BubbleShowCaseBuilder(this)
+            .title("Settings")
+            .description("Enable daily notifications etc.")
+            .targetView(item_settings)
+
+
+        val final = BubbleShowCaseBuilder(this)
+            .title("That's all there is to it!")
+            .description("We hope you enjoy Kiminojisho. To see this help display again, click the icon in the toolbar.")
+            .targetView(homescreen_blank_view)
+
+        BubbleShowCaseSequence()
+            .addShowCase(title)
+            .addShowCase(flashcards)
+            .addShowCase(search)
+            .addShowCase(myLists)
+            .addShowCase(settings)
+            .addShowCase(final)
+            .show()
     }
 
     private fun importWarning(): AlertDialog {

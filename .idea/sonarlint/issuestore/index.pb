@@ -17,8 +17,6 @@ T
 $.idea/codeStyles/codeStyleConfig.xml,d/d/dd7b3350c29c49497756c7f32c69a3bed18b1cba
 \
 ,.idea/inspectionProfiles/Project_Default.xml,4/9/496a238a6afa168dbaf6efd37bb459331589579c
-@
-app/build.gradle,f/4/f4a01d6a4fcb971362ec00a83903fd3902f52164
 p
 @app/src/main/java/com/lewiswilson/kiminojisho/ExamplesAdapter.kt,9/8/980a85509f781fe44812f8f7eb74efb366989894
 p
