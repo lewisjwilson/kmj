@@ -37,6 +37,10 @@ class ListSelection : AppCompatActivity() {
         rv_list_selection.setHasFixedSize(true)
         rv_list_selection.layoutManager = GridLayoutManager(this, 2)
 
+        for (item in listOfLists!!) {
+            item.name
+        }
+
         populateRV()
 
         rv_list_selection.adapter = rvAdapter
@@ -69,12 +73,19 @@ class ListSelection : AppCompatActivity() {
         input.inputType = InputType.TYPE_CLASS_TEXT
         builder.setView(input)
         builder.setPositiveButton("Create") { _, _ ->
-            if(input.text.toString().isNotEmpty()) {
-                val listName = input.text.toString()
-                myDB?.addList(listName)
-                listOfLists!!.add(ListSelectionItem(listName))
-                rvAdapter?.notifyItemInserted(listOfLists?.size!!)
+            val userInput = input.text.toString().trim()
+            //check not empty and check the item doesnt exist in the list already
+            if (listOfLists?.any { it.name == userInput }!!) {
+                Toast.makeText(this, "List already exists!", Toast.LENGTH_SHORT).show()
             }
+
+            if(userInput.isNotEmpty() && !listOfLists?.any { it.name == userInput }!!) {
+                    val listName = input.text.toString()
+                    myDB?.addList(listName)
+                    listOfLists!!.add(ListSelectionItem(listName))
+                    rvAdapter?.notifyItemInserted(listOfLists?.size!!)
+            }
+
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
         builder.show()

@@ -35,8 +35,6 @@ y
 Iapp/src/main/java/com/lewiswilson/kiminojisho/search/SearchDataAdapter.kt,f/9/f98b174cd45021f59092cd5ab84eba9c035030df
 {
 Kapp/src/main/java/com/lewiswilson/kiminojisho/search/ViewWordItemAdapter.kt,5/c/5cae915aebf8d2767eef65fab82d472059c052fe
-z
-Japp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionItem.kt,8/4/840870bfd542235121eafa6c884bbc296cf93dd6
 f
 6app/src/main/java/com/lewiswilson/kiminojisho/About.kt,2/2/2245408bfe4246e8f736f39699b1f7a2d91d2990
 h
