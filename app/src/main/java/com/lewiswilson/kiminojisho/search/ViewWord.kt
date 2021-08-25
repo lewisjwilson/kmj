@@ -13,6 +13,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.lewiswilson.kiminojisho.*
 import com.lewiswilson.kiminojisho.mylists.ListSelectionAdapter
 import com.lewiswilson.kiminojisho.mylists.MyList
@@ -47,6 +48,9 @@ class ViewWord : AppCompatActivity() {
 
         //implementing ads
         MobileAds.initialize(this)
+        val testDeviceIds = Arrays.asList("3EE9A91017FEA4E8E9F0996A4775B406")
+        val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        MobileAds.setRequestConfiguration(config)
         val adRequest = AdRequest.Builder().build()
         vw_adView.loadAd(adRequest)
 

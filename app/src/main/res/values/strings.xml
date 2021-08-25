@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">KimiNoJisho</string>
     <string name="admob_app_id">ca-app-pub-4081680103127041~6469492620</string>
-    <string name="admob_viewword_banner_id">ca-app-pub-4081680103127041/4671981138</string>
+    <string name="admob_banner_id">ca-app-pub-4081680103127041/4671981138</string>
+    <string name="admob_big_banner_id">ca-app-pub-4081680103127041/4405077150</string>
+    <string name="admob_test_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="Add_New_Word">Add New Word</string>
     <string name="Kanji">Kanji*:</string>
     <string name="Add">Add</string>

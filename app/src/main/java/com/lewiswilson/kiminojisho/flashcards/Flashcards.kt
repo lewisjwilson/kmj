@@ -155,7 +155,6 @@ class Flashcards : AppCompatActivity() {
         //populating flashcard
         fc_front_japanese.text = flashcardList?.first()?.kanji
         fc_back_japanese.text = flashcardList?.first()?.kanji
-        fc_back_english.text = flashcardList?.first()?.english
         fc_back_kana.text = flashcardList?.first()?.kana
 
 
@@ -196,6 +195,8 @@ class Flashcards : AppCompatActivity() {
         Log.d(TAG, "wrongitemtext2: $wrongItemText2")
         Log.d(TAG, "wrongitemtext3: $wrongItemText3")
 
+        //caters for the random definition chosen
+        fc_back_english.text = correctItemText
 
         when (correctBtn) {
             1 -> {

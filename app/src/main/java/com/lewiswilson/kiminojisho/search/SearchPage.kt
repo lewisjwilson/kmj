@@ -30,19 +30,25 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
     private var mSearchDataAdapter: SearchDataAdapter? = null
     private val myDB = DatabaseHelper(this)
     var queryTextChangedJob: Job? = null
+    var currentJobText = ""
+    var networkCalls = 0
+    var call: Call<JishoData>? = null
 
     private val job = Job()
     override val coroutineContext = job + Dispatchers.Main
 
     override fun onDestroy() {
         queryTextChangedJob?.cancel()
+        clickedItem = null
         super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        dataItems!!.clear()
-        mSearchList!!.clear() // clear list
+        if (clickedItem != null ) {
+            mSearchList?.get(clickedItem!!)?.starFilled = starFilled
+            mSearchDataAdapter?.notifyItemChanged(clickedItem!!)
+        }
 
     }
 
@@ -69,20 +75,31 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
             }
             override fun onQueryTextChange(newText: String?): Boolean {
 
-                try {
-                    mSearchList?.let{
-                        queryTextChangedJob?.cancel()
-                        clearData()
+                if (newText != null) {
+                    try {
+                        mSearchList?.let {
+                            call?.cancel()
+                            queryTextChangedJob?.cancel()
+                            clearData()
+                        }
+                    } catch (e: NullPointerException) {
+                        Log.d(TAG, "${e.printStackTrace()}")
                     }
-                } catch (e: NullPointerException) {
-                    Log.d(TAG, "onQueryTextChange (usual on first search): ${e.printStackTrace()}")
-                }
 
-                queryTextChangedJob = launch(Dispatchers.Main) {
-                    delay(250)
-                    if (newText != null) {
+                    queryTextChangedJob = launch {
+                        delay(350)
+                        currentJobText = newText.toString()
+                        Log.d(
+                            TAG,
+                            "onQueryTextChange: Job Started For: $currentJobText, (strlen: ${currentJobText.length})"
+                        )
                         dataFromNetwork(newText)
+                        networkCalls++
+
+                        //logs the number of calls made to check the delay has been applied
+                        Log.d(TAG, "onQueryTextChange: NETWORK CALLS: $networkCalls")
                     }
+
                 }
 
                 return true
@@ -97,14 +114,11 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         tv_info.visibility = View.INVISIBLE
         //if the search adapter has data in it already, clear the recyclerview
         rv_searchdata.adapter = mSearchDataAdapter
-        if (mSearchDataAdapter != null) {
-            clearData()
-        }
 
         //if the searchtext contains any japanese...
-        val call: Call<JishoData> = RetrofitClient.getInstance().myApi.getData(query)
+        call = RetrofitClient.getInstance().myApi.getData(query)
 
-        call.enqueue(object : Callback<JishoData> {
+        call?.enqueue(object : Callback<JishoData> {
             override fun onResponse(call: Call<JishoData>, response: Response<JishoData>) {
 
                 //At this point we got our word list
@@ -174,15 +188,15 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
 
             override fun onFailure(call: Call<JishoData>, t: Throwable) {
                 //handle error or failure cases here
-                Log.d("", "SearchPage (Error): " + t.message)
+                Log.d(TAG, "SearchPage (Error): " + t.message)
             }
         })
     }
 
     fun clearData() {
-        dataItems!!.clear()
-        mSearchList!!.clear() // clear list
-        mSearchDataAdapter!!.notifyDataSetChanged() // let your adapter know about the changes and reload view.
+        dataItems?.clear()
+        mSearchList?.clear() // clear list
+        mSearchDataAdapter?.notifyDataSetChanged() // let your adapter know about the changes and reload view.
     }
 
     fun removeAts(input: String): String {
@@ -194,6 +208,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
         //items for carrying over to viewwordremote
         var dataItems: ArrayList<MyListItem>? = ArrayList()
         var starFilled: Boolean = false
+        var clickedItem: Int? = null
     }
 
 }

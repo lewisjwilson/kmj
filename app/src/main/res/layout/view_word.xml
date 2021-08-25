@@ -70,8 +70,10 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/vw_adView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vw_separator1">
+        app:layout_constraintTop_toBottomOf="@+id/vw_separator1"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -113,12 +115,24 @@
                 android:background="@android:color/darker_gray"
                 app:layout_constraintTop_toBottomOf="@+id/vw_rv_definitions" />
 
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/vw_adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:nestedScrollingEnabled="true"
+                app:adSize="MEDIUM_RECTANGLE"
+                app:adUnitId="@string/admob_big_banner_id"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/vw_separator2" />
+
             <TextView
                 android:id="@+id/vw_txt_examples"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp"
                 android:text="Examples:"
                 android:textColor="@color/black"
@@ -126,7 +140,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vw_separator2" />
+                app:layout_constraintTop_toBottomOf="@+id/vw_adView" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vw_rv_examples"
@@ -143,25 +157,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ads should be here...not loading..."
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/vw_adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="true"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,8 +24,6 @@ import java.util.ArrayList
 
 class ViewWordRemote : AppCompatActivity() {
 
-    private val prefsName = "MyPrefs"
-
     private var kanji = ""
     private var kana = ""
     private var english = ""
@@ -150,6 +148,7 @@ class ViewWordRemote : AppCompatActivity() {
                     myDB.deleteFromRemote(kanji, english)
                     vw_btn_star.setImageResource(R.drawable.ic_addword)
                     starred = !starred
+                    SearchPage.starFilled = false
                 } catch (e: NullPointerException) {
                     Log.d(TAG, "Could not delete item from list (normal): ${e.printStackTrace()}")
                 }
@@ -172,6 +171,7 @@ class ViewWordRemote : AppCompatActivity() {
                 vw_btn_star.setImageResource(R.drawable.ic_removeword)
                 myDB.addData(listId, kanji, kana, english, pos, notes)
                 starred = !starred
+                SearchPage.starFilled = true
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }
             .show()

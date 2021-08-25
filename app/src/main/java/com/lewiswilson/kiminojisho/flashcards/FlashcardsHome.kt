@@ -7,6 +7,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
@@ -15,7 +18,8 @@ import com.lewiswilson.kiminojisho.mylists.ListSelectionItem
 import com.lewiswilson.kiminojisho.mylists.MyList
 import kotlinx.android.synthetic.main.flashcards_home.*
 import kotlinx.android.synthetic.main.list_selection.*
-import java.util.ArrayList
+import kotlinx.android.synthetic.main.my_list.*
+import java.util.*
 
 class FlashcardsHome : AppCompatActivity() {
     private var listOfLists: ArrayList<FCListItem>? = ArrayList()
@@ -26,6 +30,14 @@ class FlashcardsHome : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flashcards_home)
         myDB = DatabaseHelper(this)
+
+        //implementing ads
+        MobileAds.initialize(this)
+        val adRequest = AdRequest.Builder().build()
+        val testDeviceIds = Arrays.asList("3EE9A91017FEA4E8E9F0996A4775B406")
+        val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        MobileAds.setRequestConfiguration(config)
+        fc_home_adView.loadAd(adRequest)
 
         val reviewsDue = myDB?.flashcardCount(0)
         val noOfFlashcards = "Total Reviews: $reviewsDue"

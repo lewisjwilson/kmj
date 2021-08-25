@@ -24,9 +24,4 @@
 
     </item>
 
-    <item
-        android:id="@+id/action_help"
-        android:title="@string/ActionHelp"
-        app:showAsAction="never" />
-
 </menu>

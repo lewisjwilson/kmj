@@ -80,7 +80,7 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
         Log.d(TAG, "copyDatabase: $outFileName")
         val os = FileOutputStream(outFileName)
 
-        val buffer = ByteArray(1024)
+        val buffer = ByteArray(10)
         while (mInput!!.read(buffer) > 0) {
             os.write(buffer)
             Log.d("#DB", "writing>>")

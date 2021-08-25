@@ -1,10 +1,13 @@
 package com.lewiswilson.kiminojisho.search
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VIEW_LOG_TAG
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,17 +25,19 @@ class SearchDataAdapter(
         return SearchDataViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: SearchDataViewHolder, position: Int) {
-        val currentItem = mSearchList[position]
-        val kanji = currentItem.kanji
-        val kana = currentItem.kana
-        val english = currentItem.english
-        val starFilled = currentItem.starFilled
-        holder.mKanjiView.text = kanji
-        holder.mKanaView.text = kana
-        holder.mEnglishView.text = english
-        if(!starFilled){
-            holder.mStar.visibility = GONE
+    override fun onBindViewHolder(holder: SearchDataViewHolder, position: Int, payloads: List<Any>) {
+        if(payloads.isNotEmpty()) {
+            Log.d(TAG, "onBindViewHolder: ${payloads[0]}")
+            if (payloads[0] == true) {
+                //Log.d(TAG, "onBindViewHolder: HERE!")
+                holder.mStar.visibility = View.VISIBLE
+            } else {
+                //Log.d(TAG, "onBindViewHolder: HERE!!")
+                holder.mStar.visibility = GONE
+            }
+        } else {
+            //Log.d(TAG, "onBindViewHolder: HERE!!!")
+            super.onBindViewHolder(holder, position, payloads)
         }
     }
 
@@ -49,11 +54,14 @@ class SearchDataAdapter(
 
         override fun onClick(view: View) {
             //get data from the clicked item and add to my list
+            SearchPage.clickedItem = adapterPosition
             var starFilled = false
 
             if(mStar.visibility != GONE) {
                 starFilled = true
             }
+
+            SearchPage.starFilled = starFilled
 
             val intent = Intent(mContext, ViewWordRemote::class.java)
             intent.putExtra("adapterPos", adapterPosition)
@@ -64,5 +72,22 @@ class SearchDataAdapter(
         init {
             itemView.setOnClickListener(this)
         }
+    }
+
+    override fun onBindViewHolder(holder: SearchDataViewHolder, position: Int) {
+        val currentItem = mSearchList[position]
+        val starFilled = currentItem.starFilled
+        val kanji = currentItem.kanji
+        val kana = currentItem.kana
+        val english = currentItem.english
+        holder.mKanjiView.text = kanji
+        holder.mKanaView.text = kana
+        holder.mEnglishView.text = english
+        if(!starFilled){
+            holder.mStar.visibility = GONE
+        } else {
+            holder.mStar.visibility = View.VISIBLE
+        }
+        Log.d(TAG, "onBindViewHolder: $kanji, $starFilled")
     }
 }

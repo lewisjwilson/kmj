@@ -15,11 +15,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.R
 import com.lewiswilson.kiminojisho.search.SearchPage
 import com.lewiswilson.kiminojisho.search.ViewWord
+import kotlinx.android.synthetic.main.flashcards_home.*
 import kotlinx.android.synthetic.main.my_list.*
 import kotlinx.android.synthetic.main.my_list_item.view.*
 import kotlinx.android.synthetic.main.search_page.*
@@ -39,6 +43,14 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         super.onCreate(savedInstanceState)
         setContentView(R.layout.my_list)
         myDB = DatabaseHelper(this)
+
+        //implementing ads
+        MobileAds.initialize(this)
+        val testDeviceIds = Arrays.asList("3EE9A91017FEA4E8E9F0996A4775B406")
+        val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        MobileAds.setRequestConfiguration(config)
+        val adRequest = AdRequest.Builder().build()
+        mylist_adView.loadAd(adRequest)
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
 
@@ -159,10 +171,6 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
                 prefs.edit().putString("sortby_col", "kana").apply()
                 prefs.edit().putString("sort_style", "ASC").apply()
                 clearData()
-                true
-            }
-
-            R.id.action_help -> {
                 true
             }
 

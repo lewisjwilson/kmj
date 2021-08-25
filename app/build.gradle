@@ -12,10 +12,10 @@ android {
         applicationId "com.lewiswilson.kiminojisho"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 7
-        versionName '0.4'
+        versionCode 8
+        versionName '1.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionNameSuffix = 'b'
+        versionNameSuffix = 'beta'
     }
     buildTypes {
         release {
