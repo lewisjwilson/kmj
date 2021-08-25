@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cv_front"
     android:layout_width="match_parent"
     android:layout_height="250dp"
     android:layout_margin="1dp"
-    android:background="#EDEDED"
+    android:id="@+id/cvFront"
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
-        android:id="@+id/fc_front_linearLayout"
+        android:id="@+id/fc_front_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"

@@ -33,9 +33,9 @@ class AddWord : AppCompatActivity() {
         val add = View.OnClickListener { v: View? ->
             val newEntryList = myDB!!.getListIdFromName(addWordBind.spnAddwordLists.selectedItem.toString())
             val newEntryKanji = addWordBind.editWord.text.toString()
-            val newEntryKana = addWordBind.viewKana.text.toString()
+            val newEntryKana = addWordBind.txtKana.text.toString()
             val newEntryMeaning = addWordBind.viewEnglish.text.toString()
-            val newEntryPos = addWordBind.viewAddwordPos.text.toString()
+            val newEntryPos = addWordBind.txtAddwordPos.text.toString()
             val newEntryNotes =  addWordBind.viewEditNotes.text.toString()
 
             if (newEntryKanji.isEmpty() || newEntryKana.isEmpty() || newEntryMeaning.isEmpty()) {

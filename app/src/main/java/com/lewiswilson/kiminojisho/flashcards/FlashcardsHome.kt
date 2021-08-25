@@ -10,6 +10,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.lewiswilson.kiminojisho.DatabaseHelper
+import com.lewiswilson.kiminojisho.R
 import com.lewiswilson.kiminojisho.databinding.FlashcardsHomeBinding
 import com.lewiswilson.kiminojisho.mylists.MyList
 import java.util.*
@@ -41,7 +42,7 @@ class FlashcardsHome : AppCompatActivity() {
         fcHomeBind.fcNo.text = noOfFlashcards
 
         if (reviewsDue!! <= 0) {
-            fcHomeBind.btnStart.text = "Complete"
+            fcHomeBind.btnStart.text = this.getString(R.string.Complete)
             fcHomeBind.btnStart.isEnabled = false
         }
 

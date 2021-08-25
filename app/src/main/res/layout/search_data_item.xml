@@ -8,7 +8,6 @@
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/vwi_constraintlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/kanaview"
@@ -22,7 +21,7 @@
             android:layout_marginTop="15dp"
             android:text="漢字"
             android:textColor="@android:color/black"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/kanaview"
             app:layout_constraintEnd_toEndOf="@+id/kanaview"
@@ -39,7 +38,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="1dp"
             android:text="かたかな"
-            android:textSize="14dp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/englishview"
             app:layout_constraintEnd_toStartOf="@+id/star"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +52,7 @@
             android:layout_marginBottom="15dp"
             android:text="English Definition"
             android:textColor="@android:color/black"
-            android:textSize="14dp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/star"
             app:layout_constraintHorizontal_bias="0.0"

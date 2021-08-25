@@ -46,7 +46,6 @@
         android:ems="10"
         android:hint="@string/blank"
         android:importantForAutofill="no"
-        android:inputType="textMultiLine"
         android:text="ひらがな"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/vw_btn_star"
@@ -65,7 +64,6 @@
 
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"

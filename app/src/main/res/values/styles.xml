@@ -2,6 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+
+        <item name="background">@color/background</item>
+
         <item name="android:textColorPrimary">@color/primary_light</item>
 
         <item name="colorPrimary">@color/primary</item>
@@ -40,10 +43,4 @@
     </style>
 
 
-    <style name="HelpScreenTitle" parent="@android:style/Widget.TextView">
-        <item name="android:textSize">25sp</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:paddingTop">200dp</item>
-        <item name="android:layout_marginTop">200dp</item>
-    </style>
 </resources>

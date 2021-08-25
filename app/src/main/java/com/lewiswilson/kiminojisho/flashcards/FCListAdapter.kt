@@ -31,7 +31,7 @@ class FCListAdapter(
         holder.mReviewsText.text = reviewsText
 
         if (currentItem.reviews <= 0) {
-            holder.mReviewBtn.text = "Complete"
+            holder.mReviewBtn.text = mContext.getString(R.string.Complete)
             holder.mReviewBtn.isEnabled = false
         }
 

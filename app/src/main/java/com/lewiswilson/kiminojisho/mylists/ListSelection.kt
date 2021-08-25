@@ -58,7 +58,7 @@ class ListSelection : AppCompatActivity() {
             }
         })
 
-        listSelectionBind.btnNewlist.setOnClickListener { createList() }
+        listSelectionBind.btnCreateList.setOnClickListener { createList() }
 
     }
 

@@ -3,30 +3,18 @@
     <string name="admob_app_id">ca-app-pub-4081680103127041~6469492620</string>
     <string name="admob_banner_id">ca-app-pub-4081680103127041/4671981138</string>
     <string name="admob_big_banner_id">ca-app-pub-4081680103127041/4405077150</string>
-    <string name="admob_test_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="Add_New_Word">Add New Word</string>
     <string name="Kanji">Kanji*:</string>
     <string name="Add">Add</string>
     <string name="Kana">Kana*:</string>
     <string name="Meaning">Meaning*:</string>
-    <string name="Example">Example:</string>
-    <string name="Word_Contents">word_contents</string>
     <string name="Delete_Entry">DELETE</string>
     <string name="Cancel">Cancel</string>
-    <string name="Update_Entry">Update</string>
-    <string name="View_Edit">View/Edit</string>
     <string name="ActionExport">Export Database</string>
-    <string name="ActionAlarm">Notifications On/Off</string>
     <string name="ActionImport">Import Database</string>
-    <string name="ActionAbout">About</string>
     <string name="About">About</string>
     <string name="AboutDescription">\"KimiNoJisho\" is a custom dictionary app, designed to make your Japanese learning and note-taking easier.</string>
-    <string name="HideShow">Hide/Show</string>
-    <string name="nothing_in_the_database">It looks like the database is empty. To get started, click the green \"+\" button to create a new dictionary entry!</string>
-    <string name="Toggle_Kanji">Kanji On/Off</string>
-    <string name="Hidden">Hidden</string>
     <string name="ActionHelp">Help</string>
-    <string name="app_icon">app_icon</string>
     <string name="blank" />
     <string name="type_word_here">(Type Word Here)</string>
     <string name="required">(Required)</string>
@@ -35,4 +23,5 @@
     <string name="ON">ON</string>
     <string name="OFF">OFF</string>
     <string name="no_results">No results found</string>
+    <string name="Complete">Complete</string>
 </resources>

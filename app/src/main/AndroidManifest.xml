@@ -18,6 +18,7 @@
         <activity
             android:name=".HomeScreen"
             android:label="@string/app_name"
+            android:exported="true"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,6 +53,7 @@
         </activity>
         <receiver
             android:name=".ReminderBroadcast"
+            android:exported="true"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
