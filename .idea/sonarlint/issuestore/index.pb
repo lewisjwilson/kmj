@@ -9,8 +9,6 @@ l
 <app/src/main/java/com/lewiswilson/kiminojisho/json/Link.java,c/d/cd616ed1d5bf29e754b466da8b65178a0ff334d8
 l
 <app/src/main/java/com/lewiswilson/kiminojisho/json/Meta.java,a/f/af1a6aa0053a897f205926bab8027941a7bd5d14
-v
-Fapp/src/main/java/com/lewiswilson/kiminojisho/json/RetrofitClient.java,9/0/90ff20a7a2a1cbcf9da8d9fdd707cbd188065983
 b
 2app/src/main/java/com/lewiswilson/MyApplication.kt,d/c/dc5a7429e3901dcf12b41af693af48a693952863
 T
@@ -35,11 +33,5 @@ s
 Capp/src/main/java/com/lewiswilson/kiminojisho/mylists/MyListItem.kt,8/e/8ec813edfe85683213e6b92b9a9d69ecbd138988
 r
 Bapp/src/main/java/com/lewiswilson/kiminojisho/ReminderBroadcast.kt,1/f/1fb5649c59d656da881645763464536c6bcbad56
-v
-Fapp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelection.kt,2/6/2689afcdc7e84276a21592e8e79df59ad412314f
-h
-8app/src/main/java/com/lewiswilson/kiminojisho/AddWord.kt,4/4/442f2a0320bd6e7ac395eaffcc4f53257085c7f2
-i
-9app/src/main/java/com/lewiswilson/kiminojisho/Settings.kt,e/6/e67270f9eb08dca92f6c82598a044d8431026438
 z
 Japp/src/main/java/com/lewiswilson/kiminojisho/mylists/ListSelectionItem.kt,8/4/840870bfd542235121eafa6c884bbc296cf93dd6

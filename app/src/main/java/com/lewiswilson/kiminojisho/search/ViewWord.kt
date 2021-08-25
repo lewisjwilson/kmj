@@ -1,26 +1,25 @@
 package com.lewiswilson.kiminojisho.search
 
 import android.content.ContentValues.TAG
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.lewiswilson.kiminojisho.*
-import com.lewiswilson.kiminojisho.mylists.ListSelectionAdapter
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
+import com.lewiswilson.kiminojisho.databinding.ViewWordBinding
 import com.lewiswilson.kiminojisho.mylists.MyList
-import kotlinx.android.synthetic.main.add_word.*
-import kotlinx.android.synthetic.main.my_list.*
-import kotlinx.android.synthetic.main.view_word.*
-import kotlinx.android.synthetic.main.view_word.vw_adView
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.Exception
@@ -30,21 +29,27 @@ import kotlin.collections.*
 
 
 class ViewWord : AppCompatActivity() {
+
+    private lateinit var viewWordBind: ViewWordBinding
+
     private var mItemList: ArrayList<ViewWordItem>? = ArrayList()
     private var mItemAdapter: ViewWordItemAdapter? = null
     private var examplesList: ArrayList<ExamplesItem>? = ArrayList()
     private var rvAdapter: ExamplesAdapter? = null
     private val myDB = DatabaseHelper(this)
     private var starred = true
+
     var kanji = ""
     var kana = ""
     var english = ""
     var pos = ""
     var notes = ""
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_word)
+        viewWordBind = ViewWordBinding.inflate(layoutInflater)
+        setContentView(viewWordBind.root)
 
         //implementing ads
         MobileAds.initialize(this)
@@ -52,7 +57,7 @@ class ViewWord : AppCompatActivity() {
         val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
         MobileAds.setRequestConfiguration(config)
         val adRequest = AdRequest.Builder().build()
-        vw_adView.loadAd(adRequest)
+        viewWordBind.vwAdView.loadAd(adRequest)
 
         val itemId = MyList.clickedItemId.toString()
         val itemData = myDB.getData(Integer.parseInt(itemId))
@@ -66,12 +71,12 @@ class ViewWord : AppCompatActivity() {
         pos = itemData["pos"].toString()
         notes = itemData["notes"].toString()
 
-        vw_kanji.text = kanji
-        vw_kana.text = kana
+        viewWordBind.vwKanji.text = kanji
+        viewWordBind.vwKana.text = kana
 
         // initialte word_recycler
-        vw_rv_definitions.setHasFixedSize(true)
-        vw_rv_definitions.setLayoutManager(LinearLayoutManager(this))
+        viewWordBind.vwRvDefinitions.setHasFixedSize(true)
+        viewWordBind.vwRvDefinitions.setLayoutManager(LinearLayoutManager(this))
 
         val defArray = english.split("@@@").toTypedArray()
         val posArray = pos.split("@@@").toTypedArray()
@@ -90,10 +95,10 @@ class ViewWord : AppCompatActivity() {
         mItemAdapter = mItemList?.let { it ->
             ViewWordItemAdapter(this@ViewWord, it)
         }
-        vw_rv_definitions.adapter = mItemAdapter
+        viewWordBind.vwRvDefinitions.adapter = mItemAdapter
         mItemAdapter?.notifyDataSetChanged()
 
-        vw_btn_star.setOnClickListener {
+        viewWordBind.vwBtnStar.setOnClickListener {
             if (starred) {
                 warningDialog(itemId)
             } else {
@@ -102,8 +107,8 @@ class ViewWord : AppCompatActivity() {
         }
 
         //initiate recyclerview and set parameters
-        vw_rv_examples.setHasFixedSize(true)
-        vw_rv_examples.setLayoutManager(LinearLayoutManager(this))
+        viewWordBind.vwRvExamples.setHasFixedSize(true)
+        viewWordBind.vwRvExamples.setLayoutManager(LinearLayoutManager(this))
 
         // search word and add matching examples to recycler
         readExamples(kanji)
@@ -133,11 +138,11 @@ class ViewWord : AppCompatActivity() {
 
         }
         if (count == 0) {
-            vw_txt_examples.visibility = View.GONE
-            vw_rv_examples.visibility = View.GONE
+            viewWordBind.vwTxtExamples.visibility = View.GONE
+            viewWordBind.vwRvExamples.visibility = View.GONE
         } else {
             rvAdapter = examplesList?.let { it -> ExamplesAdapter(this@ViewWord, it) }
-            vw_rv_examples.adapter = rvAdapter
+            viewWordBind.vwRvExamples.adapter = rvAdapter
         }
 
     }
@@ -175,7 +180,7 @@ class ViewWord : AppCompatActivity() {
             .setItems(listArray) { _, which ->
                 val selected = listArray[which]
                 val listId = myDB.getListIdFromName(selected)
-                vw_btn_star.setImageResource(R.drawable.ic_removeword)
+                viewWordBind.vwBtnStar.setImageResource(R.drawable.ic_removeword)
                 myDB.addData(listId, kanji, kana, english, pos, notes)
                 Toast.makeText(this, "Added to list: $selected", Toast.LENGTH_SHORT).show()
             }

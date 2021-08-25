@@ -5,26 +5,31 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.*
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
+import com.lewiswilson.kiminojisho.databinding.SearchPageBinding
 import com.lewiswilson.kiminojisho.json.Japanese
 import com.lewiswilson.kiminojisho.json.JishoData
 import com.lewiswilson.kiminojisho.json.RetrofitClient
 import com.lewiswilson.kiminojisho.mylists.MyListItem
-import kotlinx.android.synthetic.main.search_data_item.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import kotlinx.android.synthetic.main.search_page.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.NullPointerException
 import kotlin.collections.ArrayList
 
 class SearchPage : AppCompatActivity(), CoroutineScope {
+
+    private lateinit var searchPageBind: SearchPageBinding
 
     private var mSearchList: ArrayList<SearchDataItem>? = ArrayList()
     private var mSearchDataAdapter: SearchDataAdapter? = null
@@ -37,39 +42,27 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
     private val job = Job()
     override val coroutineContext = job + Dispatchers.Main
 
-    override fun onDestroy() {
-        queryTextChangedJob?.cancel()
-        clickedItem = null
-        super.onDestroy()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (clickedItem != null ) {
-            mSearchList?.get(clickedItem!!)?.starFilled = starFilled
-            mSearchDataAdapter?.notifyItemChanged(clickedItem!!)
-        }
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.search_page)
+        searchPageBind = SearchPageBinding.inflate(layoutInflater)
+        setContentView(searchPageBind.root)
         sp = this
 
         // setting autofocus on searchview when activity is started
-        sv_searchfield.isIconifiedByDefault = false
-        sv_searchfield.isFocusable = true
-        sv_searchfield.requestFocusFromTouch()
+        searchPageBind.svSearchfield.isIconifiedByDefault = false
+        searchPageBind.svSearchfield.isFocusable = true
+        searchPageBind.svSearchfield.requestFocusFromTouch()
 
         //initiate recyclerview and set parameters
-        rv_searchdata.setHasFixedSize(true)
-        rv_searchdata.setLayoutManager(LinearLayoutManager(this))
+        searchPageBind.rvSearchdata.setHasFixedSize(true)
+        searchPageBind.rvSearchdata.setLayoutManager(LinearLayoutManager(this))
 
-        btn_manual.setOnClickListener { startActivity(Intent(this@SearchPage, AddWord::class.java)) }
+        searchPageBind.btnManual.setOnClickListener {
+            startActivity(Intent(this@SearchPage, AddWord::class.java)) }
 
         //reload datafromnetwork on text input
-        sv_searchfield.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchPageBind.svSearchfield.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(searchtext: String): Boolean {
                 return false
             }
@@ -111,9 +104,9 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
     //get API data
     private fun dataFromNetwork(query: String) {
 
-        tv_info.visibility = View.INVISIBLE
+        searchPageBind.tvInfo.visibility = View.INVISIBLE
         //if the search adapter has data in it already, clear the recyclerview
-        rv_searchdata.adapter = mSearchDataAdapter
+        searchPageBind.rvSearchdata.adapter = mSearchDataAdapter
 
         //if the searchtext contains any japanese...
         call = RetrofitClient.getInstance().myApi.getData(query)
@@ -126,8 +119,8 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
 
                 //if no data was found, try a call assuming romaji style
                 if (data?.isEmpty() == true) {
-                    tv_info.visibility = View.VISIBLE
-                    tv_info.text = getString(R.string.no_results)
+                    searchPageBind.tvInfo.visibility = View.VISIBLE
+                    searchPageBind.tvInfo.text = getString(R.string.no_results)
                 }
 
                 //try to retrieve data from jishoAPI
@@ -153,13 +146,16 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         var pos = ""
                         var notes = ""
                         for (item in senses) {
-                            val currentDef = item.englishDefinitions.toString().replace("[", "").replace("]", "")
+                            val currentDef = item.englishDefinitions.toString()
+                                .replace("[", "").replace("]", "")
                             english += "$currentDef@@@"
 
-                            val currentPos = item.partsOfSpeech.toString().replace("[", "").replace("]", "")
+                            val currentPos = item.partsOfSpeech.toString()
+                                .replace("[", "").replace("]", "")
                             pos += "$currentPos@@@"
 
-                            val currentNotes = item.tags.toString().replace("[", "").replace("]", "")
+                            val currentNotes = item.tags.toString()
+                                .replace("[", "").replace("]", "")
                             notes += "$currentNotes@@@"
 
                         }
@@ -170,7 +166,8 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         starFilled = myDB.checkStarred(kanji, english.split("@@@")[0])
 
                         // items to view in searchpage activity
-                        mSearchList!!.add(SearchDataItem(kanji, kana, english.split("@@@")[0], starFilled))
+                        mSearchList!!.add(SearchDataItem(kanji, kana,
+                            english.split("@@@")[0], starFilled))
 
                         // items to view in viewwordremote and viewword
                         dataItems!!.add(MyListItem(i, kanji, kana, english, pos, notes))
@@ -178,7 +175,7 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
                         mSearchDataAdapter = mSearchList?.let { it ->
                             SearchDataAdapter(this@SearchPage, it)
                         }
-                        rv_searchdata.adapter = mSearchDataAdapter
+                        searchPageBind.rvSearchdata.adapter = mSearchDataAdapter
                     }
 
                 } catch (e: Exception) {
@@ -201,6 +198,21 @@ class SearchPage : AppCompatActivity(), CoroutineScope {
 
     fun removeAts(input: String): String {
         return input.substring(0, input.length - 3)
+    }
+
+    override fun onDestroy() {
+        queryTextChangedJob?.cancel()
+        clickedItem = null
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (clickedItem != null ) {
+            mSearchList?.get(clickedItem!!)?.starFilled = starFilled
+            mSearchDataAdapter?.notifyItemChanged(clickedItem!!)
+        }
+
     }
 
     companion object {

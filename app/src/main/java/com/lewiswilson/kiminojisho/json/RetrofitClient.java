@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static RetrofitClient instance = null;
-    private JishoAPI myApi;
+    private final JishoAPI myApi;
 
     private RetrofitClient() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(JishoAPI.BASE_URL)

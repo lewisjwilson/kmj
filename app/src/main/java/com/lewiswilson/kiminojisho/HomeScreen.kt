@@ -11,16 +11,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence
+import com.lewiswilson.kiminojisho.databinding.HomeScreenBinding
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 import com.lewiswilson.kiminojisho.mylists.ListSelection
 import com.lewiswilson.kiminojisho.search.SearchPage
-import kotlinx.android.synthetic.main.home_screen.*
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
@@ -28,15 +31,18 @@ import java.util.*
 
 class HomeScreen : AppCompatActivity() {
 
+    lateinit var homeScreenBind: HomeScreenBinding
+
     private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.home_screen)
+        homeScreenBind = HomeScreenBinding.inflate(layoutInflater)
+        setContentView(homeScreenBind.root)
+
 
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
-
         //Check if it is a first time launch
         if (prefs.getBoolean("first_launch", true)) {
             helpDisplay()
@@ -46,10 +52,14 @@ class HomeScreen : AppCompatActivity() {
             prefs.edit().putStringSet("list_names", hashSetOf("Main List")).apply()
         }
 
-        item_flashcards.setOnClickListener { startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
-        item_search.setOnClickListener { startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
-        item_mylists.setOnClickListener { startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
-        item_settings.setOnClickListener { startActivity(Intent(this@HomeScreen, Settings::class.java)) }
+        homeScreenBind.itemFlashcards.setOnClickListener {
+            startActivity(Intent(this@HomeScreen, FlashcardsHome::class.java)) }
+        homeScreenBind.itemSearch.setOnClickListener {
+            startActivity(Intent(this@HomeScreen, SearchPage::class.java)) }
+        homeScreenBind.itemMylists.setOnClickListener {
+            startActivity(Intent(this@HomeScreen, ListSelection::class.java)) }
+        homeScreenBind.itemSettings.setOnClickListener {
+            startActivity(Intent(this@HomeScreen, Settings::class.java)) }
 
     }
 
@@ -84,36 +94,37 @@ class HomeScreen : AppCompatActivity() {
     }
 
     private fun helpDisplay() {
+
         val title = BubbleShowCaseBuilder(this)
             .title("Welcome to KiminoJisho!")
             .description("This app will help you learn Japanese by using spaced repitition (SRS) style flashcards on the Japanese words YOU choose!")
-            .targetView(homescreen_blank_view)
+            .targetView(homeScreenBind.homescreenBlankView)
 
         val flashcards = BubbleShowCaseBuilder(this)
             .title("Flashcards")
             .description("Here, you can test yourself using flashcards on the words in your lists. (You will need to add some words first!)")
-            .targetView(item_flashcards)
+            .targetView(homeScreenBind.itemFlashcards)
 
         val search = BubbleShowCaseBuilder(this)
             .title("Search")
             .description("Search for a words to add to one of your lists.")
-            .targetView(item_search)
+            .targetView(homeScreenBind.itemSearch)
 
         val myLists = BubbleShowCaseBuilder(this)
             .title("My Lists")
             .description("Check out and review the words you've added.")
-            .targetView(item_mylists)
+            .targetView(homeScreenBind.itemMylists)
 
         val settings = BubbleShowCaseBuilder(this)
             .title("Settings")
             .description("Enable daily notifications etc.")
-            .targetView(item_settings)
+            .targetView(homeScreenBind.itemSettings)
 
 
         val final = BubbleShowCaseBuilder(this)
             .title("That's all there is to it!")
             .description("We hope you enjoy Kiminojisho. To see this help display again, click the icon in the toolbar.")
-            .targetView(homescreen_blank_view)
+            .targetView(homeScreenBind.homescreenBlankView)
 
         BubbleShowCaseSequence()
             .addShowCase(title)

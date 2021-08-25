@@ -6,36 +6,34 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.HomeScreen
 import com.lewiswilson.kiminojisho.R
-import kotlinx.android.synthetic.main.list_selection.*
-import kotlinx.android.synthetic.main.list_selection_item.*
-import kotlinx.android.synthetic.main.my_list.*
-import kotlinx.android.synthetic.main.my_list_item.view.*
-import kotlinx.android.synthetic.main.search_page.*
+import com.lewiswilson.kiminojisho.databinding.ListSelectionBinding
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
 import java.util.*
-import kotlin.collections.HashSet
 
 
 class ListSelection : AppCompatActivity() {
+
+    private lateinit var listSelectionBind: ListSelectionBinding
+
     private var listOfLists: ArrayList<ListSelectionItem>? = ArrayList()
     private var rvAdapter: ListSelectionAdapter? = null
     private var myDB: DatabaseHelper? = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.list_selection)
+        listSelectionBind = ListSelectionBinding.inflate(layoutInflater)
+        setContentView(listSelectionBind.root)
 
         //initiate recyclerview and set parameters
-        rv_list_selection.setHasFixedSize(true)
-        rv_list_selection.layoutManager = GridLayoutManager(this, 2)
+        listSelectionBind.rvListSelection.setHasFixedSize(true)
+        listSelectionBind.rvListSelection.layoutManager = GridLayoutManager(this, 2)
 
         for (item in listOfLists!!) {
             item.name
@@ -43,7 +41,7 @@ class ListSelection : AppCompatActivity() {
 
         populateRV()
 
-        rv_list_selection.adapter = rvAdapter
+        listSelectionBind.rvListSelection.adapter = rvAdapter
 
         rvAdapter?.setOnItemClickListener(object: ListSelectionAdapter.OnItemClickListener{
             override fun onItemClick(listId: Int) {
@@ -60,7 +58,7 @@ class ListSelection : AppCompatActivity() {
             }
         })
 
-        btn_newlist.setOnClickListener { createList() }
+        listSelectionBind.btnNewlist.setOnClickListener { createList() }
 
     }
 

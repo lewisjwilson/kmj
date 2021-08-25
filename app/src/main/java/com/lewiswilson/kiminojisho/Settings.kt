@@ -8,23 +8,22 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.settings.*
+import com.lewiswilson.kiminojisho.databinding.SettingsBinding
 import java.text.DecimalFormat
 import java.util.*
 
-class Settings : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class Settings : AppCompatActivity() {
+
+    private lateinit var settingsBind: SettingsBinding
+
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    // reason: conflicts with the alarm staying active
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings)
+        settingsBind = SettingsBinding.inflate(layoutInflater)
+        setContentView(settingsBind.root)
 
         val prefsName = "MyPrefs"
         val prefs = getSharedPreferences(prefsName, Context.MODE_PRIVATE)
@@ -35,40 +34,35 @@ class Settings : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             PendingIntent.FLAG_NO_CREATE) != null
 
         //sets enabled status based on if alarm exists
-        switch_notifications.isChecked = alarmUp
-        if(switch_notifications.isChecked) {
-            txt_status.text = getString(R.string.ON)
+        settingsBind.switchNotifications.isChecked = alarmUp
+        if(settingsBind.switchNotifications.isChecked) {
+            settingsBind.txtStatus.text = getString(R.string.ON)
             //setting time to value in sharedprefs
             val millis = prefs.getLong("daily_notifications", 0)
             val c = Calendar.getInstance()
             c.timeInMillis = millis
-            timepicker1.hour = c[Calendar.HOUR_OF_DAY]
-            timepicker1.minute = c[Calendar.MINUTE]
-            timepicker1.isEnabled = false
+            settingsBind.timepicker1.hour = c[Calendar.HOUR_OF_DAY]
+            settingsBind.timepicker1.minute = c[Calendar.MINUTE]
+            settingsBind.timepicker1.isEnabled = false
         }
 
-        timepicker1.setIs24HourView(true)
+        settingsBind.timepicker1.setIs24HourView(true)
 
-        switch_notifications.setOnClickListener {
+        settingsBind.switchNotifications.setOnClickListener {
 
-            if(switch_notifications.isChecked) {
-                txt_status.text = getString(R.string.ON)
-                val hour = timepicker1.hour
-                val min = timepicker1.minute
+            if(settingsBind.switchNotifications.isChecked) {
+                settingsBind.txtStatus.text = getString(R.string.ON)
+                val hour = settingsBind.timepicker1.hour
+                val min = settingsBind.timepicker1.minute
                 createChannel()
                 setNotifications(hour, min)
-                timepicker1.isEnabled = false
+                settingsBind.timepicker1.isEnabled = false
             } else {
-                txt_status.text = getString(R.string.OFF)
+                settingsBind.txtStatus.text = getString(R.string.OFF)
                 cancelNotifications()
-                timepicker1.isEnabled = true
+                settingsBind.timepicker1.isEnabled = true
             }
         }
-
-        spn_theme!!.onItemSelectedListener
-        val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.themes))
-        spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spn_theme!!.adapter = spnAdapter
 
     }
 
@@ -141,15 +135,6 @@ class Settings : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             PackageManager.DONT_KILL_APP
         )
         Toast.makeText(applicationContext, "Notifications stopped", Toast.LENGTH_LONG).show()
-    }
-
-    // spinner functions
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("Not yet implemented")
     }
 
 

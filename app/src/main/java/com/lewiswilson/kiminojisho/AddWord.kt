@@ -1,45 +1,42 @@
 package com.lewiswilson.kiminojisho
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.lewiswilson.kiminojisho.databinding.AddWordBinding
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
 import com.lewiswilson.kiminojisho.mylists.ListSelection
 import com.lewiswilson.kiminojisho.mylists.MyList
-import kotlinx.android.synthetic.main.settings.*
-import kotlinx.android.synthetic.main.add_word.*
-import kotlinx.android.synthetic.main.add_word.view_english
-import kotlinx.android.synthetic.main.add_word.view_kana
-import kotlinx.android.synthetic.main.add_word.view_edit_notes
-import kotlinx.android.synthetic.main.view_word.*
 
 class AddWord : AppCompatActivity() {
-    private val prefsName = "MyPrefs"
+
+    private lateinit var addWordBind: AddWordBinding
+
     private var myDB: DatabaseHelper? = null
 
     /* access modifiers changed from: protected */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_word)
+        addWordBind = AddWordBinding.inflate(layoutInflater)
+        setContentView(addWordBind.root)
         myDB = DatabaseHelper(this)
 
         val listArray = myDB!!.getLists()
 
-        spn_addword_lists!!.onItemSelectedListener
+        addWordBind.spnAddwordLists.onItemSelectedListener
         val spnAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listArray)
         spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spn_addword_lists!!.adapter = spnAdapter
+        addWordBind.spnAddwordLists.adapter = spnAdapter
 
         val add = View.OnClickListener { v: View? ->
-            val newEntryList = myDB!!.getListIdFromName(spn_addword_lists.selectedItem.toString())
-            val newEntryKanji = edit_word.text.toString()
-            val newEntryKana = view_kana.text.toString()
-            val newEntryMeaning = view_english.text.toString()
-            val newEntryPos = view_addword_pos.text.toString()
-            val newEntryNotes =  view_edit_notes.text.toString()
+            val newEntryList = myDB!!.getListIdFromName(addWordBind.spnAddwordLists.selectedItem.toString())
+            val newEntryKanji = addWordBind.editWord.text.toString()
+            val newEntryKana = addWordBind.viewKana.text.toString()
+            val newEntryMeaning = addWordBind.viewEnglish.text.toString()
+            val newEntryPos = addWordBind.viewAddwordPos.text.toString()
+            val newEntryNotes =  addWordBind.viewEditNotes.text.toString()
 
             if (newEntryKanji.isEmpty() || newEntryKana.isEmpty() || newEntryMeaning.isEmpty()) {
                 Toast.makeText(this@AddWord, "Fill in Required Fields!", Toast.LENGTH_SHORT).show()
@@ -52,7 +49,7 @@ class AddWord : AppCompatActivity() {
             }
 
         }
-        btn_add.setOnClickListener(add)
+        addWordBind.btnAdd.setOnClickListener(add)
 
     }
 

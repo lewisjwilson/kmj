@@ -8,18 +8,27 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.GridLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.mylists.MyListItem
 import com.lewiswilson.kiminojisho.R
-import kotlinx.android.synthetic.main.flashcards_home.*
-import kotlinx.android.synthetic.main.flashcard_back.*
-import kotlinx.android.synthetic.main.flashcard_front.*
-import kotlinx.android.synthetic.main.flashcards.*
-import kotlinx.android.synthetic.main.flashcards_complete.*
+import com.lewiswilson.kiminojisho.databinding.FlashcardBackBinding
+import com.lewiswilson.kiminojisho.databinding.FlashcardFrontBinding
+import com.lewiswilson.kiminojisho.databinding.FlashcardsBinding
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
+import com.wajahatkarim3.easyflipview.EasyFlipView
 import java.util.ArrayList
 
 class Flashcards : AppCompatActivity() {
+
+    private lateinit var fcBind: FlashcardsBinding
+    private lateinit var fcIncludeFront: FlashcardFrontBinding
+    private lateinit var fcIncludeBack: FlashcardBackBinding
 
     private var myDB: DatabaseHelper? = null
     var flashcardList: ArrayList<MyListItem>? = null
@@ -35,45 +44,50 @@ class Flashcards : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.flashcards)
+        fcBind = FlashcardsBinding.inflate(layoutInflater)
+        fcIncludeFront = fcBind.includeFront
+        fcIncludeBack = fcBind.includeBack
+        setContentView(fcBind.root)
+
         wrongColor = getColor(R.color.flashcard_wrong)
         correctColor = getColor(R.color.flashcard_correct)
-        flipview.flipDuration = 200 //ms
+        fcBind.flipview.flipDuration = 200 //ms
         myDB = DatabaseHelper(this)
 
         selectedList = intent.getIntExtra("listID", 0)
 
         flashcardList = myDB!!.dueFlashcards(selectedList)
         totalReviews = flashcardList?.size!!
-        progressBar.progress = 0
+        fcBind.progressBar.progress = 0
 
         flashcardSort()
 
-        option1.setOnClickListener{ redirect(1) }
-        option2.setOnClickListener{ redirect(2) }
-        option3.setOnClickListener{ redirect(3) }
-        option4.setOnClickListener{ redirect(4) }
+        fcBind.option1.setOnClickListener{ redirect(1) }
+        fcBind.option2.setOnClickListener{ redirect(2) }
+        fcBind.option3.setOnClickListener{ redirect(3) }
+        fcBind.option4.setOnClickListener{ redirect(4) }
 
-        fc_btn_continue.setOnClickListener {
-            flipview.flipTheView()
-            flipview.isFlipEnabled = false
-            fc_btn_continue.visibility = View.GONE
-            answer_grid.visibility = View.VISIBLE
+        fcBind.fcBtnContinue.setOnClickListener {
+            fcBind.flipview.flipTheView()
+            fcBind.flipview.isFlipEnabled = false
+            fcBind.fcBtnContinue.visibility = View.GONE
+            fcBind.answerGrid.visibility = View.VISIBLE
             flashcardSort()
         }
 
     }
 
     private fun redirect(selectedBtn: Int) {
+
         var correct = false
 
         //if the button selected is the correct value, set the boolean to true
         when(selectedBtn){correctBtn -> correct = true}
 
-        option1.isEnabled = false
-        option2.isEnabled = false
-        option3.isEnabled = false
-        option4.isEnabled = false
+        fcBind.option1.isEnabled = false
+        fcBind.option2.isEnabled = false
+        fcBind.option3.isEnabled = false
+        fcBind.option4.isEnabled = false
 
         totalTries += 1
 
@@ -90,8 +104,8 @@ class Flashcards : AppCompatActivity() {
                 myDB?.updateFlashcard(dbid, correct, false)
             }
 
-            cv_back.setCardBackgroundColor(correctColor)
-            cv_front.setCardBackgroundColor(correctColor)
+            fcIncludeBack.cvBack.setCardBackgroundColor(correctColor)
+            fcIncludeFront.cvFront.setCardBackgroundColor(correctColor)
 
             flashcardList?.removeAt(0)
             completeReviews++
@@ -112,8 +126,8 @@ class Flashcards : AppCompatActivity() {
                 myDB?.updateFlashcard(dbid, correct, true)
             }
 
-            cv_back.setCardBackgroundColor(wrongColor)
-            cv_front.setCardBackgroundColor(wrongColor)
+            fcIncludeBack.cvBack.setCardBackgroundColor(wrongColor)
+            fcIncludeFront.cvFront.setCardBackgroundColor(wrongColor)
 
         }
 
@@ -121,8 +135,8 @@ class Flashcards : AppCompatActivity() {
 
          //delay running by extra 200ms so that answer doesnt show on flip back
         Handler(Looper.getMainLooper()).postDelayed({
-            cv_back.setCardBackgroundColor(getColor(R.color.white))
-            cv_front.setCardBackgroundColor(getColor(R.color.white))
+            fcIncludeBack.cvBack.setCardBackgroundColor(getColor(R.color.white))
+            fcIncludeFront.cvFront.setCardBackgroundColor(getColor(R.color.white))
             if (correct) {
                 if (flashcardList?.isEmpty() == true) {
                     //finished
@@ -135,15 +149,15 @@ class Flashcards : AppCompatActivity() {
                     flashcardSort()
                 }
             } else {
-                flipview.isFlipEnabled = true
-                flipview.flipTheView(true)
-                answer_grid.visibility = View.GONE
-                fc_btn_continue.visibility = View.VISIBLE
+                fcBind.flipview.isFlipEnabled = true
+                fcBind.flipview.flipTheView(true)
+                fcBind.answerGrid.visibility = View.GONE
+                fcBind.fcBtnContinue.visibility = View.VISIBLE
             }
-            option1.isEnabled = true
-            option2.isEnabled = true
-            option3.isEnabled = true
-            option4.isEnabled = true
+            fcBind.option1.isEnabled = true
+            fcBind.option2.isEnabled = true
+            fcBind.option3.isEnabled = true
+            fcBind.option4.isEnabled = true
         }, 1200)
     }
 
@@ -153,9 +167,9 @@ class Flashcards : AppCompatActivity() {
         flashcardList?.shuffle()
 
         //populating flashcard
-        fc_front_japanese.text = flashcardList?.first()?.kanji
-        fc_back_japanese.text = flashcardList?.first()?.kanji
-        fc_back_kana.text = flashcardList?.first()?.kana
+        fcIncludeFront.fcFrontJapanese.text = flashcardList?.first()?.kanji
+        fcIncludeBack.fcBackJapanese.text = flashcardList?.first()?.kanji
+        fcIncludeBack.fcBackKana.text = flashcardList?.first()?.kana
 
 
         val validateArray = listOf(1, 0, 0, 0).shuffled()
@@ -198,32 +212,32 @@ class Flashcards : AppCompatActivity() {
         Log.d(TAG, "wrongitemtext3: $wrongItemText3")
 
         //caters for the random definition chosen
-        fc_back_english.text = correctEnglish
+        fcIncludeBack.fcBackEnglish.text = correctEnglish
 
         when (correctBtn) {
             1 -> {
-                txt_option1.text = correctItemText
-                txt_option2.text = wrongItemText1
-                txt_option3.text = wrongItemText2
-                txt_option4.text = wrongItemText3
+                fcBind.txtOption1.text = correctItemText
+                fcBind.txtOption2.text = wrongItemText1
+                fcBind.txtOption3.text = wrongItemText2
+                fcBind.txtOption4.text = wrongItemText3
             }
             2 -> {
-                txt_option1.text = wrongItemText1
-                txt_option2.text = correctItemText
-                txt_option3.text = wrongItemText2
-                txt_option4.text = wrongItemText3
+                fcBind.txtOption1.text = wrongItemText1
+                fcBind.txtOption2.text = correctItemText
+                fcBind.txtOption3.text = wrongItemText2
+                fcBind.txtOption4.text = wrongItemText3
             }
             3 -> {
-                txt_option1.text = wrongItemText1
-                txt_option2.text = wrongItemText2
-                txt_option3.text = correctItemText
-                txt_option4.text = wrongItemText3
+                fcBind.txtOption1.text = wrongItemText1
+                fcBind.txtOption2.text = wrongItemText2
+                fcBind.txtOption3.text = correctItemText
+                fcBind.txtOption4.text = wrongItemText3
             }
             4 -> {
-                txt_option1.text = wrongItemText1
-                txt_option2.text = wrongItemText2
-                txt_option3.text = wrongItemText3
-                txt_option4.text = correctItemText
+                fcBind.txtOption1.text = wrongItemText1
+                fcBind.txtOption2.text = wrongItemText2
+                fcBind.txtOption3.text = wrongItemText3
+                fcBind.txtOption4.text = correctItemText
             }
         }
 
@@ -232,7 +246,7 @@ class Flashcards : AppCompatActivity() {
     private fun randomDefinition(unformatted: String) = unformatted.split("@@@").random()
 
     private fun setProgressBar(progress: Int) {
-        ObjectAnimator.ofInt(progressBar, "progress", progress)
+        ObjectAnimator.ofInt(fcBind.progressBar, "progress", progress)
             .setDuration(300)
             .start()
     }

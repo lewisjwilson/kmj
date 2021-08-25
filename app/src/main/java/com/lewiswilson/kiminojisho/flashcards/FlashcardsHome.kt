@@ -1,7 +1,6 @@
 package com.lewiswilson.kiminojisho.flashcards
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -11,24 +10,22 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.lewiswilson.kiminojisho.DatabaseHelper
-import com.lewiswilson.kiminojisho.HomeScreen
-import com.lewiswilson.kiminojisho.R
-import com.lewiswilson.kiminojisho.mylists.ListSelectionAdapter
-import com.lewiswilson.kiminojisho.mylists.ListSelectionItem
+import com.lewiswilson.kiminojisho.databinding.FlashcardsHomeBinding
 import com.lewiswilson.kiminojisho.mylists.MyList
-import kotlinx.android.synthetic.main.flashcards_home.*
-import kotlinx.android.synthetic.main.list_selection.*
-import kotlinx.android.synthetic.main.my_list.*
 import java.util.*
 
 class FlashcardsHome : AppCompatActivity() {
+
+    private lateinit var fcHomeBind: FlashcardsHomeBinding
+
     private var listOfLists: ArrayList<FCListItem>? = ArrayList()
     private var rvAdapter: FCListAdapter? = null
     private var myDB: DatabaseHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.flashcards_home)
+        fcHomeBind = FlashcardsHomeBinding.inflate(layoutInflater)
+        setContentView(fcHomeBind.root)
         myDB = DatabaseHelper(this)
 
         //implementing ads
@@ -37,19 +34,19 @@ class FlashcardsHome : AppCompatActivity() {
         val testDeviceIds = Arrays.asList("3EE9A91017FEA4E8E9F0996A4775B406")
         val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
         MobileAds.setRequestConfiguration(config)
-        fc_home_adView.loadAd(adRequest)
+        fcHomeBind.fcHomeAdView.loadAd(adRequest)
 
         val reviewsDue = myDB?.flashcardCount(0)
         val noOfFlashcards = "Total Reviews: $reviewsDue"
-        fc_no.text = noOfFlashcards
+        fcHomeBind.fcNo.text = noOfFlashcards
 
         if (reviewsDue!! <= 0) {
-            btn_start.text = "Complete"
-            btn_start.isEnabled = false
+            fcHomeBind.btnStart.text = "Complete"
+            fcHomeBind.btnStart.isEnabled = false
         }
 
 
-        btn_start.setOnClickListener { v: View? ->
+        fcHomeBind.btnStart.setOnClickListener { v: View? ->
             if (myDB!!.itemCount(0) < 4) {
                 Toast.makeText(this, "Not enough words to start reviewing! Add some new words to get started!", Toast.LENGTH_LONG).show()
             } else {
@@ -59,12 +56,12 @@ class FlashcardsHome : AppCompatActivity() {
         }
 
         //initiate recyclerview and set parameters
-        rv_flashcards_home.setHasFixedSize(true)
-        rv_flashcards_home.layoutManager = GridLayoutManager(this, 2)
+        fcHomeBind.rvFlashcardsHome.setHasFixedSize(true)
+        fcHomeBind.rvFlashcardsHome.layoutManager = GridLayoutManager(this, 2)
 
         populateRV()
 
-        rv_flashcards_home.adapter = rvAdapter
+        fcHomeBind.rvFlashcardsHome.adapter = rvAdapter
 
         rvAdapter?.setOnItemClickListener(object: FCListAdapter.OnItemClickListener{
             override fun onItemClick(listId: Int) {

@@ -4,7 +4,6 @@ import android.app.*
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -21,17 +20,16 @@ import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.R
+import com.lewiswilson.kiminojisho.databinding.MyListBinding
 import com.lewiswilson.kiminojisho.search.SearchPage
 import com.lewiswilson.kiminojisho.search.ViewWord
-import kotlinx.android.synthetic.main.flashcards_home.*
-import kotlinx.android.synthetic.main.my_list.*
-import kotlinx.android.synthetic.main.my_list_item.view.*
-import kotlinx.android.synthetic.main.search_page.*
-import kotlinx.android.synthetic.main.view_word.*
 import java.util.*
 
 
 class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAdapter.OnItemLongClickListener {
+
+    private lateinit var myListBind: MyListBinding
+
     private val prefsName = "MyPrefs"
     private var myDB: DatabaseHelper? = null
     private var jishoList: ArrayList<MyListItem>? = ArrayList()
@@ -41,7 +39,8 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.my_list)
+        myListBind = MyListBinding.inflate(layoutInflater)
+        setContentView(myListBind.root)
         myDB = DatabaseHelper(this)
 
         //implementing ads
@@ -50,15 +49,15 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         val config = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
         MobileAds.setRequestConfiguration(config)
         val adRequest = AdRequest.Builder().build()
-        mylist_adView.loadAd(adRequest)
+        myListBind.mylistAdView.loadAd(adRequest)
 
         val flbtnAdd = findViewById<FloatingActionButton>(R.id.flbtn_add)
 
         selectedList = intent.getIntExtra("listID", 0)
 
         //initiate recyclerview and set parameters
-        rv_mylist.setHasFixedSize(true)
-        rv_mylist.layoutManager = LinearLayoutManager(this)
+        myListBind.rvMylist.setHasFixedSize(true)
+        myListBind.rvMylist.layoutManager = LinearLayoutManager(this)
 
         populateRV()
         //displaylist shows when searching in searchview
@@ -66,7 +65,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
 
         multiSelectMenuSetup()
 
-        flbtnAdd.setOnClickListener { v: View? ->
+        myListBind.flbtnAdd.setOnClickListener { v: View? ->
             finish()
             startActivity(Intent(this@MyList, SearchPage::class.java)) }
 
@@ -103,7 +102,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
             )
 
             rvAdapter = jishoList?.let { it -> MyListAdapter(this@MyList, it, this, this) }
-            rv_mylist.adapter = rvAdapter
+            myListBind.rvMylist.adapter = rvAdapter
 
         }
 
@@ -179,17 +178,17 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     }
 
     fun multiSelectMenuSetup() {
-        btn_delete.setOnClickListener{
+        myListBind.btnDelete.setOnClickListener{
             warningDialog()
         }
-        btn_selectall.setOnClickListener{
+        myListBind.btnSelectall.setOnClickListener{
             rvAdapter?.selectAll()
             clearData()
             if (!MyListAdapter.allSelected) {
-                multiselectmenu_mylist.visibility = View.GONE
+                myListBind.multiselectmenuMylist.visibility = View.GONE
             }
         }
-        btn_move.setOnClickListener{
+        myListBind.btnMove.setOnClickListener{
             listSelectDialog()
         }
     }
@@ -213,7 +212,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
                 }
                 MyListAdapter.selectedIds.clear()
                 MyListAdapter.multiSelectMode = false
-                multiselectmenu_mylist.visibility = View.GONE
+                myListBind.multiselectmenuMylist.visibility = View.GONE
                 clearData()
                 Toast.makeText(this, "Items deleted", Toast.LENGTH_SHORT).show()
             }
@@ -241,7 +240,7 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
                 }
                 MyListAdapter.selectedIds.clear()
                 MyListAdapter.multiSelectMode = false
-                multiselectmenu_mylist.visibility = View.GONE
+                myListBind.multiselectmenuMylist.visibility = View.GONE
                 clearData()
                 Toast.makeText(this, "Items moved to list: ${listArray.get(which)}", Toast.LENGTH_SHORT).show()
             }
@@ -259,9 +258,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
         }
 
         if(MyListAdapter.multiSelectMode) {
-            multiselectmenu_mylist.visibility = View.VISIBLE
+            myListBind.multiselectmenuMylist.visibility = View.VISIBLE
         } else {
-            multiselectmenu_mylist.visibility = View.GONE
+            myListBind.multiselectmenuMylist.visibility = View.GONE
         }
 
     }
@@ -269,9 +268,9 @@ class MyList : AppCompatActivity(), MyListAdapter.OnItemClickListener, MyListAda
     override fun onItemLongClick(itemId: Int) {
         clickedItemId = itemId
         if(MyListAdapter.multiSelectMode) {
-            multiselectmenu_mylist.visibility = View.VISIBLE
+            myListBind.multiselectmenuMylist.visibility = View.VISIBLE
         } else {
-            multiselectmenu_mylist.visibility = View.GONE
+            myListBind.multiselectmenuMylist.visibility = View.GONE
         }
 
         //Toast.makeText(this, "long pressed dbID: $clickedItemId", Toast.LENGTH_SHORT).show()

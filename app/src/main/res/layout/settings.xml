@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_notif_header" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_notifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

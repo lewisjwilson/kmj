@@ -42,12 +42,14 @@
 
         <!-- Back Layout Goes Here -->
         <include
+            android:id="@+id/includeBack"
             layout="@layout/flashcard_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <!-- Front Layout Goes Here -->
         <include
+            android:id="@+id/includeFront"
             layout="@layout/flashcard_front"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
