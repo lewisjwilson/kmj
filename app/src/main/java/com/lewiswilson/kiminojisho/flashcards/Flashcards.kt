@@ -169,6 +169,7 @@ class Flashcards : AppCompatActivity() {
 
         val incorrectItems = myDB?.randomThreeWrong(flashcardList?.first()?.kanji!!, selectedList)
 
+        var correctEnglish = ""
         val correctItemText: String
         val wrongItemText1: String
         val wrongItemText2: String
@@ -181,8 +182,9 @@ class Flashcards : AppCompatActivity() {
             wrongItemText2 = randomDefinition(incorrectItems?.elementAt(1)?.english.toString())
             wrongItemText3 = randomDefinition(incorrectItems?.elementAt(2)?.english.toString())
         } else {
-            correctItemText = "${flashcardList?.first()?.kana}\n" +
-                    randomDefinition(flashcardList?.first()?.english.toString())
+            correctEnglish = randomDefinition(flashcardList?.first()?.english.toString())
+            correctItemText = "${flashcardList?.first()?.kana}\n" + correctEnglish
+
             wrongItemText1 = "${incorrectItems?.elementAt(0)?.kana}\n" +
                     randomDefinition(incorrectItems?.elementAt(0)?.english.toString())
             wrongItemText2 = "${incorrectItems?.elementAt(1)?.kana}\n" +
@@ -196,7 +198,7 @@ class Flashcards : AppCompatActivity() {
         Log.d(TAG, "wrongitemtext3: $wrongItemText3")
 
         //caters for the random definition chosen
-        fc_back_english.text = correctItemText
+        fc_back_english.text = correctEnglish
 
         when (correctBtn) {
             1 -> {
