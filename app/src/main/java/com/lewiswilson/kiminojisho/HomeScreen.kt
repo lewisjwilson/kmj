@@ -11,12 +11,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence
@@ -145,15 +143,15 @@ class HomeScreen : AppCompatActivity() {
                 dialog.dismiss()
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.type = "*/*"
-                startActivityForResult(intent, REQUEST_CODE)
+                startForResult.launch(intent)
             }
             .setNegativeButton("Cancel") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
             .create()
     }
 
-    private fun importDatabase() {
+    private fun importDatabase(uri: Uri?) {
         try {
-            myDB!!.createDatabase()
+            myDB!!.createDatabase(uri)
             finish()
             startActivity(intent)
         } catch (e: Exception) {
@@ -223,20 +221,20 @@ class HomeScreen : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK || data != null) {
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            var fileUri: Uri? = null
             if (data != null) {
                 fileUri = data.data
             }
-            importDatabase()
+            importDatabase(fileUri)
         }
     }
 
     companion object{
         const val REQUEST_CODE = 10
-        @JvmField
-        var fileUri: Uri? = null
     }
 
 }

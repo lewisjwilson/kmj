@@ -18,8 +18,6 @@ class Settings : AppCompatActivity() {
 
     private lateinit var settingsBind: SettingsBinding
 
-
-    @SuppressLint("UnspecifiedImmutableFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         settingsBind = SettingsBinding.inflate(layoutInflater)
@@ -31,7 +29,7 @@ class Settings : AppCompatActivity() {
         val alarmUp = PendingIntent.getBroadcast(applicationContext,
             0,
             Intent(applicationContext, ReminderBroadcast::class.java),
-            PendingIntent.FLAG_NO_CREATE) != null
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE) != null
 
         //sets enabled status based on if alarm exists
         settingsBind.switchNotifications.isChecked = alarmUp
@@ -100,7 +98,8 @@ class Settings : AppCompatActivity() {
         }
 
         val intent = Intent(applicationContext, ReminderBroadcast::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, c.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
 
@@ -125,7 +124,8 @@ class Settings : AppCompatActivity() {
     private fun cancelNotifications() {
         //cancel
         PendingIntent.getBroadcast(applicationContext, 0,
-            Intent(applicationContext, ReminderBroadcast::class.java), PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+            Intent(applicationContext, ReminderBroadcast::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE).cancel()
 
         // cancels popping up on device reboot
         val receiver = ComponentName(applicationContext, ReminderBroadcast::class.java)

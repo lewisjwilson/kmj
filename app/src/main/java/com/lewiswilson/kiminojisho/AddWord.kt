@@ -30,7 +30,7 @@ class AddWord : AppCompatActivity() {
         spnAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         addWordBind.spnAddwordLists.adapter = spnAdapter
 
-        val add = View.OnClickListener { v: View? ->
+        val add = View.OnClickListener { _: View? ->
             val newEntryList = myDB!!.getListIdFromName(addWordBind.spnAddwordLists.selectedItem.toString())
             val newEntryKanji = addWordBind.editWord.text.toString()
             val newEntryKana = addWordBind.txtKana.text.toString()

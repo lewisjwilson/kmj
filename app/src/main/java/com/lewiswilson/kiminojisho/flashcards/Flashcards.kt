@@ -8,20 +8,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.GridLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import com.lewiswilson.kiminojisho.DatabaseHelper
 import com.lewiswilson.kiminojisho.mylists.MyListItem
 import com.lewiswilson.kiminojisho.R
 import com.lewiswilson.kiminojisho.databinding.FlashcardBackBinding
 import com.lewiswilson.kiminojisho.databinding.FlashcardFrontBinding
 import com.lewiswilson.kiminojisho.databinding.FlashcardsBinding
-import com.lewiswilson.kiminojisho.databinding.MyListBinding
-import com.wajahatkarim3.easyflipview.EasyFlipView
 import java.util.ArrayList
 
 class Flashcards : AppCompatActivity() {

@@ -6,14 +6,13 @@ import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.lewiswilson.MyApplication
-import com.lewiswilson.kiminojisho.HomeScreen.Companion.fileUri
 import com.lewiswilson.kiminojisho.mylists.MyListItem
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,11 +23,11 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     private var db: SQLiteDatabase? = null
 
-    fun createDatabase() {
+    fun createDatabase(uri: Uri?) {
         this.readableDatabase
         var errorThrown = false
         try {
-            copyDatabase()
+            copyDatabase(uri)
         } catch (e: IOException) {
             errorThrown = true
             throw Error("Error Importing Database")
@@ -72,9 +71,8 @@ class DatabaseHelper internal constructor(private val myContext: Context) : SQLi
 
     //Import DB from Assets folder
     @Throws(IOException::class)
-    private fun copyDatabase() {
-
-        val mInput = myContext.contentResolver.openInputStream(fileUri!!)  //myContext.getAssets().open("kiminojisho.db");
+    private fun copyDatabase(uri: Uri?) {
+        val mInput = myContext.contentResolver.openInputStream(uri!!)  //myContext.getAssets().open("kiminojisho.db");
         val outFileName = DATABASE_PATH.toString()
 
         Log.d(TAG, "copyDatabase: $outFileName")

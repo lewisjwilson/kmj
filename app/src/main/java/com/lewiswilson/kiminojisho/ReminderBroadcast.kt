@@ -1,7 +1,6 @@
 package com.lewiswilson.kiminojisho
 
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ContentValues.TAG
@@ -9,11 +8,8 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
 import com.lewiswilson.kiminojisho.flashcards.FlashcardsHome
 
 class ReminderBroadcast : BroadcastReceiver() {
@@ -34,9 +30,9 @@ class ReminderBroadcast : BroadcastReceiver() {
                 Log.d(TAG, "Get Notifications time: Value ($alarmTime)")
             }
 
-            val intent = Intent(context, ReminderBroadcast::class.java)
+            val alarmIntent = Intent(context, ReminderBroadcast::class.java)
             val pendingIntent =
-                PendingIntent.getBroadcast(context, 0, intent,
+                PendingIntent.getBroadcast(context, 0, alarmIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = context.applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
             alarmManager.setInexactRepeating(
