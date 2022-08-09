@@ -12,3 +12,4 @@ Features include:
 - Japanese word searching via the Jisho API
 - Manual Entry in case of adding phrases or words not avaliable in the API. (e.g. slang words)
 - An easy to use interface
+- Offline search functionality to be implemented in due course
