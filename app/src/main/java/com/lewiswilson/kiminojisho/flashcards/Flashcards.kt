@@ -126,7 +126,7 @@ class Flashcards : AppCompatActivity() {
 
 
 
-         //delay running by extra 200ms so that answer doesnt show on flip back
+         //delay running by extra 500ms so that answer doesnt show on flip back
         Handler(Looper.getMainLooper()).postDelayed({
             fcIncludeBack.cvBack.setCardBackgroundColor(getColor(R.color.white))
             fcIncludeFront.cvFront.setCardBackgroundColor(getColor(R.color.white))
@@ -151,7 +151,7 @@ class Flashcards : AppCompatActivity() {
             fcBind.option2.isEnabled = true
             fcBind.option3.isEnabled = true
             fcBind.option4.isEnabled = true
-        }, 1200)
+        }, 1500)
     }
 
     private fun flashcardSort() {
@@ -185,6 +185,7 @@ class Flashcards : AppCompatActivity() {
         // if entry has no kanji
         if(flashcardList?.first()?.kana.equals(flashcardList?.first()?.kanji)){
             correctItemText = randomDefinition(flashcardList?.first()?.english.toString())
+            correctEnglish = correctItemText
             wrongItemText1 = randomDefinition(incorrectItems?.elementAt(0)?.english.toString())
             wrongItemText2 = randomDefinition(incorrectItems?.elementAt(1)?.english.toString())
             wrongItemText3 = randomDefinition(incorrectItems?.elementAt(2)?.english.toString())
